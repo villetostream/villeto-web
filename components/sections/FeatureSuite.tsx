@@ -151,12 +151,19 @@ export function FeatureSuite() {
                         src="/images/payment-card-mockup.png"
                         alt="Villeto corporate card"
                         fill
+                        sizes="220px"
                         className="object-contain drop-shadow-xl"
                       />
                     </motion.div>
 
                     {/* Overlapping stat left (Expenses -$1,284 -12%) */}
-                    <div className="absolute -left-6 top-20 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none">
+                    <motion.div
+                      className="absolute -left-6 top-20 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none"
+                      initial={{ opacity: 0, x: -24, y: 10 }}
+                      whileInView={{ opacity: 1, x: 0, y: 0 }}
+                      viewport={{ once: true, margin: "-80px" }}
+                      transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
+                    >
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-[10px] font-medium text-[var(--text-secondary)]">{cardsExpensesMock.changeLabel}</span>
                         <span className="rounded bg-red-50 px-1.5 py-0.5 text-[9px] font-bold text-red-500">{cardsExpensesMock.change}</span>
@@ -173,14 +180,20 @@ export function FeatureSuite() {
                              initial={{ height: 0 }}
                              whileInView={{ height: `${h}%` }}
                              viewport={{ once: true }}
-                             transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                             transition={{ duration: 0.5, delay: 0.35 + i * 0.05, ease: "easeOut" }}
                            />
                         ))}
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Overlapping stat right (Successful Transactions) */}
-                    <div className="absolute -right-6 -bottom-6 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none">
+                    <motion.div
+                      className="absolute -right-6 -bottom-6 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none"
+                      initial={{ opacity: 0, x: 24, y: 10 }}
+                      whileInView={{ opacity: 1, x: 0, y: 0 }}
+                      viewport={{ once: true, margin: "-80px" }}
+                      transition={{ duration: 0.55, delay: 0.45, ease: "easeOut" }}
+                    >
                       <div className="flex items-center gap-1.5">
                         <span className="text-[10px] font-medium text-[var(--text-secondary)]">{cardsExpensesMock.transactionsLabel}</span>
                         <div className="flex size-3.5 items-center justify-center rounded-full bg-emerald-100">
@@ -191,7 +204,7 @@ export function FeatureSuite() {
                         <AnimatedNumber value={cardsExpensesMock.transactions} />
                       </span>
                       <span className="text-[9px] text-[var(--text-secondary)]">{cardsExpensesMock.note}</span>
-                    </div>
+                    </motion.div>
                   </div>
                 </div>
               </CardShell>
@@ -208,6 +221,7 @@ export function FeatureSuite() {
                       src="/images/vendor-management-photo.png"
                       alt=""
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover opacity-20 mix-blend-screen"
                     />
                     {/* Gradient fade on the left to keep text readable */}
@@ -289,43 +303,55 @@ export function FeatureSuite() {
                   className="flex-1 min-h-[320px] bg-[radial-gradient(var(--border-hairline)_1px,transparent_1px)] [background-size:20px_20px]"
                   contentClassName="max-w-none sm:max-w-[500px]"
                 >
-                  {/* Floating tags */}
+                  {/* Floating tags — stagger in sequentially */}
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ delay: 0.15, duration: 0.5, ease: "easeOut" }}
                     className="absolute top-[140px] left-[15%] sm:left-[25%] flex items-center gap-1.5 rounded-full bg-purple-50 px-3.5 py-1.5 text-[12px] font-semibold text-purple-700 shadow-sm border border-purple-100/50"
                   >
                     <span>👁️</span> Full Audit Trail
                   </motion.div>
                   
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ delay: 0.32, duration: 0.5, ease: "easeOut" }}
                     className="absolute top-[120px] right-[5%] sm:right-[10%] flex items-center gap-1.5 rounded-full bg-blue-50 px-3.5 py-1.5 text-[12px] font-semibold text-blue-700 shadow-sm border border-blue-100/50"
                   >
                     <span>📊</span> Real-time Visibility
                   </motion.div>
 
-                  {/* Desktop & Mobile: bottom-anchored panel */}
-                  <div className="absolute bottom-4 left-1/2 w-[94%] -translate-x-1/2 max-w-[560px] rounded-[18px] bg-white shadow-xl shadow-black/5 p-3 flex gap-2 sm:gap-3 z-10">
-                    
+                  {/* Bottom-anchored stats panel — stagger children */}
+                  <motion.div
+                    className="absolute bottom-4 left-1/2 w-[94%] -translate-x-1/2 max-w-[560px] rounded-[18px] bg-white shadow-xl shadow-black/5 p-3 flex gap-2 sm:gap-3 z-10"
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1, transition: { staggerChildren: 0.14, delayChildren: 0.45 } }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true, margin: "-60px" }}
+                  >
                     {/* 1st card */}
-                    <motion.div variants={fadeUpItem} className="flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center">
+                    <motion.div
+                      variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } } }}
+                      className="flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center"
+                    >
                       <div className="text-[11px] sm:text-[12px] font-bold text-slate-800">Total Spend</div>
                       <div className="mt-2 flex items-center gap-1.5 text-[15px] sm:text-[17px] font-bold text-black">
-                        <div className="flex size-4 items-center justify-center rounded-full bg-slate-300 text-[9px] font-bold text-white">
-                          $
-                        </div>
+                        <div className="flex size-4 items-center justify-center rounded-full bg-slate-300 text-[9px] font-bold text-white">$</div>
                         <AnimatedNumber value="$2.4M" />
                       </div>
                     </motion.div>
 
                     {/* 2nd card */}
-                    <motion.div variants={fadeUpItem} className="flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center">
+                    <motion.div
+                      variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } } }}
+                      className="flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center"
+                    >
                       <div className="text-[11px] sm:text-[12px] font-bold text-slate-800">Exceptions Flagged</div>
                       <div className="mt-2 flex items-center gap-1.5 text-[15px] sm:text-[17px] font-bold text-black">
                         <span className="text-[12px]">🚩</span>
@@ -334,7 +360,10 @@ export function FeatureSuite() {
                     </motion.div>
 
                     {/* 3rd card */}
-                    <motion.div variants={fadeUpItem} className="relative flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center">
+                    <motion.div
+                      variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } } }}
+                      className="relative flex-1 rounded-xl bg-slate-50 p-3 sm:p-4 flex flex-col justify-center"
+                    >
                       <div className="text-[11px] sm:text-[12px] font-bold text-slate-800">
                         Policy <span className="text-red-600">Violations</span>
                       </div>
@@ -343,8 +372,7 @@ export function FeatureSuite() {
                       </div>
                       <AlertTriangle className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 size-6 sm:size-7 text-red-600 fill-red-100" strokeWidth={2} />
                     </motion.div>
-
-                  </div>
+                  </motion.div>
                 </CardShell>
               </motion.div>
             </div>
@@ -409,22 +437,52 @@ export function FeatureSuite() {
                 <Zap className="size-4 fill-current" /> Fast
               </motion.div>
 
-              {/* Gray Table Container */}
-              <div className="absolute bottom-0 right-0 left-10 sm:left-12 h-[120px] rounded-tl-[24px] bg-[#f1f3f4] border-t border-l border-white/60 overflow-hidden">
-                {/* Tabs */}
-                <div className="flex flex-nowrap gap-3 sm:gap-5 border-b border-gray-200/60 px-4 sm:px-6 pt-4 pb-3 text-[11px] sm:text-[12px] font-medium text-gray-400 overflow-hidden">
-                  <span className="rounded-[8px] bg-white px-2.5 sm:px-3 py-1 text-gray-700 shadow-sm whitespace-nowrap">All Requests</span>
-                  <span className="py-1 whitespace-nowrap">Submitted</span>
-                  <span className="py-1 whitespace-nowrap">Awaiting Review</span>
-                  <span className="py-1 whitespace-nowrap">Appr</span>
-                </div>
-                {/* Table Headers */}
-                <div className="flex justify-between px-4 sm:px-6 pt-4 text-[11px] sm:text-[12px] font-bold text-gray-500 overflow-hidden gap-2">
-                  <span className="whitespace-nowrap">Request ID</span>
-                  <span className="whitespace-nowrap">Request Title</span>
-                  <span className="whitespace-nowrap">Requester</span>
-                </div>
-              </div>
+              {/* Gray Table Container — slides up on scroll */}
+              <motion.div
+                className="absolute bottom-0 right-0 left-10 sm:left-12 h-[120px] rounded-tl-[24px] bg-[#f1f3f4] border-t border-l border-white/60 overflow-hidden"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ delay: 0.25, duration: 0.55, ease: "easeOut" }}
+              >
+                {/* Tabs — stagger each tab in */}
+                <motion.div
+                  className="flex flex-nowrap gap-3 sm:gap-5 border-b border-gray-200/60 px-4 sm:px-6 pt-4 pb-3 text-[11px] sm:text-[12px] font-medium text-gray-400 overflow-hidden"
+                  variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.45 } } }}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                >
+                  {["All Requests", "Submitted", "Awaiting Review", "Appr"].map((tab, i) => (
+                    <motion.span
+                      key={tab}
+                      variants={{ hidden: { opacity: 0, x: -8 }, show: { opacity: 1, x: 0, transition: { duration: 0.35, ease: "easeOut" } } }}
+                      className={i === 0 ? "rounded-[8px] bg-white px-2.5 sm:px-3 py-1 text-gray-700 shadow-sm whitespace-nowrap" : "py-1 whitespace-nowrap"}
+                    >
+                      {tab}
+                    </motion.span>
+                  ))}
+                </motion.div>
+
+                {/* Table Headers — fade in after tabs */}
+                <motion.div
+                  className="flex justify-between px-4 sm:px-6 pt-4 text-[11px] sm:text-[12px] font-bold text-gray-500 overflow-hidden gap-2"
+                  variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.8 } } }}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                >
+                  {["Request ID", "Request Title", "Requester"].map((h) => (
+                    <motion.span
+                      key={h}
+                      variants={{ hidden: { opacity: 0, y: 6 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } } }}
+                      className="whitespace-nowrap"
+                    >
+                      {h}
+                    </motion.span>
+                  ))}
+                </motion.div>
+              </motion.div>
             </CardShell>
           </motion.div>
           </div>
