@@ -12,7 +12,7 @@ export function Footer() {
       <Container className="grid grid-cols-1 gap-12 py-16 sm:py-20 md:grid-cols-[1.2fr_1fr_1fr_1fr]">
         <div className="flex flex-col gap-6">
           <Link href="/" className="relative flex overflow-hidden w-[160px] h-[52px] -ml-2 transition-transform duration-300 hover:scale-[1.02]">
-            <Image src="/images/villeto-logo.png" alt={footer.brand} fill className="object-contain scale-[2.2] object-center" />
+            <Image src="/images/villeto-logo.png" alt={footer.brand} fill sizes="120px" className="object-contain scale-[2.2] object-center" />
           </Link>
           <p className="max-w-[320px] text-[15px] leading-relaxed opacity-70">{footer.tagline}</p>
           <div className="flex items-center gap-4">

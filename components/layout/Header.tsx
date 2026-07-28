@@ -61,7 +61,7 @@ export function Header() {
       >
         <Container className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-[64px]" : "h-[84px]"}`}>
           <Link href="/" className="relative flex shrink-0 items-center overflow-hidden w-[150px] h-[48px] -ml-2 transition-transform duration-300 hover:scale-[1.03]">
-            <Image src="/images/villeto-logo.png" alt={brand.name} fill className="object-contain scale-[2.2] object-center" priority />
+            <Image src="/images/villeto-logo.png" alt={brand.name} fill sizes="120px" className="object-contain scale-[2.2] object-center" priority />
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex">

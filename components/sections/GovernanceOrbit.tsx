@@ -171,6 +171,7 @@ export function GovernanceOrbit() {
         className="pointer-events-none absolute inset-0 h-full w-full"
         style={{ zIndex: 15 }}
         aria-hidden="true"
+        suppressHydrationWarning
       >
         {MODULES.map((mod, i) => {
           const { cx, cy } = initialPos(mod);
@@ -180,6 +181,7 @@ export function GovernanceOrbit() {
                 ref={(el) => { guideRefs.current[i] = el; }}
                 x1="50%" y1="50%" x2={`${cx}%`} y2={`${cy}%`}
                 stroke="var(--accent)" strokeOpacity="0.2" strokeWidth="1"
+                suppressHydrationWarning
               />
               <line
                 ref={(el) => { pulseRefs.current[i] = el; }}
@@ -187,6 +189,7 @@ export function GovernanceOrbit() {
                 stroke="var(--accent)" strokeWidth="1.5"
                 className="pulse-line"
                 style={{ animationDelay: mod.pulseDelay }}
+                suppressHydrationWarning
               />
             </g>
           );
@@ -205,11 +208,11 @@ export function GovernanceOrbit() {
             style={{
               left: `${cx}%`,
               top: `${cy}%`,
-              // Static centering — never overwritten. Card orientation is always upright.
               transform: "translate(-50%, -50%)",
               zIndex: 20,
               willChange: "left, top",
             }}
+            suppressHydrationWarning
           >
             <div className="governance-module flex w-[108px] flex-col items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-3 py-2.5 text-center shadow-[0_4px_20px_-6px_rgba(10,15,13,0.14)]">
               {/* Icon: only element with motion inside the card */}
@@ -276,6 +279,7 @@ export function GovernanceOrbit() {
               src="/images/villeto-v.png"
               alt="Villeto"
               fill
+              sizes="32px"
               className="object-contain"
             />
           </div>

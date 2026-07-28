@@ -35,7 +35,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
         >
           <div className="flex items-center justify-between px-6 py-4">
             <Link href="/" onClick={onClose} className="relative flex overflow-hidden w-[150px] h-[48px] -ml-2">
-              <Image src="/images/villeto-logo.png" alt="Villeto" fill className="object-contain scale-[2.2] object-center" priority />
+              <Image src="/images/villeto-logo.png" alt="Villeto" fill sizes="120px" className="object-contain scale-[2.2] object-center" priority />
             </Link>
             <button
               onClick={onClose}
