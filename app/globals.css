@@ -1,0 +1,302 @@
+@import "tailwindcss";
+
+/*
+  Design register: Editorial (see DESIGN_RULES.md Section 2).
+  Villeto is a spend-control / procurement ERP for finance teams — the
+  content is dense with numbers, statuses, and workflow proof points, so
+  restraint + motion-as-proof (Ramp/Brex register) fits better than the
+  warmer, story-led register. Accents are borrowed sparingly from the
+  original Figma teal, but every token below is decided here, not copied
+  1:1 from the export.
+*/
+
+@theme inline {
+  --color-bg-canvas: var(--bg-canvas);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-inverse: var(--bg-inverse);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-on-accent: var(--accent-contrast);
+  --color-text-on-inverse: var(--text-on-inverse);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-border-hairline: var(--border-hairline);
+
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --color-ink-surface: var(--ink-surface);
+  --color-ink-border: var(--ink-border);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+
+  --text-hero: var(--fs-hero);
+  --text-h2: var(--fs-h2);
+  --text-h3: var(--fs-h3);
+  --text-body: var(--fs-body);
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1440px;
+}
+
+:root {
+  color-scheme: light;
+
+  /* ---- Light mode ---- */
+  --bg-canvas: #ffffff;
+  --bg-surface: #f5f7f6;
+  --bg-inverse: #0a0f0d;
+  --text-primary: #0a0a0a;
+  --text-secondary: #5c6560;
+  --text-on-inverse: #f5f5f4;
+
+  --accent: #0ea894; /* fills, buttons, icons, large elements */
+  --accent-text: #0b6e61; /* AA-safe on white for links/small text */
+  --accent-contrast: #ffffff; /* text/icons drawn on top of --accent */
+  --accent-soft: #e6f5f2; /* tinted chip backgrounds */
+
+  --border-hairline: rgba(10, 15, 13, 0.08);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --space-unit: 8px;
+
+  /* Fixed dark band — used for sections that are dark regardless of the
+     light/dark toggle (Products, Audience, Trust, Final CTA, Footer).
+     Deviation logged: DESIGN_RULES.md Section 10. */
+  --ink: #0a0f0d;
+  --ink-foreground: #f5f7f6;
+  --ink-foreground-soft: rgba(245, 247, 246, 0.68);
+  --ink-border: rgba(245, 247, 246, 0.1);
+  --ink-surface: #14181a;
+  --ink-accent: #2dd4bf;
+  --ink-accent-contrast: #0a0f0d;
+
+  --font-display: var(--font-sans);
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --fs-hero: clamp(2.25rem, 4.2vw, 3.75rem);
+--fs-h2: clamp(1.625rem, 2.8vw, 2.5rem);
+--fs-h3: clamp(1.125rem, 1.4vw, 1.375rem);
+  --fs-body: clamp(0.95rem, 0.25vw + 0.9rem, 1rem);
+  --lh-heading: 1.12;
+  --lh-body: 1.55;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-canvas: #0a0a0a;
+  --bg-surface: #141715;
+  --bg-inverse: #f5f7f6;
+  --text-primary: #f5f5f4;
+  --text-secondary: #a7b0ac;
+  --text-on-inverse: #0a0a0a;
+
+  --accent: #2dd4bf; /* lightened variant — the light-mode hex fails AA on near-black */
+  --accent-text: #5eead4;
+  --accent-contrast: #0a0f0d;
+  --accent-soft: rgba(45, 212, 191, 0.12);
+
+  --border-hairline: rgba(245, 245, 244, 0.1);
+}
+
+html {
+  background: var(--bg-canvas);
+  /* Prevent horizontal overflow from orbit animations triggering scrollbar
+     which would cause the sticky header to shake on every frame. */
+  overflow-x: clip;
+}
+
+body {
+  background: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: var(--lh-heading);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+input:focus,
+input:focus-visible, 
+textarea:focus,
+textarea:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  -webkit-appearance: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Governance orbit (Radial Governance System) ---- */
+/*
+  The system consists of 3 independently rotating rings, 
+  static cards that pulse radially, and network pulses traveling down the spokes.
+*/
+
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes orbit-spin-reverse {
+  to { transform: rotate(-360deg); }
+}
+
+/* The three concentric rings — different speeds/directions so they never align (Layer 9) */
+.orbit-ring-outer {
+  animation: orbit-spin 72s linear infinite;
+}
+.orbit-ring-middle {
+  animation: orbit-spin-reverse 58s linear infinite;
+}
+.orbit-ring-inner {
+  animation: orbit-spin 36s linear infinite;
+}
+
+/* Card radial oscillation (tethered tension effect) */
+@keyframes radial-pulse {
+  from { transform: translateX(0px); }
+  to   { transform: translateX(8px); }
+}
+.card-oscillator {
+  animation-name: radial-pulse;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+
+/* Network pulse flowing from center to modules */
+.pulse-line {
+  /* dash length of 40px, gap of 300px (larger than max radius) */
+  stroke-dasharray: 40 300;
+  animation: line-pulse 4s linear infinite;
+}
+@keyframes line-pulse {
+  from { stroke-dashoffset: 340; opacity: 0; }
+  10%  { opacity: 1; }
+  80%  { opacity: 1; }
+  to   { stroke-dashoffset: -40; opacity: 0; }
+}
+
+/* Hover effects for modules */
+.governance-module {
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+.governance-module:hover {
+  transform: scale(1.02) !important;
+  filter: drop-shadow(0 0 12px var(--accent-soft));
+}
+.governance-module:hover .pulse-line {
+  stroke-width: 2px;
+}
+
+/* ---- Sticky header shrink-on-scroll ---- */
+.site-header {
+  transition: height 0.25s ease-out, box-shadow 0.25s ease-out, background-color 0.25s ease-out;
+}
+.site-header[data-scrolled="true"] {
+  box-shadow: 0 1px 0 var(--border-hairline);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Section demarcation & scroll transitions
+   Pattern: ERP-grade — alternating surface rhythm, gradient separators,
+   and a subtle top-wave mask on accent-tinted bands.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Alternating tinted band — apply to every other section for visual rhythm */
+.section-tinted {
+  background: var(--bg-surface);
+}
+
+/* Soft gradient divider shown as a top-edge fade on each section */
+.section-divide-top::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--border-hairline) 30%,
+    var(--border-hairline) 70%,
+    transparent
+  );
+  margin-bottom: 0;
+}
+
+/* Angled edge divider — gives a subtle skewed boundary between sections.
+   Add to the BOTTOM of a section to create an overlap into the next one. */
+.section-angle-bottom {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), 0 100%);
+}
+.section-angle-top {
+  clip-path: polygon(0 40px, 100% 0, 100% 100%, 0 100%);
+  margin-top: -40px;
+}
+
+/* Gentle inner glow at the top — used on accent-tinted sections */
+.section-glow-top::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 70% 120px at 50% 0,
+    var(--accent-soft),
+    transparent 80%
+  );
+  z-index: 0;
+}
+
+/* CSS-based fade-in-up animation to fix LCP blocking caused by JS animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0% 0 0 0);
+  }
+}
+.animate-hero-fade {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animation-delay-100 { animation-delay: 100ms; }
+.animation-delay-200 { animation-delay: 200ms; }
+.animation-delay-300 { animation-delay: 300ms; }
