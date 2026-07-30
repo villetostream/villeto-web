@@ -22,30 +22,30 @@ export const productTabs: ProductTab[] = [
   {
     id: "policies",
     label: "Policies",
-    description: "Centralized limits, categories, and approval thresholds — enforced automatically, every time.",
+    description: "Define and enforce approval workflows with dynamic routing rules - every request follows the right path automatically.",
   },
   {
     id: "procurement",
     label: "Procurement",
-    description: "Convert purchase intent into approved requests with a named owner from day one.",
+    description: "Streamline purchase requests from intake to PO with built-in budget checks and multi-level approvals.",
   },
   {
     id: "vendor-management",
     label: "Vendor Management",
-    description: "Route requests through managers, procurement, and finance before spending happens.",
+    description: "Centralize vendor onboarding, compliance tracking, and contract renewals in one unified workspace.",
   },
   {
     id: "billpay",
     label: "BillPay",
-    description: "Approvals and invoice verification before a single payment ever releases.",
+    description: "Automate invoice matching, approval routing, and payment scheduling to close the books faster.",
   },
 ];
 
 // Distinct visual per tab for the desktop side panel.
 export const productTabImages: Record<string, string> = {
-  "expense-management": "/images/finance-visibility-dashboard.png",
-  policies: "/images/security-compliance-illustration.png",
-  procurement: "/images/persona-procurement-teams.png",
-  "vendor-management": "/images/persona-operations-teams.png",
-  billpay: "/images/po-invoice-dashboard.png",
+  "expense-management": "/images/Expenses.png",
+  policies: "/images/Policies.png",
+  procurement: "/images/Procurement.png",
+  "vendor-management": "/images/Vendor.png",
+  billpay: "/images/Bill Pay.png",
 };

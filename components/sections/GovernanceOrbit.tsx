@@ -297,13 +297,12 @@ export function GovernanceOrbit() {
         transition={{ duration: 16, times: [0, 0.45, 0.5, 0.95, 1], repeat: Infinity, ease: "easeInOut" }}
         style={{ pointerEvents: "none" }}
       >
-        <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl border border-[var(--border-hairline)] bg-[var(--bg-canvas)]">
+        <div className="relative w-full">
           <img 
             src="/images/Demo%20Dashboard.png" 
             alt="Villeto Dashboard" 
-            className="w-full h-auto -mt-[3%] scale-[1.02]" 
+            className="w-full h-auto block" 
           />
-          <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-[var(--bg-canvas)] to-transparent" />
         </div>
       </motion.div>
     </div>

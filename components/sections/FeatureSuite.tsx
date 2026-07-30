@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { AlertTriangle, ShieldCheck, Zap, Check, Eye, BarChart2 } from "lucide-react";
+import { AlertTriangle, ShieldCheck, Zap, Check, Eye, BarChart2, EyeOff, Copy, ArrowDown } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, animate, useInView, type Variants } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Container } from "@/components/ui/Container";
@@ -137,75 +137,118 @@ export function FeatureSuite() {
             {/* Cards & Expenses — spans full height of the two right cards combined */}
             <motion.div variants={fadeUpItem} className="md:col-span-1 lg:col-span-1">
               <CardShell title={cardsExpenses!.title} body={cardsExpenses!.body} className="h-full min-h-[480px] lg:min-h-0 bg-[radial-gradient(var(--border-hairline)_1px,transparent_1px)] [background-size:20px_20px]">
-                <div className="flex-1 flex items-center justify-center mt-8 pb-4">
-                  {/* White background plateau for the card */}
-                  <div className="relative h-[220px] w-[90%] max-w-[280px] rounded-[24px] bg-white shadow-xl" style={{ perspective: 1000 }}>
-                    {/* The credit card mockup */}
-                    <motion.div 
-                      className="absolute left-1/2 top-10 h-[140px] w-[220px] -translate-x-1/2"
-                      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-                      onMouseMove={handleMouseMove}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      <Image
-                        src="/images/payment-card-mockup.png"
-                        alt="Villeto corporate card"
-                        fill
-                        sizes="220px"
-                        className="object-contain drop-shadow-xl"
-                      />
-                    </motion.div>
+                {/* Outer scene wrapper — full width, no max-w so card truly centres */}
+                <div className="relative mt-48 mx-auto w-full" style={{ height: 270 }}>
 
-                    {/* Overlapping stat left (Expenses -$1,284 -12%) */}
-                    <motion.div
-                      className="absolute -left-6 top-20 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none"
-                      initial={{ opacity: 0, x: -24, y: 10 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0 }}
-                      viewport={{ once: true, margin: "-80px" }}
-                      transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <span className="text-[10px] font-medium text-[var(--text-secondary)]">{cardsExpensesMock.changeLabel}</span>
-                        <span className="rounded bg-red-50 px-1.5 py-0.5 text-[9px] font-bold text-red-500">{cardsExpensesMock.change}</span>
-                      </div>
-                      <span className="text-[16px] font-bold text-[var(--text-primary)]">
-                        <AnimatedNumber value={cardsExpensesMock.amount} />
-                      </span>
-                      {/* Tiny bar chart mock */}
-                      <div className="mt-1 flex items-end gap-0.5 h-3">
-                        {[40, 60, 30, 80, 50, 90, 70].map((h, i) => (
-                           <motion.div 
-                             key={i} 
-                             className="w-1 rounded-sm bg-[var(--bg-canvas)] border border-[var(--border-hairline)]" 
-                             initial={{ height: 0 }}
-                             whileInView={{ height: `${h}%` }}
-                             viewport={{ once: true }}
-                             transition={{ duration: 0.5, delay: 0.35 + i * 0.05, ease: "easeOut" }}
-                           />
-                        ))}
-                      </div>
-                    </motion.div>
+                  {/* ── ATM card — centred, taller ── */}
+                  <motion.div
+                    className="absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[20px] shadow-[0_15px_35px_-10px_rgba(155,81,224,0.3)]"
+                    style={{
+                      top: 0,
+                      width: "92%",
+                      maxWidth: 340,
+                      height: 215,
+                      background: "linear-gradient(135deg, #8b31d4 0%, #9b3de0 30%, #b44de8 60%, #c760ea 80%, #d070f0 100%)",
+                      rotateX,
+                      rotateY,
+                      transformStyle: "preserve-3d",
+                    }}
+                    onMouseMove={handleMouseMove}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    {/* Decorative rings bottom-right */}
+                    <div className="absolute -bottom-10 -right-10 h-44 w-44 rounded-full border-[1.5px] border-white/10" />
+                    <div className="absolute -bottom-16 -right-3  h-44 w-44 rounded-full border-[1.5px] border-white/10" />
 
-                    {/* Overlapping stat right (Successful Transactions) */}
-                    <motion.div
-                      className="absolute -right-6 -bottom-6 flex flex-col gap-1 rounded-xl bg-white p-3 shadow-lg border border-[var(--border-hairline)] pointer-events-none"
-                      initial={{ opacity: 0, x: 24, y: 10 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0 }}
-                      viewport={{ once: true, margin: "-80px" }}
-                      transition={{ duration: 0.55, delay: 0.45, ease: "easeOut" }}
-                    >
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-medium text-[var(--text-secondary)]">{cardsExpensesMock.transactionsLabel}</span>
-                        <div className="flex size-3.5 items-center justify-center rounded-full bg-emerald-100">
-                          <Check className="size-2.5 text-emerald-600" />
+                    <div className="relative flex h-full flex-col px-5 py-5 z-10">
+                      {/* Top: Logo + hide icon */}
+                      <div className="flex items-start justify-between">
+                        <Image src="/images/villeto-logo.png" alt="Villeto" width={72} height={22} className="object-contain" />
+                        <EyeOff className="size-4 text-white" strokeWidth={1.5} />
+                      </div>
+
+                      {/* Bottom: pushed to bottom with mt-auto, clears the overlapping floating cards */}
+                      <div className="flex flex-col mt-auto pb-8">
+                        <div className="mb-4">
+                          <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">Card Number</div>
+                          <div className="mt-1 flex items-center gap-2">
+                            <span className="text-[15px] font-medium tracking-[0.08em] text-white">1234 5678 9012 2345</span>
+                            <Copy className="size-[13px] text-white/80 shrink-0" strokeWidth={1.5} />
+                          </div>
+                        </div>
+                        <div className="flex items-end gap-12">
+                          <div>
+                            <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">Expiry Date</div>
+                            <div className="mt-1">
+                              <span className="text-[15px] font-medium text-white">12/24</span>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">CVV</div>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="text-[15px] font-medium text-white">272</span>
+                              <Copy className="size-[13px] text-white/80" strokeWidth={1.5} />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <span className="text-[16px] font-bold text-[var(--text-primary)]">
-                        <AnimatedNumber value={cardsExpensesMock.transactions} />
-                      </span>
-                      <span className="text-[9px] text-[var(--text-secondary)]">{cardsExpensesMock.note}</span>
-                    </motion.div>
-                  </div>
+                    </div>
+                  </motion.div>
+
+                  {/* ── Expenses — far left, heavily overlaps purple card bottom-left ── */}
+                  <motion.div
+                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[var(--border-hairline)] pointer-events-none"
+                    style={{ bottom: 20, left: 0, width: 138 }}
+                    initial={{ opacity: 0, x: -20, y: 12 }}
+                    whileInView={{ opacity: 1, x: 0, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-semibold text-slate-500 whitespace-nowrap">{cardsExpensesMock.changeLabel}</span>
+                      <div className="flex items-center gap-0.5 rounded-full bg-red-100 px-1.5 py-[2px] text-[9px] font-bold text-red-500">
+                        <ArrowDown className="size-2.5" strokeWidth={2.5} />
+                        <span>{cardsExpensesMock.change}</span>
+                      </div>
+                    </div>
+                    <span className="text-[20px] font-extrabold tracking-tight text-[#1a202c] leading-none mt-0.5">
+                      <AnimatedNumber value={cardsExpensesMock.amount} />
+                    </span>
+                    <div className="flex items-end gap-[3px] h-3.5 mt-0.5">
+                      {[25, 45, 65, 45, 60].map((h, i) => (
+                        <motion.div
+                          key={i}
+                          className="w-[6px] rounded-[1.5px] bg-[#9ca3af]"
+                          initial={{ height: 0 }}
+                          whileInView={{ height: `${h}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: 0.35 + i * 0.06, ease: "easeOut" }}
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* ── Successful Transactions — right-side, slightly higher, overlaps card bottom-right ── */}
+                  <motion.div
+                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[var(--border-hairline)] pointer-events-none"
+                    style={{ bottom: 0, right: 0, width: 148 }}
+                    initial={{ opacity: 0, x: 20, y: 12 }}
+                    whileInView={{ opacity: 1, x: 0, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.55, delay: 0.4, ease: "easeOut" }}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-[9px] font-semibold text-[var(--text-secondary)] whitespace-nowrap">{cardsExpensesMock.transactionsLabel}</span>
+                      <div className="flex size-3.5 items-center justify-center shrink-0 rounded-full bg-emerald-100">
+                        <Check className="size-2.5 text-emerald-600" />
+                      </div>
+                    </div>
+                    <span className="text-[20px] font-extrabold tracking-tight text-[var(--text-primary)] leading-none mt-0.5">
+                      <AnimatedNumber value={cardsExpensesMock.transactions} />
+                    </span>
+                    <span className="text-[9px] text-[var(--text-secondary)] whitespace-nowrap mt-0.5">{cardsExpensesMock.note}</span>
+                  </motion.div>
+
                 </div>
               </CardShell>
             </motion.div>
