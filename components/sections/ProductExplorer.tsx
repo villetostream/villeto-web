@@ -99,7 +99,7 @@ export function ProductExplorer() {
           {/* ── Two-column body ── */}
           <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-14">
             {/* Left: accordion */}
-            <div className="flex flex-col">
+            <div className="flex flex-col md:pt-8 lg:pt-10 pb-4 md:pb-12">
               {productTabs.map((tab, index) => {
                 const isActive = tab.id === active;
                 const isLast = index === productTabs.length - 1;
@@ -179,8 +179,8 @@ export function ProductExplorer() {
             </div>
 
             {/* Right: image panel — desktop only */}
-            <div className="hidden md:block">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[var(--radius-lg)] bg-[var(--bg-surface)]">
+            <div className="hidden md:block h-full">
+              <div className="relative w-full h-full overflow-hidden rounded-l-[var(--radius-lg)] rounded-r-none bg-[var(--bg-surface)] shadow-[-20px_0px_50px_-10px_rgba(0,0,0,0.08)]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active}
@@ -191,13 +191,11 @@ export function ProductExplorer() {
                     className="absolute inset-0"
                   >
                     {productTabImages[active] && (
-                      <motion.div style={{ y: imageY }} className="relative w-full h-full">
-                        <Image
+                      <motion.div className="relative w-full h-full">
+                        <img
                           src={productTabImages[active]}
                           alt={`${productTabs.find((t) => t.id === active)?.label} preview`}
-                          fill
-                          className="object-contain p-6"
-                          sizes="(max-width: 1024px) 100vw, 50vw"
+                          className="w-full h-full object-cover object-left-top block"
                         />
                         {/* Data Scanline */}
                         <motion.div 
