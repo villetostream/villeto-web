@@ -34,6 +34,8 @@ export function ProductExplorer() {
     const onScroll = () => {
       if (suppressScrollRef.current) return;
 
+      if (window.innerWidth < 768) return;
+
       const wrapper = wrapperRef.current;
       if (!wrapper) return;
 
@@ -79,6 +81,8 @@ export function ProductExplorer() {
     setActive(id);
     setActiveIndex(index);
 
+    if (window.innerWidth < 768) return;
+
     // Calculate the exact scroll position where this tab becomes active.
     // scrolled = (index / n) * scrollable  →  window.scrollY = wrapperTop + scrolled
     const wrapperTop = window.scrollY + wrapper.getBoundingClientRect().top;
@@ -97,18 +101,18 @@ export function ProductExplorer() {
     }, 200);
   };
 
-  // Total wrapper height: each tab gets 100vh of scroll room
-  const wrapperHeight = `${productTabs.length * 100}vh`;
+  // Total wrapper height: each tab gets 80vh of scroll room
+  const wrapperHeight = `${productTabs.length * 80}vh`;
 
   return (
-    <div ref={wrapperRef} style={{ height: wrapperHeight }} className="relative">
+    <div ref={wrapperRef} style={{ "--wrapper-height": wrapperHeight } as React.CSSProperties} className="relative h-auto md:h-[var(--wrapper-height)] md:pb-32">
       {/*
         Sticky container:
         - `sticky top-0`  → pins while parent wrapper is in view
         - `[overflow:clip]` → clips decorative overflows without creating a scrollbar track
         - `min-h-screen`  → always fills the viewport but never clips children
       */}
-      <div className="sticky top-[64px] h-[calc(100vh-64px)] flex items-center bg-[var(--bg-canvas)] [overflow:clip]">
+      <div className="relative md:sticky md:top-[64px] md:h-[calc(100vh-64px)] md:flex md:items-center bg-[var(--bg-canvas)] [overflow:clip]">
         <Container className="w-full py-8 sm:py-10">
           {/* ── Section heading ── */}
           <div className="mx-auto max-w-[800px] text-center">
@@ -141,7 +145,7 @@ export function ProductExplorer() {
                   >
                     <button
                       onClick={() => handleTabClick(tab.id, index)}
-                      className="flex min-h-[38px] w-full cursor-pointer items-center justify-between py-2 text-left text-[15px] font-medium sm:text-[16px] transition-colors"
+                      className="flex min-h-[38px] w-full cursor-pointer items-center justify-between py-2 text-left text-[18px] sm:text-[20px] font-semibold tracking-tight transition-colors"
                       style={{
                         color: isActive
                           ? "var(--text-primary)"
@@ -164,7 +168,7 @@ export function ProductExplorer() {
                           transition={{ duration: 0.28, ease: "easeOut" }}
                           style={{ overflow: "hidden" }}
                         >
-                          <p className="pb-3 pr-4 text-[12px] sm:text-[13px] leading-relaxed text-[var(--text-secondary)] max-w-[420px]">
+                          <p className="pb-3 pr-4 text-[15px] sm:text-[16px] leading-relaxed text-[var(--text-secondary)] max-w-[100%] font-600">
                             {tab.description}
                           </p>
                         </motion.div>
@@ -181,7 +185,7 @@ export function ProductExplorer() {
                   style={{ width: progressWidth }}
                 />
               </div>
-              <p className="mt-1.5 text-[11px] text-[var(--text-secondary)]">
+              <p className="mt-1.5 text-[13px] text-[var(--text-secondary)]">
                 {activeIndex + 1} / {productTabs.length}
               </p>
 
