@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Figtree, Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import "./globals.css";
 import { THEME_COOKIE, isTheme } from "@/lib/theme";
@@ -7,15 +6,6 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingThemeToggle } from "@/components/layout/FloatingThemeToggle";
-
-
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://villeto.com"),
@@ -94,8 +84,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const hasCookie = isTheme(cookieTheme);
 
   return (
-    <html lang="en" data-theme={theme} className={`${inter.variable}`} suppressHydrationWarning>
-      <head>{!hasCookie && <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />}</head>
+    <html lang="en" data-theme={theme} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        {!hasCookie && <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />}
+      </head>
       <body className="font-sans antialiased">
         <ThemeProvider initialTheme={theme}>
           <a

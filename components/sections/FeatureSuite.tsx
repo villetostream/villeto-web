@@ -454,8 +454,8 @@ export function FeatureSuite() {
                   >
                     {poInvoiceMock.stats.map((s) => (
                       <motion.div key={s.label} variants={fadeUpItem} className="flex flex-col gap-1 min-w-[120px] sm:min-w-0 flex-1 bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-gray-100/50 p-4">
-                        <span className="text-[12px] font-medium text-[var(--text-secondary)] whitespace-nowrap text-left">{s.label}</span>
-                        <span className="text-[18px] sm:text-[22px] font-bold text-[var(--text-primary)] text-left">
+                        <span className="text-[12px] font-medium text-[#5c6560] whitespace-nowrap text-left">{s.label}</span>
+                        <span className="text-[18px] sm:text-[22px] font-bold text-[#0a0a0a] text-left">
                           <AnimatedNumber value={s.value} />
                         </span>
                       </motion.div>

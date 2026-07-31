@@ -79,6 +79,7 @@
   --ink-accent: #2dd4bf;
   --ink-accent-contrast: #0a0f0d;
 
+  --font-inter: "Inter", sans-serif;
   --font-display: var(--font-sans);
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
 
@@ -110,9 +111,6 @@
 
 html {
   background: var(--bg-canvas);
-  /* Prevent horizontal overflow from orbit animations triggering scrollbar
-     which would cause the sticky header to shake on every frame. */
-  overflow-x: clip;
 }
 
 body {
