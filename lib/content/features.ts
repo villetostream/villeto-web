@@ -14,7 +14,7 @@ export const cardsExpensesMock = {
 };
 
 export const vendorManagementMock = {
-  step: "Sign up as a Vendor",
+  step: "Onboard a Vendor",
   stepDetail: "Set a password and continue your registration process",
   checklist: ["Business Identity", "Banking Details", "Document Upload"],
 };

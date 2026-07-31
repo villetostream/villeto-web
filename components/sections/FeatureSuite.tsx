@@ -257,7 +257,7 @@ export function FeatureSuite() {
             <div className="flex flex-col gap-6 h-full md:col-span-1 lg:col-span-2">
               {/* ── Vendor Management (Dark) ── */}
               <motion.div variants={fadeUpItem} className="flex-1 flex flex-col">
-                <div className="relative flex-1 flex h-full w-full flex-col overflow-hidden rounded-[24px] bg-[var(--ink)] text-[var(--ink-foreground)] p-8 min-h-[320px]">
+                <div className="relative flex-1 flex h-full w-full flex-col overflow-hidden rounded-[24px] bg-[var(--ink)] text-[var(--ink-foreground)] p-6 sm:p-8 min-h-[440px] sm:min-h-[320px]">
                   {/* Abstract dark waves background */}
                   <div className="absolute inset-0 z-0">
                     <Image
@@ -277,8 +277,8 @@ export function FeatureSuite() {
                     <p className="mt-2 text-[15px] leading-relaxed text-[var(--ink-foreground-soft)]">{vendorManagement!.body}</p>
                   </div>
 
-                  {/* Vendor steps UI — bottom-right anchored */}
-                  <div className="absolute bottom-6 right-6 z-10 w-[280px] sm:w-[300px] flex flex-col gap-2">
+                  {/* Vendor steps UI — flex on mobile to prevent overlap, absolute on desktop */}
+                  <div className="relative z-10 mt-auto self-end w-full max-w-[280px] sm:max-w-[300px] flex flex-col gap-2 pt-8 sm:pt-0 sm:absolute sm:bottom-6 sm:right-6">
                     {/* Main Sign Up box */}
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
