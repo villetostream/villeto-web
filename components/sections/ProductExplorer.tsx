@@ -24,6 +24,11 @@ export function ProductExplorer() {
   const suppressScrollRef = useRef(false);
   const suppressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Keep a ref so the scroll handler always reads the latest index
+  // without needing to be re-registered every time activeIndex changes.
+  const activeIndexRef = useRef(0);
+  useEffect(() => { activeIndexRef.current = activeIndex; }, [activeIndex]);
+
   /* ── scroll-driven activation ── */
   useEffect(() => {
     const onScroll = () => {
@@ -39,36 +44,57 @@ export function ProductExplorer() {
 
       const scrolled = Math.max(0, -rect.top);
       const progress = Math.min(1, scrolled / scrollable);
-      const index = Math.min(
+      const rawIndex = Math.min(
         productTabs.length - 1,
         Math.floor(progress * productTabs.length)
       );
 
-      if (index !== activeIndex) {
-        setActiveIndex(index);
-        setActive(productTabs[index]!.id);
+      const current = activeIndexRef.current;
+
+      // Clamp to ±1 so a fast trackpad swipe can never skip a tab
+      const next = Math.max(0, Math.min(productTabs.length - 1,
+        Math.max(current - 1, Math.min(current + 1, rawIndex))
+      ));
+
+      if (next !== current) {
+        activeIndexRef.current = next;
+        setActiveIndex(next);
+        setActive(productTabs[next]!.id);
       }
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, [activeIndex]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // stable — reads activeIndex via ref, not closure
 
-  /* ── click handler: update visuals only, no page scroll ── */
+  /* ── click handler: instantly syncs page scroll to the clicked tab ── */
   const handleTabClick = (id: string, index: number) => {
     if (index === activeIndex) return;
+
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
 
     setActive(id);
     setActiveIndex(index);
 
-    // Suppress scroll-driven override for 2 s so the user can read
-    // the clicked product without scroll immediately snapping it back.
+    // Calculate the exact scroll position where this tab becomes active.
+    // scrolled = (index / n) * scrollable  →  window.scrollY = wrapperTop + scrolled
+    const wrapperTop = window.scrollY + wrapper.getBoundingClientRect().top;
+    const scrollable = wrapper.offsetHeight - window.innerHeight;
+    // +1 nudges past the floor boundary so Math.floor picks up this index immediately
+    const targetY = wrapperTop + (index / productTabs.length) * scrollable + 1;
+
+    // Instant jump — no animation means no race with the scroll listener
+    window.scrollTo({ top: targetY, behavior: "instant" });
+
+    // Brief suppress so the scroll event fired by the jump doesn't fight with our setState
     suppressScrollRef.current = true;
     if (suppressTimerRef.current) clearTimeout(suppressTimerRef.current);
     suppressTimerRef.current = setTimeout(() => {
       suppressScrollRef.current = false;
-    }, 2000);
+    }, 200);
   };
 
   // Total wrapper height: each tab gets 100vh of scroll room
@@ -82,8 +108,8 @@ export function ProductExplorer() {
         - `[overflow:clip]` → clips decorative overflows without creating a scrollbar track
         - `min-h-screen`  → always fills the viewport but never clips children
       */}
-      <div className="sticky top-0 min-h-screen flex items-center bg-[var(--bg-canvas)] [overflow:clip]">
-        <Container className="w-full py-14 sm:py-16">
+      <div className="sticky top-[64px] h-[calc(100vh-64px)] flex items-center bg-[var(--bg-canvas)] [overflow:clip]">
+        <Container className="w-full py-8 sm:py-10">
           {/* ── Section heading ── */}
           <div className="mx-auto max-w-[800px] text-center">
             <h2 className="text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">
@@ -97,7 +123,7 @@ export function ProductExplorer() {
           </div>
 
           {/* ── Two-column body ── */}
-          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-14">
+          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[2fr_3fr] md:gap-14">
             {/* Left: accordion */}
             <div className="flex flex-col md:pt-8 lg:pt-10 pb-4 md:pb-12">
               {productTabs.map((tab, index) => {
@@ -115,24 +141,14 @@ export function ProductExplorer() {
                   >
                     <button
                       onClick={() => handleTabClick(tab.id, index)}
-                      className="flex min-h-[48px] w-full cursor-pointer items-center justify-between py-3 text-left text-[17px] font-medium sm:text-[19px] transition-colors"
+                      className="flex min-h-[38px] w-full cursor-pointer items-center justify-between py-2 text-left text-[15px] font-medium sm:text-[16px] transition-colors"
                       style={{
                         color: isActive
                           ? "var(--text-primary)"
                           : "var(--text-secondary)",
                       }}
                     >
-                      <span className="flex items-center gap-3">
-                        {/* Active indicator dot */}
-                        <span
-                          className="block h-2 w-2 shrink-0 rounded-full transition-all duration-300"
-                          style={{
-                            backgroundColor: isActive
-                              ? "var(--accent)"
-                              : "var(--border-hairline)",
-                            transform: isActive ? "scale(1.5)" : "scale(1)",
-                          }}
-                        />
+                      <span className="flex items-center">
                         {tab.label}
                       </span>
 
@@ -148,7 +164,7 @@ export function ProductExplorer() {
                           transition={{ duration: 0.28, ease: "easeOut" }}
                           style={{ overflow: "hidden" }}
                         >
-                          <p className="pb-4 pr-4 text-[13px] sm:text-[14px] leading-relaxed text-[var(--text-secondary)] max-w-[420px]">
+                          <p className="pb-3 pr-4 text-[12px] sm:text-[13px] leading-relaxed text-[var(--text-secondary)] max-w-[420px]">
                             {tab.description}
                           </p>
                         </motion.div>
@@ -180,7 +196,7 @@ export function ProductExplorer() {
 
             {/* Right: image panel — desktop only */}
             <div className="hidden md:block h-full">
-              <div className="relative w-full h-full overflow-hidden rounded-l-[var(--radius-lg)] rounded-r-none bg-[var(--bg-surface)] shadow-[-20px_0px_50px_-10px_rgba(0,0,0,0.08)]">
+              <div className="relative w-full h-full overflow-hidden rounded-l-[var(--radius-lg)] rounded-r-none bg-[var(--bg-surface)] shadow-[-24px_0_48px_-12px_rgba(0,0,0,0.18)]">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active}
