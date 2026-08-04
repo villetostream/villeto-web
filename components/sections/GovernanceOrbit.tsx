@@ -1,308 +1,355 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion, useAnimationFrame } from "framer-motion";
-import { governanceCallouts } from "@/lib/content/hero";
-import { iconMap } from "@/lib/icon-map";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  ArrowRight,
+  Building2,
+  Check,
+  CheckCircle2,
+  CreditCard,
+  FileText,
+  ReceiptText,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SYSTEM CONSTANTS
-// ─────────────────────────────────────────────────────────────────────────────
-const DEG = Math.PI / 180;
-const GLOBAL_SPEED  = (2 * Math.PI) / 18_000; // 18 s per full CW orbit (base speed)
-const BASE_RADIUS    = 36;        // % points from center (0–50 = center–edge)
-const BREATHE_AMOUNT = 1.4;       // ±% points radial breathing
-const WOBBLE_DEG     = 2;         // ±2° angular wobble per module
+const STORY_DURATION = 3800;
+const EASE = [0.16, 1, 0.3, 1] as const;
 
-// Variable-speed surge
-// Speed swings between 0.30× (slow) and 1.70× (fast) every SURGE_PERIOD_MS.
-const SURGE_PERIOD_MS = 12_000;
-const SURGE_SPEED     = (2 * Math.PI) / SURGE_PERIOD_MS;
-const SURGE_AMOUNT    = 0.70;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CARD ORIENTATION: pure translation — no rotation whatsoever.
-// Cards orbit by having their (left, top) updated each frame.
-// They never spin, never tilt. Text is 100% readable at all times.
-// Icons still rock gently with their own autonomous oscillation.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const MODULES = [
-  {
-    id: "policy",   label: "Policy",   sub: "Rules",    icon: "shield-check" as const,
-    baseDeg: -90,  phaseDeg:  0,
-    wobbleSpeed: 0.00055, wobblePhase: 0.00,
-    breatheSpeed: 0.00055, breathePhase: 0.00,
-    iconSpeed: 0.00060, iconPhase: 0.00, iconAmp: 12,
-    pulseDelay: "0.12s",
-  },
-  {
-    id: "approval", label: "Approval", sub: "Context",  icon: "git-merge" as const,
-    baseDeg: -39,  phaseDeg:  6,
-    wobbleSpeed: 0.00047, wobblePhase: 1.10,
-    breatheSpeed: 0.00047, breathePhase: 1.10,
-    iconSpeed: 0.00053, iconPhase: 1.10, iconAmp: 10,
-    pulseDelay: "1.83s",
-  },
-  {
-    id: "vendor",   label: "Vendor",   sub: "Ready",    icon: "building" as const,
-    baseDeg:  13,  phaseDeg: -4,
-    wobbleSpeed: 0.00061, wobblePhase: 2.30,
-    breatheSpeed: 0.00061, breathePhase: 2.30,
-    iconSpeed: 0.00058, iconPhase: 2.30, iconAmp: 14,
-    pulseDelay: "0.91s",
-  },
-  {
-    id: "invoice",  label: "Invoice",  sub: "Review",   icon: "receipt" as const,
-    baseDeg: 64,  phaseDeg:  8,
-    wobbleSpeed: 0.00051, wobblePhase: 3.70,
-    breatheSpeed: 0.00051, breathePhase: 3.70,
-    iconSpeed: 0.00055, iconPhase: 3.70, iconAmp: 11,
-    pulseDelay: "2.71s",
-  },
-  {
-    id: "ledger",   label: "Ledger",   sub: "Audit",    icon: "book" as const,
-    baseDeg: 116,  phaseDeg: -7,
-    wobbleSpeed: 0.00058, wobblePhase: 4.90,
-    breatheSpeed: 0.00058, breathePhase: 4.90,
-    iconSpeed: 0.00063, iconPhase: 4.90, iconAmp: 13,
-    pulseDelay: "3.42s",
-  },
-  {
-    id: "request",  label: "Request",  sub: "Intake",   icon: "file-text" as const,
-    baseDeg: 167, phaseDeg:  3,
-    wobbleSpeed: 0.00049, wobblePhase: 6.10,
-    breatheSpeed: 0.00049, breathePhase: 6.10,
-    iconSpeed: 0.00051, iconPhase: 6.10, iconAmp: 9,
-    pulseDelay: "1.28s",
-  },
-  {
-    id: "expense",  label: "Expense",  sub: "Tracking", icon: "credit-card" as const,
-    baseDeg: -141, phaseDeg:  5,
-    wobbleSpeed: 0.00053, wobblePhase: 7.40,
-    breatheSpeed: 0.00053, breathePhase: 7.40,
-    iconSpeed: 0.00057, iconPhase: 7.40, iconAmp: 11,
-    pulseDelay: "0.65s",
-  },
+const scenes = [
+  { label: "Procurement", kicker: "A team makes a request" },
+  { label: "Policy engine", kicker: "Controls run automatically" },
+  { label: "Employee expenses", kicker: "Every payment stays in policy" },
 ] as const;
 
-export function GovernanceOrbit() {
-  // SVG line endpoint refs
-  const guideRefs = useRef<(SVGLineElement | null)[]>([]);
-  const pulseRefs = useRef<(SVGLineElement | null)[]>([]);
+const sceneMotion = {
+  initial: { opacity: 0, x: 20, filter: "blur(5px)" },
+  animate: { opacity: 1, x: 0, filter: "blur(0px)" },
+  exit: { opacity: 0, x: -16, filter: "blur(4px)" },
+};
 
-  // Card position refs — only left/top updated, NO rotation applied
-  const posRefs   = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Icon oscillation refs — only the icon inside each card gently rocks
-  const iconRefs  = useRef<(HTMLSpanElement | null)[]>([]);
-
-  useAnimationFrame((time) => {
-    // Variable-speed angle — analytically integrated for perfect smoothness
-    const surgeOffset = (GLOBAL_SPEED * SURGE_AMOUNT / SURGE_SPEED) * (1 - Math.cos(time * SURGE_SPEED));
-    const globalAngle = time * GLOBAL_SPEED + surgeOffset;
-
-    MODULES.forEach((mod, i) => {
-      // Per-module angular wobble (±2°)
-      const wobble = Math.sin(time * mod.wobbleSpeed + mod.wobblePhase) * WOBBLE_DEG * DEG;
-
-      // Total angle for this module's spoke
-      const angle = (mod.baseDeg + mod.phaseDeg) * DEG + globalAngle + wobble;
-
-      // Radial breathing (±1.4% points)
-      const radius = BASE_RADIUS + Math.sin(time * mod.breatheSpeed + mod.breathePhase) * BREATHE_AMOUNT;
-
-      // ── Single (cx, cy): shared by BOTH the SVG line tip and the card ──
-      const cx = 50 + radius * Math.cos(angle);
-      const cy = 50 + radius * Math.sin(angle);
-
-      // Update line endpoints
-      const g = guideRefs.current[i];
-      const p = pulseRefs.current[i];
-      if (g) { g.setAttribute("x2", `${cx}%`); g.setAttribute("y2", `${cy}%`); }
-      if (p) { p.setAttribute("x2", `${cx}%`); p.setAttribute("y2", `${cy}%`); }
-
-      // Update card POSITION only — translate(-50%,-50%) is a static centering
-      // transform set in the render, never overwritten here. Card never spins.
-      const pos = posRefs.current[i];
-      if (pos) {
-        pos.style.left = `${cx}%`;
-        pos.style.top  = `${cy}%`;
-      }
-
-      // Icon-only gentle rock — the one animated element inside each card
-      const icon = iconRefs.current[i];
-      if (icon) {
-        const iconAngle = Math.sin(time * mod.iconSpeed + mod.iconPhase) * mod.iconAmp;
-        icon.style.transform = `rotate(${iconAngle}deg)`;
-      }
-    });
-  });
-
-  function initialPos(mod: (typeof MODULES)[number]) {
-    const rad = (mod.baseDeg + mod.phaseDeg) * DEG;
-    return {
-      cx: 50 + BASE_RADIUS * Math.cos(rad),
-      cy: 50 + BASE_RADIUS * Math.sin(rad),
-    };
-  }
-
+function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
   return (
-    <div
-      className="relative mx-auto w-full max-w-[600px] aspect-square"
-      style={{ overflow: "clip" }}
-    >
-      <motion.div
-        className="absolute inset-0"
-        animate={{ opacity: [1, 1, 0, 0, 1] }}
-        transition={{ duration: 16, times: [0, 0.45, 0.5, 0.95, 1], repeat: Infinity, ease: "easeInOut" }}
-      >
-        {/* ── THREE BACKGROUND RINGS (72s / 58s / 36s) ──────────────────── */}
-      <div className="orbit-ring-outer absolute rounded-full border border-[var(--border-hairline)]"
-           style={{ inset: "2%", zIndex: 0 }} />
-      <div className="orbit-ring-middle absolute rounded-full"
-           style={{ inset: "18%", border: "1.5px dashed var(--border-hairline)", zIndex: 0 }} />
-      <div className="orbit-ring-inner absolute rounded-full border border-[var(--border-hairline)]"
-           style={{ inset: "34%", zIndex: 0 }} />
+    <motion.div {...(reduceMotion ? {} : sceneMotion)} transition={{ duration: 0.55, ease: EASE }} className="absolute inset-0 p-4 sm:p-6">
+      <div className="grid h-full grid-cols-[1.1fr_0.9fr] gap-3 sm:gap-5">
+        <div className="flex min-w-0 flex-col rounded-[12px] border border-black/[0.07] bg-white p-4 shadow-[0_14px_32px_-26px_rgba(10,30,24,0.6)] sm:p-5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="rounded-full bg-[#e7f6f2] px-2.5 py-1 text-[9px] font-semibold text-[#087f70] sm:text-[10px]">PR-0248</span>
+            <span className="text-[9px] text-[#7b8480] sm:text-[10px]">Just now</span>
+          </div>
 
-      {/* ── SVG SPOKES ─────────────────────────────────────────────────── */}
-      <svg
-        className="pointer-events-none absolute inset-0 h-full w-full"
-        style={{ zIndex: 15 }}
-        aria-hidden="true"
-        suppressHydrationWarning
-      >
-        {MODULES.map((mod, i) => {
-          const { cx, cy } = initialPos(mod);
-          return (
-            <g key={mod.id}>
-              <line
-                ref={(el) => { guideRefs.current[i] = el; }}
-                x1="50%" y1="50%" x2={`${cx}%`} y2={`${cy}%`}
-                stroke="var(--accent)" strokeOpacity="0.2" strokeWidth="1"
-                suppressHydrationWarning
-              />
-              <line
-                ref={(el) => { pulseRefs.current[i] = el; }}
-                x1="50%" y1="50%" x2={`${cx}%`} y2={`${cy}%`}
-                stroke="var(--accent)" strokeWidth="1.5"
-                className="pulse-line"
-                style={{ animationDelay: mod.pulseDelay }}
-                suppressHydrationWarning
-              />
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* ── CARDS — translate around orbit, NEVER rotate ───────────────── */}
-      {MODULES.map((mod, i) => {
-        const Icon = iconMap[mod.icon] as React.ElementType;
-        const { cx, cy } = initialPos(mod);
-        return (
-          <div
-            key={mod.id}
-            ref={(el) => { posRefs.current[i] = el; }}
-            className="absolute"
-            style={{
-              left: `${cx}%`,
-              top: `${cy}%`,
-              transform: "translate(-50%, -50%)",
-              zIndex: 20,
-              willChange: "left, top",
-            }}
-            suppressHydrationWarning
-          >
-            <div className="governance-module flex w-[108px] flex-col items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-3 py-2.5 text-center shadow-[0_4px_20px_-6px_rgba(10,15,13,0.14)]">
-              {/* Icon: only element with motion inside the card */}
-              <span
-                ref={(el) => { iconRefs.current[i] = el; }}
-                className="flex size-7 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent-text)]"
-                style={{ willChange: "transform" }}
-              >
-                <Icon className="size-3.5" strokeWidth={2} />
-              </span>
-
-              {/* Text — completely static, always readable */}
-              <div>
-                <span className="block text-[11.5px] font-semibold leading-tight text-[var(--text-primary)]">
-                  {mod.label}
-                </span>
-                <span className="block text-[10px] leading-tight text-[var(--text-secondary)]">
-                  {mod.sub}
-                </span>
-              </div>
+          <div className="mt-4 flex items-start gap-3 sm:mt-5">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-[#111714] text-white sm:size-10">
+              <Building2 className="size-4 sm:size-[18px]" strokeWidth={1.8} />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-[13px] font-semibold text-[#111714] sm:text-[15px]">Figma Enterprise</p>
+              <p className="mt-0.5 text-[9px] text-[#7b8480] sm:text-[10px]">24 design seats · Annual</p>
             </div>
           </div>
-        );
-      })}
 
-      {/* ── STATIC OVERLAYS — zIndex 10 ─────────────────────────────────── */}
-      <div className="absolute left-0 top-0 flex flex-col gap-2.5" style={{ zIndex: 10 }}>
-        <span className="inline-flex w-max items-center gap-1.5 rounded-full border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-3 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] shadow-sm">
-          <span className="size-1.5 animate-pulse rounded-full bg-[var(--accent)]" />
-          Live governance layer
-        </span>
-        <div className="w-full rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 py-3 shadow-sm">
-          <p className="text-[12px] font-semibold text-[var(--text-primary)]">Policy check</p>
-          <p className="mt-0.5 text-[10px] leading-snug text-[var(--text-secondary)]">
-            Limits and rules are applied before approval starts.
-          </p>
+          <div className="mt-auto grid grid-cols-2 gap-2 border-t border-black/[0.06] pt-3 sm:pt-4">
+            <div>
+              <p className="text-[8px] uppercase text-[#89918e] sm:text-[9px]">Requested by</p>
+              <p className="mt-1 truncate text-[10px] font-medium text-[#111714] sm:text-[11px]">Amara · Design</p>
+            </div>
+            <div>
+              <p className="text-[8px] uppercase text-[#89918e] sm:text-[9px]">Request total</p>
+              <p className="mt-1 text-[12px] font-semibold text-[#111714] sm:text-[13px]">$8,400</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex min-w-0 flex-col justify-center">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.5, ease: EASE }}
+            className="rounded-[12px] border border-black/[0.07] bg-white p-3 sm:p-4"
+          >
+            <div className="flex items-center gap-2 text-[#111714]">
+              <FileText className="size-3.5 text-[#087f70] sm:size-4" />
+              <span className="text-[10px] font-semibold sm:text-[11px]">Request complete</span>
+            </div>
+            <div className="mt-3 space-y-2">
+              {["Business need", "Vendor details", "Budget owner"].map((item, index) => (
+                <motion.div
+                  key={item}
+                  initial={reduceMotion ? false : { opacity: 0, x: 8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.28 + index * 0.12, duration: 0.35 }}
+                  className="flex items-center gap-2 text-[9px] text-[#67716c] sm:text-[10px]"
+                >
+                  <Check className="size-3 text-[#0ea894]" strokeWidth={2.4} />
+                  <span className="truncate">{item}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.75, duration: 0.4, ease: EASE }}
+            className="mt-3 flex items-center justify-between rounded-[9px] bg-[#111714] px-3 py-2.5 text-white"
+          >
+            <span className="text-[9px] font-medium sm:text-[10px]">Send to policy</span>
+            <ArrowRight className="size-3.5 text-[#55d5c3]" />
+          </motion.div>
         </div>
       </div>
+    </motion.div>
+  );
+}
 
-      <div className="absolute right-0 top-0" style={{ zIndex: 10 }}>
-        <span className="inline-flex items-center rounded-full border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-3 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] shadow-sm">
-          Policy active
-        </span>
-      </div>
+function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
+  const checks = [
+    ["Budget available", "$26,000 remaining"],
+    ["Vendor verified", "Security review complete"],
+    ["Approval route", "Design lead → Finance"],
+  ];
 
-      <div className="absolute bottom-0 left-0 right-0 grid grid-cols-2 gap-3" style={{ zIndex: 10 }}>
-        {governanceCallouts.map((c) => (
-          <div key={c.title} className="rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-3.5 py-3 shadow-sm">
-            <p className="text-[12px] font-semibold text-[var(--text-primary)]">{c.title}</p>
-            <p className="mt-1 text-[10.5px] leading-snug text-[var(--text-secondary)]">{c.body}</p>
+  return (
+    <motion.div {...(reduceMotion ? {} : sceneMotion)} transition={{ duration: 0.55, ease: EASE }} className="absolute inset-0 p-4 sm:p-6">
+      <div className="grid h-full grid-cols-[0.78fr_1.22fr] items-center gap-4 sm:gap-6">
+        <div className="flex flex-col items-center justify-center">
+          <div className="relative flex size-24 items-center justify-center sm:size-32">
+            {!reduceMotion && (
+              <>
+                <motion.span
+                  className="absolute inset-0 rounded-full border border-[#0ea894]/30"
+                  animate={{ scale: [0.82, 1.08], opacity: [0.8, 0] }}
+                  transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+                />
+                <motion.span
+                  className="absolute inset-3 rounded-full border border-dashed border-[#0ea894]/35"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                />
+              </>
+            )}
+            <span className="relative flex size-14 items-center justify-center rounded-full bg-[#111714] text-[#55d5c3] shadow-[0_16px_30px_-16px_rgba(10,30,24,0.8)] sm:size-16">
+              <ShieldCheck className="size-6 sm:size-7" strokeWidth={1.7} />
+            </span>
           </div>
-        ))}
-      </div>
+          <p className="mt-1 text-center text-[10px] font-semibold text-[#111714] sm:text-[11px]">Policy engine</p>
+          <p className="mt-1 hidden text-center text-[9px] text-[#7b8480] sm:block">Evaluating before spend</p>
+        </div>
 
-      {/* ── CENTRAL HUB — zIndex 30 ─────────────────────────────────────── */}
-      <div
-        className="absolute left-1/2 top-1/2 flex size-[100px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[var(--bg-inverse)] text-center shadow-[0_12px_32px_-10px_rgba(10,15,13,0.6)] sm:size-[120px]"
-        style={{ zIndex: 30 }}
-      >
-        <div className="flex flex-col items-center gap-1">
-          {/* The V mark logo */}
-          <div className="relative mb-0.5 h-7 w-7 sm:h-8 sm:w-8">
-            <Image
-              src="/images/villeto-v.png"
-              alt="Villeto"
-              fill
-              sizes="32px"
-              className="object-contain"
-            />
+        <div className="min-w-0 rounded-[12px] border border-black/[0.07] bg-white p-3.5 shadow-[0_14px_32px_-26px_rgba(10,30,24,0.6)] sm:p-5">
+          <div className="flex items-center justify-between gap-2 border-b border-black/[0.06] pb-3">
+            <div className="min-w-0">
+              <p className="truncate text-[11px] font-semibold text-[#111714] sm:text-[13px]">Figma Enterprise · $8,400</p>
+              <p className="mt-0.5 text-[8px] text-[#7b8480] sm:text-[9px]">3 controls evaluated in real time</p>
+            </div>
+            <Sparkles className="size-4 shrink-0 text-[#0ea894]" />
           </div>
-          {/* Theme-aware Villeto text */}
-          <span className="font-display text-[14px] font-bold tracking-wide text-[var(--text-on-inverse)] sm:text-[16px]">
-            Villeto
-          </span>
+
+          <div className="mt-1">
+            {checks.map(([title, detail], index) => (
+              <motion.div
+                key={title}
+                initial={reduceMotion ? false : { opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + index * 0.28, duration: 0.45, ease: EASE }}
+                className="flex items-center gap-2.5 border-b border-black/[0.05] py-2.5 last:border-0 sm:py-3"
+              >
+                <motion.span
+                  initial={reduceMotion ? false : { scale: 0.6, backgroundColor: "#edf1ef" }}
+                  animate={{ scale: 1, backgroundColor: "#e7f6f2" }}
+                  transition={{ delay: 0.45 + index * 0.28, duration: 0.3 }}
+                  className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#087f70] sm:size-7"
+                >
+                  <Check className="size-3 sm:size-3.5" strokeWidth={2.5} />
+                </motion.span>
+                <div className="min-w-0">
+                  <p className="truncate text-[9px] font-semibold text-[#111714] sm:text-[10px]">{title}</p>
+                  <p className="truncate text-[8px] text-[#7b8480] sm:text-[9px]">{detail}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.12, duration: 0.45, ease: EASE }}
+            className="mt-2 flex items-center justify-between rounded-[8px] bg-[#e7f6f2] px-3 py-2 text-[#087f70]"
+          >
+            <span className="text-[9px] font-semibold sm:text-[10px]">Cleared automatically</span>
+            <CheckCircle2 className="size-3.5" />
+          </motion.div>
         </div>
       </div>
-      </motion.div>
+    </motion.div>
+  );
+}
+
+function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
+  return (
+    <motion.div {...(reduceMotion ? {} : sceneMotion)} transition={{ duration: 0.55, ease: EASE }} className="absolute inset-0 p-4 sm:p-6">
+      <div className="grid h-full grid-cols-[1fr_0.95fr] items-center gap-3 sm:gap-5">
+        <motion.div
+          initial={reduceMotion ? false : { opacity: 0, rotateY: -7, y: 12 }}
+          animate={{ opacity: 1, rotateY: 0, y: 0 }}
+          transition={{ duration: 0.65, ease: EASE }}
+          className="relative aspect-[1.58/1] overflow-hidden rounded-[14px] bg-[#111714] p-4 text-white shadow-[0_22px_44px_-24px_rgba(8,24,19,0.9)] sm:p-5"
+        >
+          <div className="absolute -right-8 -top-12 size-32 rounded-full border-[24px] border-[#18443c] opacity-80 sm:size-40" />
+          <div className="relative flex items-start justify-between">
+            <div className="flex items-center gap-2">
+              <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain" /></div>
+              <span className="text-[10px] font-semibold sm:text-[11px]">Employee card</span>
+            </div>
+            <CreditCard className="size-4 text-[#55d5c3]" strokeWidth={1.7} />
+          </div>
+          <div className="relative mt-5 sm:mt-7">
+            <p className="text-[8px] uppercase text-white/55 sm:text-[9px]">Available this month</p>
+            <p className="mt-1 text-[18px] font-semibold sm:text-[22px]">$2,150.00</p>
+          </div>
+          <div className="absolute inset-x-4 bottom-3 flex items-end justify-between sm:inset-x-5 sm:bottom-4">
+            <div>
+              <p className="text-[8px] text-white/50">CARDHOLDER</p>
+              <p className="text-[9px] font-medium sm:text-[10px]">Amara Okafor</p>
+            </div>
+            <span className="text-[9px] tracking-widest text-white/70 sm:text-[10px]">•••• 2048</span>
+          </div>
+        </motion.div>
+
+        <div className="min-w-0 space-y-2.5">
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.25, duration: 0.45, ease: EASE }}
+            className="rounded-[11px] border border-black/[0.07] bg-white p-3 sm:p-4"
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-[7px] bg-[#f0f3f2] text-[#111714] sm:size-8"><ReceiptText className="size-3.5" /></span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="truncate text-[9px] font-semibold text-[#111714] sm:text-[10px]">Adobe</p>
+                  <p className="text-[9px] font-semibold text-[#111714] sm:text-[10px]">$84.99</p>
+                </div>
+                <p className="mt-0.5 text-[8px] text-[#7b8480] sm:text-[9px]">Software · Today</p>
+              </div>
+            </div>
+            <div className="mt-2.5 flex items-center gap-1.5 border-t border-black/[0.05] pt-2 text-[8px] font-medium text-[#087f70] sm:text-[9px]">
+              <CheckCircle2 className="size-3" /> Receipt matched · In policy
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.45, ease: EASE }}
+            className="flex items-center gap-2.5 rounded-[10px] bg-[#e7f6f2] p-3 text-[#087f70]"
+          >
+            <Users className="size-4 shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[9px] font-semibold sm:text-[10px]">Controls follow the employee</p>
+              <p className="hidden text-[8px] opacity-75 sm:block sm:text-[9px]">No reimbursement chase. No surprise spend.</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function GovernanceOrbit() {
+  const reduceMotion = Boolean(useReducedMotion());
+  const [activeScene, setActiveScene] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotion || paused) return;
+    const timer = window.setTimeout(() => setActiveScene((current) => (current + 1) % scenes.length), STORY_DURATION);
+    return () => window.clearTimeout(timer);
+  }, [activeScene, paused, reduceMotion]);
+
+  return (
+    <div className="relative mx-auto w-full max-w-[650px] py-5 sm:py-8 md:py-5">
+      <div className="pointer-events-none absolute inset-x-[10%] bottom-0 h-24 rounded-full bg-[var(--accent)] opacity-[0.11] blur-3xl" />
 
       <motion.div
-        className="absolute inset-0 flex flex-col items-center justify-center p-4 sm:p-8"
-        animate={{ opacity: [0, 0, 1, 1, 0], scale: [0.95, 0.95, 1, 1, 0.95] }}
-        transition={{ duration: 16, times: [0, 0.45, 0.5, 0.95, 1], repeat: Infinity, ease: "easeInOut" }}
-        style={{ pointerEvents: "none" }}
+        className="relative overflow-hidden rounded-[18px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[0_30px_80px_-36px_rgba(5,18,15,0.55)]"
+        initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: EASE }}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
       >
-        <div className="relative w-full">
-          <img 
-            src="/images/Demo%20Dashboard.png" 
-            alt="Villeto Dashboard" 
-            className="w-full h-auto block" 
-          />
+        <div className="flex h-11 items-center justify-between border-b border-[var(--border-hairline)] px-4 sm:px-5">
+          <div className="flex items-center gap-2.5">
+            <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain" /></div>
+            <span className="text-[11px] font-semibold text-[var(--text-primary)] sm:text-[12px]">How spend moves through Villeto</span>
+          </div>
+          <span className="hidden items-center gap-1.5 text-[9px] font-medium text-[var(--text-secondary)] sm:flex">
+            <span className="size-1.5 rounded-full bg-[var(--accent)]" /> Live control layer
+          </span>
+        </div>
+
+        <div className="grid grid-cols-3 border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)]">
+          {scenes.map((scene, index) => {
+            const active = activeScene === index;
+            return (
+              <button
+                key={scene.label}
+                type="button"
+                onClick={() => setActiveScene(index)}
+                aria-pressed={active}
+                className="relative min-w-0 border-r border-[var(--border-hairline)] px-2 py-2.5 text-left last:border-r-0 sm:px-4 sm:py-3"
+              >
+                <span className={`block text-[8px] font-semibold ${active ? "text-[var(--accent-text)]" : "text-[var(--text-secondary)]"}`}>0{index + 1}</span>
+                <span className={`mt-0.5 block truncate text-[9px] font-semibold sm:text-[10px] ${active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{scene.label}</span>
+                {active && (
+                  <motion.span
+                    key={`${activeScene}-${paused}`}
+                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-[var(--accent)]"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: paused || reduceMotion ? 0.25 : 1 }}
+                    transition={{ duration: paused || reduceMotion ? 0.2 : STORY_DURATION / 1000, ease: "linear" }}
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="relative aspect-[1.32/1] overflow-hidden bg-[#f2f5f4] sm:aspect-[1.45/1]">
+          <AnimatePresence mode="wait" initial={false}>
+            {activeScene === 0 && <ProcurementScene key="procurement" reduceMotion={reduceMotion} />}
+            {activeScene === 1 && <PolicyScene key="policy" reduceMotion={reduceMotion} />}
+            {activeScene === 2 && <ExpensesScene key="expenses" reduceMotion={reduceMotion} />}
+          </AnimatePresence>
+        </div>
+
+        <div className="flex items-center justify-between border-t border-[var(--border-hairline)] px-4 py-2.5 sm:px-5">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.p
+              key={activeScene}
+              initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="truncate text-[9px] font-medium text-[var(--text-secondary)] sm:text-[10px]"
+            >
+              {scenes[activeScene]?.kicker}
+            </motion.p>
+          </AnimatePresence>
+          <div className="ml-3 flex gap-1.5">
+            {scenes.map((scene, index) => (
+              <button
+                key={scene.label}
+                type="button"
+                aria-label={`Show ${scene.label}`}
+                onClick={() => setActiveScene(index)}
+                className={`h-1.5 rounded-full transition-all ${activeScene === index ? "w-5 bg-[var(--accent)]" : "w-1.5 bg-[var(--border-hairline)]"}`}
+              />
+            ))}
+          </div>
         </div>
       </motion.div>
     </div>

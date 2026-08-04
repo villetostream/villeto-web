@@ -10,25 +10,6 @@ import { hero } from "@/lib/content/hero";
 import { GovernanceOrbit } from "./GovernanceOrbit";
 import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
-const BOOT_EASE = [0.16, 1, 0.3, 1] as const; // EXPO_OUT
-
-const bootStagger = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
-  },
-};
-
-const bootItem = {
-  hidden: { opacity: 0, y: 15, clipPath: "inset(100% 0 0 0)" },
-  show: {
-    opacity: 1,
-    y: 0,
-    clipPath: "inset(0% 0 0 0)",
-    transition: { duration: 0.8, ease: BOOT_EASE },
-  },
-};
-
 export function Hero() {
   const { handleSubmit, loading, error } = useEmailOnboarding();
   const [email, setEmail] = useState("");
@@ -55,7 +36,7 @@ export function Hero() {
         />
       </motion.div>
 
-      <Container className="relative grid grid-cols-1 items-center gap-10 pt-8 pb-10 sm:pt-10 sm:pb-14 md:grid-cols-2 md:pt-12 md:pb-16">
+      <Container className="relative grid grid-cols-1 items-center gap-8 pt-8 pb-10 sm:pt-10 sm:pb-14 md:grid-cols-[0.94fr_1.06fr] md:gap-10 md:pt-12 md:pb-16">
         <div className="flex flex-col">
           {/* Eyebrow with flanking dots */}
           <div className="self-start animate-hero-fade">
@@ -66,7 +47,7 @@ export function Hero() {
             </div>
           </div>
 
-          <h1 className="mt-4 text-[length:var(--fs-hero)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
+          <h1 className="mt-4 text-[clamp(2.25rem,3.75vw,3.5rem)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
             {hero.headline}
           </h1>
 
@@ -76,7 +57,7 @@ export function Hero() {
 
           <div className="animate-hero-fade animation-delay-300">
             <form
-              className="mt-6 flex max-w-[460px] items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-1.5 pl-4 shadow-[0_2px_6px_rgba(10,15,13,0.04)] relative"
+              className="relative mt-6 flex max-w-[460px] flex-col items-stretch gap-1 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-1.5 shadow-[0_2px_6px_rgba(10,15,13,0.04)] min-[480px]:flex-row min-[480px]:items-center min-[480px]:pl-4"
               onSubmit={onSubmit}
             >
               <label htmlFor="hero-email" className="sr-only">
@@ -89,12 +70,12 @@ export function Hero() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={hero.emailPlaceholder}
                 disabled={loading}
-                className="min-h-[40px] w-full min-w-0 flex-1 bg-transparent text-[14.5px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] border-none focus:outline-none focus:ring-0 focus:border-transparent focus-visible:outline-none disabled:opacity-50"
+                className="min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2 text-[14.5px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 min-[480px]:px-0"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14.5px] font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:opacity-50 disabled:pointer-events-none"
+                className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14.5px] font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : hero.primaryCta.label}
               </button>
@@ -112,8 +93,8 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Right column: Governance orbit */}
-        <Reveal delay={0.1} className="flex flex-col items-center">
+        {/* Right column: live spend decision */}
+        <Reveal delay={0.1} className="flex min-w-0 flex-col items-center">
           <GovernanceOrbit />
         </Reveal>
       </Container>
