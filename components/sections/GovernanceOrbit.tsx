@@ -271,7 +271,7 @@ export function GovernanceOrbit() {
   }, [activeScene, paused, reduceMotion]);
 
   return (
-    <div className="relative mx-auto w-full max-w-[650px] py-5 sm:py-8 md:py-5">
+    <div className="relative mx-auto w-full max-w-[720px] py-5 sm:py-8 md:py-5">
       <div className="pointer-events-none absolute inset-x-[10%] bottom-0 h-24 rounded-full bg-[var(--accent)] opacity-[0.11] blur-3xl" />
 
       <motion.div
