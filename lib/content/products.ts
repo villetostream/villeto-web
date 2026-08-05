@@ -1,6 +1,6 @@
 export const productExplorer = {
-  heading: "Seven Products.\u00A0One Workflow.",
-  subhead: "Villeto brings together expense management, budgeting, and reporting in one seamless platform, designed to give your team clarity, control, and confidence with every transaction.",
+  heading: "Five products. One connected workflow.",
+  subhead: "Start with the module your team needs today. The same policy, approval, vendor, and transaction context follows as you add more.",
   cta: { label: "See Villeto in action", href: "#demo" },
 };
 

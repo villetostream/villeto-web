@@ -1,241 +1,96 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { PlayCircle } from "lucide-react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  ArrowRight,
+  Building2,
+  Landmark,
+  ReceiptText,
+  ShieldCheck,
+  ShoppingCart,
+} from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { Reveal } from "@/components/ui/Reveal";
 import { productExplorer, productTabs, productTabImages } from "@/lib/content/products";
 
+const iconMap = {
+  "expense-management": ReceiptText,
+  policies: ShieldCheck,
+  procurement: ShoppingCart,
+  "vendor-management": Building2,
+  billpay: Landmark,
+};
+
+const productDetails: Record<string, string[]> = {
+  "expense-management": ["Capture receipts at the transaction", "Route exceptions to the right owner", "Keep card and reimbursement spend together"],
+  policies: ["Set limits by team, role, or category", "Evaluate rules before approval", "Record every exception and decision"],
+  procurement: ["Standardize purchase requests", "Connect budgets and approvers", "Track the request through fulfillment"],
+  "vendor-management": ["Collect vendor details once", "Track compliance and ownership", "Keep contracts and payments connected"],
+  billpay: ["Match invoices to commitments", "Schedule approved payments", "See payment status from one record"],
+};
+
 export function ProductExplorer() {
-  const [active, setActive] = useState(productTabs[0]!.id);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: wrapperRef,
-    offset: ["start start", "end end"],
-  });
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  // Very subtle parallax moving the image slightly down as user scrolls down the section
-  const imageY = useTransform(scrollYProgress, [0, 1], ["-2%", "2%"]);
-  // Suppress scroll-driven override for a short window after a manual click,
-  // so the user has time to read the selected product before scroll takes over.
-  const suppressScrollRef = useRef(false);
-  const suppressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Keep a ref so the scroll handler always reads the latest index
-  // without needing to be re-registered every time activeIndex changes.
-  const activeIndexRef = useRef(0);
-  useEffect(() => { activeIndexRef.current = activeIndex; }, [activeIndex]);
-
-  /* ── scroll-driven activation ── */
-  useEffect(() => {
-    const onScroll = () => {
-      if (suppressScrollRef.current) return;
-
-      if (window.innerWidth < 768) return;
-
-      const wrapper = wrapperRef.current;
-      if (!wrapper) return;
-
-      const rect = wrapper.getBoundingClientRect();
-      const wrapperHeight = wrapper.offsetHeight;
-      const scrollable = wrapperHeight - window.innerHeight;
-      if (scrollable <= 0) return;
-
-      const scrolled = Math.max(0, -rect.top);
-      const progress = Math.min(1, scrolled / scrollable);
-      const rawIndex = Math.min(
-        productTabs.length - 1,
-        Math.floor(progress * productTabs.length)
-      );
-
-      const current = activeIndexRef.current;
-
-      // Clamp to ±1 so a fast trackpad swipe can never skip a tab
-      const next = Math.max(0, Math.min(productTabs.length - 1,
-        Math.max(current - 1, Math.min(current + 1, rawIndex))
-      ));
-
-      if (next !== current) {
-        activeIndexRef.current = next;
-        setActiveIndex(next);
-        setActive(productTabs[next]!.id);
-      }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // stable — reads activeIndex via ref, not closure
-
-  /* ── click handler: instantly syncs page scroll to the clicked tab ── */
-  const handleTabClick = (id: string, index: number) => {
-    if (index === activeIndex) return;
-
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-
-    setActive(id);
-    setActiveIndex(index);
-
-    if (window.innerWidth < 768) return;
-
-    // Calculate the exact scroll position where this tab becomes active.
-    // scrolled = (index / n) * scrollable  →  window.scrollY = wrapperTop + scrolled
-    const wrapperTop = window.scrollY + wrapper.getBoundingClientRect().top;
-    const scrollable = wrapper.offsetHeight - window.innerHeight;
-    // +1 nudges past the floor boundary so Math.floor picks up this index immediately
-    const targetY = wrapperTop + (index / productTabs.length) * scrollable + 1;
-
-    // Instant jump — no animation means no race with the scroll listener
-    window.scrollTo({ top: targetY, behavior: "instant" });
-
-    // Brief suppress so the scroll event fired by the jump doesn't fight with our setState
-    suppressScrollRef.current = true;
-    if (suppressTimerRef.current) clearTimeout(suppressTimerRef.current);
-    suppressTimerRef.current = setTimeout(() => {
-      suppressScrollRef.current = false;
-    }, 200);
-  };
-
-  // Total wrapper height: each tab gets 80vh of scroll room
-  const wrapperHeight = `${productTabs.length * 80}vh`;
+  const [active, setActive] = useState(productTabs[0]?.id ?? "expense-management");
+  const activeIndex = productTabs.findIndex((tab) => tab.id === active);
+  const activeTab = productTabs[activeIndex] ?? productTabs[0]!;
+  const activeImage = productTabImages[active] ?? productTabImages["expense-management"]!;
 
   return (
-    <div ref={wrapperRef} style={{ "--wrapper-height": wrapperHeight } as React.CSSProperties} className="relative h-auto md:h-[var(--wrapper-height)] md:pb-32">
-      {/*
-        Sticky container:
-        - `sticky top-0`  → pins while parent wrapper is in view
-        - `[overflow:clip]` → clips decorative overflows without creating a scrollbar track
-        - `min-h-screen`  → always fills the viewport but never clips children
-      */}
-      <div className="relative md:sticky md:top-[64px] md:h-[calc(100vh-64px)] md:flex md:items-center bg-[var(--bg-canvas)] [overflow:clip]">
-        <Container className="w-full py-8 sm:py-10">
-          {/* ── Section heading ── */}
-          <div className="mx-auto max-w-[800px] text-center">
-            <h2 className="text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">
-              {productExplorer.heading}
-            </h2>
-            {productExplorer.subhead && (
-              <p className="mt-3 text-[15px] leading-relaxed text-[var(--text-secondary)] sm:text-[17px]">
-                {productExplorer.subhead}
-              </p>
-            )}
+    <section id="workflow" className="bg-[var(--bg-surface)] py-20 sm:py-28">
+      <Container>
+        <Reveal className="grid gap-5 md:grid-cols-[0.72fr_1.28fr] md:items-end">
+          <p className="text-[11px] font-semibold uppercase text-[var(--accent-text)]">Product workflow</p>
+          <div>
+            <h2 className="max-w-[700px] text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">{productExplorer.heading}</h2>
+            <p className="mt-4 max-w-[680px] text-[16px] leading-7 text-[var(--text-secondary)]">{productExplorer.subhead}</p>
           </div>
+        </Reveal>
 
-          {/* ── Two-column body ── */}
-          <div className="mt-10 grid grid-cols-1 gap-8 md:grid-cols-[2fr_3fr] md:gap-14">
-            {/* Left: accordion */}
-            <div className="flex flex-col md:pt-8 lg:pt-10 pb-4 md:pb-12">
+        <div className="mt-12 overflow-hidden rounded-[14px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[0_30px_70px_-50px_rgba(5,20,15,0.5)]">
+          <div className="overflow-x-auto border-b border-[var(--border-hairline)]" role="tablist" aria-label="Villeto products">
+            <div className="grid min-w-[820px] grid-cols-5">
               {productTabs.map((tab, index) => {
-                const isActive = tab.id === active;
-                const isLast = index === productTabs.length - 1;
-
+                const Icon = iconMap[tab.id as keyof typeof iconMap];
+                const selected = tab.id === active;
                 return (
-                  <div
-                    key={tab.id}
-                    className={
-                      isLast
-                        ? "" // no border on last item
-                        : "border-b border-[var(--border-hairline)]"
-                    }
-                  >
-                    <button
-                      onClick={() => handleTabClick(tab.id, index)}
-                      className="flex min-h-[38px] w-full cursor-pointer items-center justify-between py-2 text-left text-[18px] sm:text-[20px] font-semibold tracking-tight transition-colors"
-                      style={{
-                        color: isActive
-                          ? "var(--text-primary)"
-                          : "var(--text-secondary)",
-                      }}
-                    >
-                      <span className="flex items-center">
-                        {tab.label}
-                      </span>
-
-                    </button>
-
-                    {/* Accordion body */}
-                    <AnimatePresence initial={false}>
-                      {isActive && tab.description && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.28, ease: "easeOut" }}
-                          style={{ overflow: "hidden" }}
-                        >
-                          <p className="pb-3 pr-4 text-[15px] sm:text-[16px] leading-relaxed text-[var(--text-secondary)] max-w-[100%] font-600">
-                            {tab.description}
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                  <button key={tab.id} type="button" role="tab" onClick={() => setActive(tab.id)} aria-selected={selected} className={`relative flex min-h-[72px] items-center gap-2 border-r border-[var(--border-hairline)] px-4 text-left last:border-r-0 ${selected ? "bg-[var(--accent-soft)]/55" : "hover:bg-[var(--bg-surface)]"}`}>
+                    <span className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] ${selected ? "bg-[var(--accent)] text-[var(--accent-contrast)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{Icon && <Icon className="size-3.5" />}</span>
+                    <span><span className="block text-[8px] font-semibold text-[var(--text-secondary)]">0{index + 1}</span><span className={`block whitespace-nowrap text-[10px] font-semibold ${selected ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{tab.label}</span></span>
+                    {selected && <motion.span layoutId="product-tab" className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--accent)]" />}
+                  </button>
                 );
               })}
-
-              {/* Progress bar */}
-              <div className="mt-5 h-[2px] w-full rounded-full bg-[var(--border-hairline)] overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-[var(--accent)]"
-                  style={{ width: progressWidth }}
-                />
-              </div>
-              <p className="mt-1.5 text-[13px] text-[var(--text-secondary)]">
-                {activeIndex + 1} / {productTabs.length}
-              </p>
-
-              <a
-                href={productExplorer.cta.href}
-                className="mt-5 inline-flex items-center gap-2 text-[14px] font-semibold text-[var(--accent)] hover:opacity-80 transition-opacity"
-              >
-                <PlayCircle className="size-4" />
-                {productExplorer.cta.label}
-              </a>
-            </div>
-
-            {/* Right: image panel — desktop only */}
-            <div className="hidden md:block h-full">
-              <div className="relative w-full h-full overflow-hidden rounded-l-[var(--radius-lg)] rounded-r-none bg-[var(--bg-surface)] shadow-[-24px_0_48px_-12px_rgba(0,0,0,0.18)]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={active}
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -14 }}
-                    transition={{ duration: 0.32, ease: "easeOut" }}
-                    className="absolute inset-0"
-                  >
-                    {productTabImages[active] && (
-                      <motion.div className="relative w-full h-full">
-                        <img
-                          src={productTabImages[active]}
-                          alt={`${productTabs.find((t) => t.id === active)?.label} preview`}
-                          className="w-full h-full object-cover object-left-top block"
-                        />
-                        {/* Data Scanline */}
-                        <motion.div 
-                          className="absolute inset-x-8 h-[2px] bg-[var(--accent)] blur-[1px] shadow-[0_0_12px_2px_var(--accent)]"
-                          initial={{ top: "10%", opacity: 0 }}
-                          animate={{ top: "90%", opacity: [0, 1, 1, 0] }}
-                          transition={{ duration: 1.2, ease: "easeInOut" }}
-                        />
-                      </motion.div>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Ambient glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] rounded-full bg-[var(--accent)] opacity-[0.05] blur-[60px] pointer-events-none" />
-              </div>
             </div>
           </div>
-        </Container>
-      </div>
-    </div>
+
+          <div className="grid md:min-h-[520px] md:grid-cols-[0.38fr_0.62fr]">
+            <div className="flex flex-col border-b border-[var(--border-hairline)] p-6 sm:p-8 md:border-b-0 md:border-r md:p-10">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28 }}>
+                  <span className="text-[10px] font-semibold uppercase text-[var(--accent-text)]">Module {activeIndex + 1} of {productTabs.length}</span>
+                  <h3 className="mt-4 text-[26px] font-semibold leading-tight text-[var(--text-primary)]">{activeTab.label}</h3>
+                  <p className="mt-4 text-[14px] leading-6 text-[var(--text-secondary)]">{activeTab.description}</p>
+                  <ul className="mt-7 space-y-3">
+                    {(productDetails[active] ?? []).map((detail) => <li key={detail} className="flex items-start gap-2.5 text-[11px] leading-5 text-[var(--text-primary)]"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[var(--accent)]" />{detail}</li>)}
+                  </ul>
+                </motion.div>
+              </AnimatePresence>
+              <a href={productExplorer.cta.href} className="mt-8 inline-flex items-center gap-2 text-[12px] font-semibold text-[var(--accent-text)] md:mt-auto">{productExplorer.cta.label}<ArrowRight className="size-4" /></a>
+            </div>
+
+            <div className="relative min-h-[380px] overflow-hidden bg-[#f3f6f5] sm:min-h-[460px] md:min-h-0">
+              <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(rgba(10,15,13,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(10,15,13,0.06) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div key={active} initial={{ opacity: 0, scale: 0.985 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.99 }} transition={{ duration: 0.35 }} className="absolute inset-4 overflow-hidden rounded-[10px] border border-black/[0.07] bg-white shadow-[0_24px_60px_-35px_rgba(5,20,15,0.55)] sm:inset-7">
+                  <Image src={activeImage} alt={`${activeTab.label} workspace preview`} fill sizes="(max-width: 768px) 100vw, 60vw" className="object-contain object-center" />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </Container>
+    </section>
   );
 }
