@@ -43,6 +43,12 @@ const stages = [
   },
 ] as const;
 
+const lifecycleSteps = [
+  { label: "Intent", detail: "Request + context", icon: ClipboardList },
+  { label: "Control", detail: "Policy + approval", icon: ShieldCheck },
+  { label: "Record", detail: "Pay + reconcile", icon: FileCheck2 },
+] as const;
+
 function BeforeSpendVisual() {
   return (
     <div className="overflow-hidden rounded-[12px] border border-black/[0.08] bg-white shadow-[0_22px_55px_-38px_rgba(5,20,15,0.5)]">
@@ -116,6 +122,42 @@ export function FeatureSuite() {
   return (
     <section id="products" className="bg-[var(--bg-canvas)] py-20 sm:py-28">
       <Container>
+        <Reveal className="mb-12 grid gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-center">
+          <div>
+            <p className="text-[10px] font-semibold uppercase text-[var(--text-secondary)]">How spend moves</p>
+            <p className="mt-3 max-w-[360px] text-[15px] font-medium leading-6 text-[var(--text-primary)]">
+              A purchase starts as business intent, passes through control, and ends as a complete financial record.
+            </p>
+          </div>
+
+          <div className="relative">
+            <div className="absolute left-[16.7%] right-[16.7%] top-4 h-px overflow-hidden bg-[var(--border-hairline)]">
+              <motion.span
+                initial={reduceMotion ? false : { scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true, amount: 0.7 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="block h-full origin-left bg-[var(--accent)]"
+              />
+            </div>
+            <ol className="relative grid grid-cols-3">
+              {lifecycleSteps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <li key={step.label} className="flex flex-col items-center px-1 text-center">
+                    <span className="flex size-8 items-center justify-center rounded-[8px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] text-[var(--accent-text)]">
+                      <Icon className="size-4" />
+                    </span>
+                    <span className="mt-3 text-[9px] font-semibold text-[var(--accent-text)]">0{index + 1}</span>
+                    <span className="mt-1 text-[11px] font-semibold uppercase text-[var(--text-primary)]">{step.label}</span>
+                    <span className="mt-1 text-[10px] text-[var(--text-secondary)]">{step.detail}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </Reveal>
+
         <Reveal className="grid gap-5 border-b border-[var(--border-hairline)] pb-12 md:grid-cols-[0.72fr_1.28fr] md:items-end">
           <p className="text-[11px] font-semibold uppercase text-[var(--accent-text)]">The spend lifecycle</p>
           <div><h2 className="max-w-[720px] text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">One control layer, from intent to audit.</h2><p className="mt-4 max-w-[680px] text-[16px] leading-7 text-[var(--text-secondary)]">Villeto keeps the business reason, policy decision, and financial record connected through every handoff.</p></div>
