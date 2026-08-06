@@ -35,7 +35,7 @@ export function TestimonialBand() {
           <div className="relative aspect-[1.35/1] overflow-hidden rounded-[8px] border border-white/10 bg-[#111714] shadow-[0_38px_90px_-48px_rgba(0,0,0,0.9)]">
             <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
             <div className="absolute inset-5 overflow-hidden rounded-[7px] border border-white/10 bg-white sm:inset-7">
-              <Image src="/images/finance-visibility-dashboard.png" alt="Villeto finance visibility and audit workspace" fill sizes="(max-width: 1024px) 92vw, 60vw" className="object-contain" />
+              <Image src="/images/Demo Dashboard.png" alt="Villeto finance operations dashboard with spend, policy alerts, and activity" fill sizes="(max-width: 1024px) 92vw, 60vw" className="object-contain" />
             </div>
 
             <div className="absolute bottom-4 left-4 w-[230px] rounded-[8px] border border-white/10 bg-[#0b100e]/95 p-4 shadow-xl backdrop-blur sm:bottom-6 sm:left-6 sm:w-[260px]">
