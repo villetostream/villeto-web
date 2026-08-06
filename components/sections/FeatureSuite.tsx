@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { AlertTriangle, ShieldCheck, Zap, Check, Eye, BarChart2, EyeOff, Copy, ArrowDown } from "lucide-react";
+import { AlertTriangle, ShieldCheck, Zap, Check, Eye, BarChart2, EyeOff, Copy, ArrowDown, CreditCard } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform, animate, useInView, type Variants } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { Container } from "@/components/ui/Container";
@@ -142,13 +142,12 @@ export function FeatureSuite() {
 
                   {/* ── ATM card — centred, taller ── */}
                   <motion.div
-                    className="absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[20px] shadow-[0_15px_35px_-10px_rgba(155,81,224,0.3)]"
+                    className="absolute left-1/2 -translate-x-1/2 overflow-hidden rounded-[14px] bg-[var(--bg-inverse)] text-[var(--text-on-inverse)] shadow-lg"
                     style={{
                       top: 0,
                       width: "92%",
                       maxWidth: 340,
-                      height: 215,
-                      background: "linear-gradient(135deg, #8b31d4 0%, #9b3de0 30%, #b44de8 60%, #c760ea 80%, #d070f0 100%)",
+                      aspectRatio: "1.58/1",
                       rotateX,
                       rotateY,
                       transformStyle: "preserve-3d",
@@ -156,48 +155,32 @@ export function FeatureSuite() {
                     onMouseMove={handleMouseMove}
                     onMouseLeave={handleMouseLeave}
                   >
-                    {/* Decorative rings bottom-right */}
-                    <div className="absolute -bottom-10 -right-10 h-44 w-44 rounded-full border-[1.5px] border-white/10" />
-                    <div className="absolute -bottom-16 -right-3  h-44 w-44 rounded-full border-[1.5px] border-white/10" />
-
-                    <div className="relative flex h-full flex-col px-5 py-5 z-10">
-                      {/* Top: Logo + hide icon */}
+                    <div className="absolute -right-8 -top-12 size-32 rounded-full border-[24px] border-[var(--bg-canvas)] opacity-20 sm:size-40" />
+                    <div className="relative flex h-full flex-col p-4 sm:p-5 z-10">
                       <div className="flex items-start justify-between">
-                        <Image src="/images/villeto-logo.png" alt="Villeto" width={72} height={22} className="object-contain" />
-                        <EyeOff className="size-4 text-white" strokeWidth={1.5} />
+                        <div className="flex items-center gap-2">
+                          <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain invert dark:invert-0" /></div>
+                          <span className="text-[10px] font-semibold sm:text-[11px]">Employee card</span>
+                        </div>
+                        <CreditCard className="size-4 opacity-80" strokeWidth={1.7} />
                       </div>
-
-                      {/* Bottom: pushed to bottom with mt-auto, clears the overlapping floating cards */}
-                      <div className="flex flex-col mt-auto pb-8">
-                        <div className="mb-4">
-                          <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">Card Number</div>
-                          <div className="mt-1 flex items-center gap-2">
-                            <span className="text-[15px] font-medium tracking-[0.08em] text-white">1234 5678 9012 2345</span>
-                            <Copy className="size-[13px] text-white/80 shrink-0" strokeWidth={1.5} />
-                          </div>
+                      <div className="relative mt-5 sm:mt-7">
+                        <p className="text-[8px] uppercase opacity-55 sm:text-[9px]">Available this month</p>
+                        <p className="mt-1 text-[18px] font-semibold sm:text-[22px]">$2,150.00</p>
+                      </div>
+                      <div className="mt-auto flex items-end justify-between">
+                        <div>
+                          <p className="text-[8px] opacity-50">CARDHOLDER</p>
+                          <p className="text-[9px] font-medium sm:text-[10px]">Amara Okafor</p>
                         </div>
-                        <div className="flex items-end gap-12">
-                          <div>
-                            <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">Expiry Date</div>
-                            <div className="mt-1">
-                              <span className="text-[15px] font-medium text-white">12/24</span>
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-semibold tracking-[0.12em] text-white/90 uppercase">CVV</div>
-                            <div className="flex items-center gap-1.5 mt-1">
-                              <span className="text-[15px] font-medium text-white">272</span>
-                              <Copy className="size-[13px] text-white/80" strokeWidth={1.5} />
-                            </div>
-                          </div>
-                        </div>
+                        <span className="text-[9px] tracking-widest opacity-70 sm:text-[10px]">•••• 2048</span>
                       </div>
                     </div>
                   </motion.div>
 
                   {/* ── Expenses — far left, heavily overlaps purple card bottom-left ── */}
                   <motion.div
-                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[var(--border-hairline)] pointer-events-none"
+                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/[0.07] pointer-events-none"
                     style={{ bottom: 20, left: 0, width: 138 }}
                     initial={{ opacity: 0, x: -20, y: 12 }}
                     whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -205,7 +188,7 @@ export function FeatureSuite() {
                     transition={{ duration: 0.55, delay: 0.2, ease: "easeOut" }}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-semibold text-slate-500 whitespace-nowrap">{cardsExpensesMock.changeLabel}</span>
+                      <span className="text-[10px] font-semibold text-[#64748b] whitespace-nowrap">{cardsExpensesMock.changeLabel}</span>
                       <div className="flex items-center gap-0.5 rounded-full bg-red-100 px-1.5 py-[2px] text-[9px] font-bold text-red-500">
                         <ArrowDown className="size-2.5" strokeWidth={2.5} />
                         <span>{cardsExpensesMock.change}</span>
@@ -230,7 +213,7 @@ export function FeatureSuite() {
 
                   {/* ── Successful Transactions — right-side, slightly higher, overlaps card bottom-right ── */}
                   <motion.div
-                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-[var(--border-hairline)] pointer-events-none"
+                    className="absolute flex flex-col gap-1 rounded-2xl bg-white py-2.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-black/[0.07] pointer-events-none"
                     style={{ bottom: 0, right: 0, width: 148 }}
                     initial={{ opacity: 0, x: 20, y: 12 }}
                     whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -238,15 +221,15 @@ export function FeatureSuite() {
                     transition={{ duration: 0.55, delay: 0.4, ease: "easeOut" }}
                   >
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-[9px] font-semibold text-[var(--text-secondary)] whitespace-nowrap">{cardsExpensesMock.transactionsLabel}</span>
+                      <span className="text-[9px] font-semibold text-[#64748b] whitespace-nowrap">{cardsExpensesMock.transactionsLabel}</span>
                       <div className="flex size-3.5 items-center justify-center shrink-0 rounded-full bg-emerald-100">
                         <Check className="size-2.5 text-emerald-600" />
                       </div>
                     </div>
-                    <span className="text-[20px] font-extrabold tracking-tight text-[var(--text-primary)] leading-none mt-0.5">
+                    <span className="text-[20px] font-extrabold tracking-tight text-[#1a202c] leading-none mt-0.5">
                       <AnimatedNumber value={cardsExpensesMock.transactions} />
                     </span>
-                    <span className="text-[9px] text-[var(--text-secondary)] whitespace-nowrap mt-0.5">{cardsExpensesMock.note}</span>
+                    <span className="text-[9px] text-[#64748b] whitespace-nowrap mt-0.5">{cardsExpensesMock.note}</span>
                   </motion.div>
 
                 </div>
