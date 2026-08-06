@@ -36,7 +36,7 @@ export function Hero() {
         />
       </motion.div>
 
-      <Container className="relative grid grid-cols-1 items-center gap-8 pt-8 pb-10 sm:pt-10 sm:pb-14 md:grid-cols-[0.94fr_1.06fr] md:gap-10 md:pt-12 md:pb-16">
+      <Container className="relative grid grid-cols-1 items-center gap-8 pt-8 pb-10 sm:pt-10 sm:pb-14 md:grid-cols-[0.94fr_1.06fr] md:gap-10 md:pt-12 md:pb-16 min-[1200px]:grid-cols-[0.9fr_1.1fr]">
         <div className="flex flex-col">
           {/* Eyebrow with flanking dots */}
           <div className="self-start animate-hero-fade">
@@ -94,8 +94,10 @@ export function Hero() {
         </div>
 
         {/* Right column: live spend decision */}
-        <Reveal delay={0.1} className="flex min-w-0 flex-col items-center md:-mt-4 lg:-mt-6 xl:-mt-8">
-          <GovernanceOrbit />
+        <Reveal delay={0.1} className="flex min-w-0 w-full flex-col items-center md:-mt-4 lg:-mt-6 xl:-mt-8">
+          <div className="w-full min-[1200px]:w-[calc(100%+32px)]">
+            <GovernanceOrbit />
+          </div>
         </Reveal>
       </Container>
     </section>

@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { solutionPages, getSolutionPage } from "@/lib/content/solution-pages";
+import { navCtas } from "@/lib/content/nav";
 
 export function generateStaticParams() {
   return solutionPages.map((p) => ({ slug: p.slug }));
@@ -36,11 +37,11 @@ export default async function SolutionPage({ params }: { params: Promise<{ slug:
               {page.description}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button href="#get-started" size="lg">
+              <Button href={navCtas.primary.href} size="lg">
                 Get Started for free
                 <ArrowRight className="size-4" />
               </Button>
-              <Button href="#demo" variant="secondary" size="lg">
+              <Button href={navCtas.demo.href} variant="secondary" size="lg">
                 See a Demo
               </Button>
             </div>

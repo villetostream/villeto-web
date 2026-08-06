@@ -1,27 +1,50 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ChevronDown, Menu } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
-import { navLinks, navCtas, navMegaTriggers, brand } from "@/lib/content/nav";
-import { productNavItems, solutionNavItems } from "@/lib/content/mega-nav";
-
-const groups = { products: productNavItems, solutions: solutionNavItems };
+import { brand, navCtas, navMegaTriggers } from "@/lib/content/nav";
+import type { NavMenuKey } from "@/lib/content/mega-nav";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [openMenu, setOpenMenu] = useState<"products" | "solutions" | null>(null);
+  const [openMenu, setOpenMenu] = useState<NavMenuKey | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
+
+  const activeMenu: NavMenuKey | null = pathname.startsWith("/products")
+    ? "products"
+    : pathname.startsWith("/solutions")
+      ? "solutions"
+      : null;
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = null;
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 160);
+  };
+
+  const showMenu = (menu: NavMenuKey) => {
+    cancelClose();
+    setOpenMenu(menu);
+  };
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
+    const onScroll = () => setScrolled(window.scrollY > 64);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -29,9 +52,9 @@ export function Header() {
 
   useEffect(() => {
     if (!openMenu) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpenMenu(null);
-    const onClick = (e: MouseEvent) => {
-      if (headerRef.current && !headerRef.current.contains(e.target as Node)) setOpenMenu(null);
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setOpenMenu(null);
+    const onClick = (event: MouseEvent) => {
+      if (headerRef.current && !headerRef.current.contains(event.target as Node)) setOpenMenu(null);
     };
     document.addEventListener("keydown", onKey);
     document.addEventListener("mousedown", onClick);
@@ -41,7 +64,6 @@ export function Header() {
     };
   }, [openMenu]);
 
-  // lock body scroll while the mobile overlay is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => {
@@ -49,89 +71,87 @@ export function Header() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => () => cancelClose(), []);
+
   return (
     <>
-      {/* Placeholder to prevent layout shift when header shrinks/becomes fixed */}
-      <div className="h-[84px] w-full bg-[var(--bg-canvas)]" />
-      
+      <div className="h-[72px] w-full bg-[var(--bg-canvas)]" />
+
       <header
         ref={headerRef}
         data-scrolled={scrolled}
-        className="site-header fixed top-0 inset-x-0 z-[60] w-full border-b border-transparent bg-[var(--bg-canvas)]/90 backdrop-blur-md transition-all duration-300"
+        onMouseEnter={cancelClose}
+        onMouseLeave={scheduleClose}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node)) scheduleClose();
+        }}
+        className={`site-header fixed inset-x-0 top-0 z-[60] w-full border-b bg-[var(--bg-canvas)]/95 backdrop-blur-xl transition-colors duration-200 ${scrolled || openMenu ? "border-[var(--border-hairline)]" : "border-transparent"}`}
       >
-        <Container className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-[64px]" : "h-[84px]"}`}>
-          <Link href="/" className="relative flex shrink-0 items-center overflow-hidden w-[150px] h-[48px] -ml-2 transition-transform duration-300 hover:scale-[1.03]">
-            <Image src="/images/villeto-logo.png" alt={brand.name} fill sizes="120px" className="object-contain scale-[2.2] object-center" priority />
+        <Container className={`flex items-center justify-between transition-[height] duration-200 ${scrolled ? "h-[64px]" : "h-[72px]"}`}>
+          <Link href="/" className="flex shrink-0 items-center gap-2.5 rounded-[6px] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+            <Image src="/images/villeto-v.png" alt="" width={28} height={31} className="h-[31px] w-[28px]" priority />
+            <span className="text-[19px] font-semibold text-[var(--text-primary)]">{brand.name}</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 md:flex">
-            {navMegaTriggers.map((trigger) => (
-              <div key={trigger.key} className="relative">
+          <nav className="hidden h-full items-center md:flex" aria-label="Primary navigation">
+            {navMegaTriggers.map((trigger) => {
+              const selected = openMenu === trigger.key;
+              const active = activeMenu === trigger.key;
+              return (
                 <button
-                  className="group relative flex items-center gap-1 cursor-pointer rounded-[var(--radius-sm)] px-3 py-2 text-[14px] font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-                  onClick={() => setOpenMenu((prev) => (prev === trigger.key ? null : trigger.key))}
-                  aria-expanded={openMenu === trigger.key}
+                  key={trigger.key}
+                  type="button"
+                  className={`group relative flex h-full items-center gap-1.5 px-4 text-[13px] font-medium transition-colors focus-visible:outline-none ${selected || active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}
+                  onMouseEnter={() => showMenu(trigger.key)}
+                  onFocus={() => showMenu(trigger.key)}
+                  onClick={() => showMenu(trigger.key)}
+                  aria-expanded={selected}
+                  aria-controls={`mega-menu-${trigger.key}`}
+                  aria-current={active ? "page" : undefined}
                 >
                   {trigger.label}
-                  <ChevronDown
-                    className={`size-3.5 transition-transform duration-300 ${openMenu === trigger.key ? "rotate-180 text-[var(--accent)]" : "group-hover:text-[var(--accent)]"}`}
-                  />
-                  <span className={`absolute -bottom-0.5 left-3 right-3 h-[1.5px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 ease-out ${openMenu === trigger.key ? "scale-x-100" : "group-hover:scale-x-100"}`} />
+                  <ChevronDown className={`size-3.5 transition-transform duration-200 ${selected ? "rotate-180 text-[var(--accent-text)]" : "group-hover:text-[var(--accent-text)]"}`} />
+                  <span className={`absolute inset-x-4 bottom-0 h-0.5 bg-[var(--accent)] transition-transform duration-200 ${selected || active ? "scale-x-100" : "scale-x-0"}`} />
                 </button>
-                <AnimatePresence>
-                {openMenu === trigger.key && (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    className="absolute left-1/2 top-full w-[560px] -translate-x-1/2 pt-3"
-                  >
-                    <div className="rounded-[var(--radius-lg)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[0_24px_48px_-16px_rgba(10,15,13,0.25)]">
-                      <MegaMenu
-                        items={groups[trigger.key]}
-                        basePath={trigger.key}
-                        onNavigate={() => setOpenMenu(null)}
-                      />
-                    </div>
-                  </motion.div>
-                )}
-                </AnimatePresence>
-              </div>
-            ))}
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setOpenMenu(null)}
-                className="group relative rounded-[var(--radius-sm)] px-3 py-2 text-[14px] font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-              >
-                {link.label}
-                <span className="absolute -bottom-0.5 left-3 right-3 h-[1.5px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 ease-out group-hover:scale-x-100" />
-              </Link>
-            ))}
+              );
+            })}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
-            <Link href={navCtas.signIn.href} className="group relative px-2 text-[14px] font-medium text-[var(--text-primary)] transition-colors hover:text-[var(--accent)]">
+          <div className="hidden items-center gap-4 md:flex">
+            <Link href={navCtas.signIn.href} className="rounded-[6px] text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
               {navCtas.signIn.label}
-              <span className="absolute -bottom-1 left-2 right-2 h-[1.5px] origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 ease-out group-hover:scale-x-100" />
             </Link>
-            <div className="transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] rounded-md">
-              <Button href={navCtas.primary.href} variant="primary" size="sm">
-                {navCtas.primary.label}
-              </Button>
-            </div>
+            <Button href={navCtas.primary.href} variant="primary" size="sm" className="rounded-[8px] px-4">
+              {navCtas.primary.label}
+            </Button>
           </div>
 
           <button
-            className="flex size-10 items-center justify-center rounded-[var(--radius-sm)] text-[var(--text-primary)] md:hidden"
+            type="button"
+            className="flex size-10 items-center justify-center rounded-[8px] text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-surface)] md:hidden"
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
           >
             <Menu className="size-5" />
           </button>
         </Container>
+
+        <AnimatePresence>
+          {openMenu && (
+            <motion.div
+              id={`mega-menu-${openMenu}`}
+              initial={reduceMotion ? undefined : { opacity: 0, y: 6 }}
+              animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+              exit={reduceMotion ? undefined : { opacity: 0, y: 4 }}
+              transition={{ duration: 0.16, ease: "easeOut" }}
+              className="absolute inset-x-0 top-full hidden px-6 pt-2 md:flex md:justify-center"
+            >
+              <div className="w-full max-w-[920px] overflow-hidden rounded-[8px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[0_24px_64px_-28px_rgba(5,20,15,0.45)]">
+                <MegaMenu menuKey={openMenu} onNavigate={() => setOpenMenu(null)} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <MobileNav open={mobileOpen} onClose={() => setMobileOpen(false)} />

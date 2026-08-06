@@ -1,23 +1,26 @@
 export const trustSection = {
+  eyebrow: "Governance & trust",
   heading: "Built for the teams that can't get it wrong",
-  subhead: "From day one, Villeto meets the controls finance, security, and audit teams expect.",
+  subhead: "Controls are part of the operating record, not a checklist finance and security reconstruct after the fact.",
+  status: "Controls active",
 };
 
 export type TrustItem = {
   id: string;
   title: string;
   body: string;
-  icon: "book" | "key" | "lock" | "badge-check" | "globe" | "database";
+  status: string;
+  icon: "book" | "key" | "lock" | "badge-check";
 };
 
 export const trustItems: TrustItem[] = [
-  { id: "audit-logs", title: "Audit logs", body: "Immutable, timestamped, exportable.", icon: "book" },
-  { id: "approval-controls", title: "Approval controls", body: "Policy-as-code across entities.", icon: "key" },
-  { id: "security", title: "Security", body: "Encryption. Data protection. Always on.", icon: "lock" },
-  { id: "permissions", title: "Permissions", body: "Granular, role-based access.", icon: "badge-check" },
-  { id: "compliance", title: "Compliance", body: "GDPR, regional data residency.", icon: "globe" },
-  { id: "multi-entity", title: "Multi-entity", body: "Subsidiaries, currencies, books.", icon: "database" },
+  { id: "access", title: "Identity & access", body: "Roles and permissions limit who can request, review, approve, and export.", status: "Controlled", icon: "key" },
+  { id: "policy", title: "Policy enforcement", body: "Rules, thresholds, and approval routes evaluate with transaction context.", status: "Enforced", icon: "badge-check" },
+  { id: "data", title: "Data protection", body: "Encryption and regional controls protect financial and vendor information.", status: "Protected", icon: "lock" },
+  { id: "audit", title: "Audit evidence", body: "Timestamped decisions and linked records remain ready to inspect or export.", status: "Export-ready", icon: "book" },
 ];
+
+export const trustSignals = ["Role-based access", "Multi-entity controls", "Regional residency", "Immutable history"];
 
 export const testimonialBand = {
   video: {
@@ -27,8 +30,10 @@ export const testimonialBand = {
 };
 
 export const finalCta = {
-  heading: "Stop managing procurement across\u00A010 different tools.",
-  subhead: "Bring requests, approvals, vendors, invoices, and payments into one intelligent workflow.",
+  eyebrow: "Bring one workflow",
+  heading: "Start with the spend process creating the most friction.",
+  subhead: "Connect the request, vendor, policy decision, invoice, and financial record without replacing everything at once.",
   emailPlaceholder: "What is your work email?",
   cta: { label: "Get Started for free", href: "#get-started" },
+  demo: { label: "See a Demo", href: "mailto:Contact@villeto.com?subject=Villeto%20demo%20request" },
 };
