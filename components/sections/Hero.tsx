@@ -94,7 +94,7 @@ export function Hero() {
         </div>
 
         {/* Right column: live spend decision */}
-        <Reveal delay={0.1} className="flex min-w-0 w-full flex-col items-center">
+        <Reveal delay={0.1} className="flex min-w-0 w-full flex-col items-center md:-mt-4 lg:-mt-6 xl:-mt-8">
           <div className="w-full min-[1200px]:w-[calc(100%+32px)]">
             <GovernanceOrbit />
           </div>

@@ -35,30 +35,30 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
   return (
     <motion.div {...(reduceMotion ? {} : sceneMotion)} transition={{ duration: 0.55, ease: EASE }} className="absolute inset-0 p-4 sm:p-6">
       <div className="grid h-full grid-cols-[1.1fr_0.9fr] gap-3 sm:gap-5">
-        <div className="flex min-w-0 flex-col rounded-[12px] border border-black/[0.07] bg-white p-4 shadow-[0_14px_32px_-26px_rgba(10,30,24,0.6)] sm:p-5">
+        <div className="flex min-w-0 flex-col rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between gap-2">
-            <span className="rounded-full bg-[#e7f6f2] px-2.5 py-1 text-[9px] font-semibold text-[#087f70] sm:text-[10px]">PR-0248</span>
-            <span className="text-[9px] text-[#7b8480] sm:text-[10px]">Just now</span>
+            <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[9px] font-semibold text-[var(--accent-text)] sm:text-[10px]">PR-0248</span>
+            <span className="text-[9px] text-[var(--text-secondary)] sm:text-[10px]">Just now</span>
           </div>
 
           <div className="mt-4 flex items-start gap-3 sm:mt-5">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-[#111714] text-white sm:size-10">
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-[9px] bg-[var(--bg-inverse)] text-[var(--text-on-inverse)] sm:size-10">
               <Building2 className="size-4 sm:size-[18px]" strokeWidth={1.8} />
             </span>
             <div className="min-w-0">
-              <p className="truncate text-[13px] font-semibold text-[#111714] sm:text-[15px]">Figma Enterprise</p>
-              <p className="mt-0.5 text-[9px] text-[#7b8480] sm:text-[10px]">24 design seats · Annual</p>
+              <p className="truncate text-[13px] font-semibold text-[var(--text-primary)] sm:text-[15px]">Figma Enterprise</p>
+              <p className="mt-0.5 text-[9px] text-[var(--text-secondary)] sm:text-[10px]">24 design seats · Annual</p>
             </div>
           </div>
 
-          <div className="mt-auto grid grid-cols-2 gap-2 border-t border-black/[0.06] pt-3 sm:pt-4">
+          <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[var(--border-hairline)] pt-3 sm:pt-4">
             <div>
-              <p className="text-[8px] uppercase text-[#89918e] sm:text-[9px]">Requested by</p>
-              <p className="mt-1 truncate text-[10px] font-medium text-[#111714] sm:text-[11px]">Amara · Design</p>
+              <p className="text-[8px] uppercase text-[var(--text-secondary)] sm:text-[9px]">Requested by</p>
+              <p className="mt-1 truncate text-[10px] font-medium text-[var(--text-primary)] sm:text-[11px]">Amara · Design</p>
             </div>
             <div>
-              <p className="text-[8px] uppercase text-[#89918e] sm:text-[9px]">Request total</p>
-              <p className="mt-1 text-[12px] font-semibold text-[#111714] sm:text-[13px]">$8,400</p>
+              <p className="text-[8px] uppercase text-[var(--text-secondary)] sm:text-[9px]">Request total</p>
+              <p className="mt-1 text-[12px] font-semibold text-[var(--text-primary)] sm:text-[13px]">$8,400</p>
             </div>
           </div>
         </div>
@@ -68,10 +68,10 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
             initial={reduceMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.18, duration: 0.5, ease: EASE }}
-            className="rounded-[12px] border border-black/[0.07] bg-white p-3 sm:p-4"
+            className="rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-3 shadow-sm sm:p-4"
           >
-            <div className="flex items-center gap-2 text-[#111714]">
-              <FileText className="size-3.5 text-[#087f70] sm:size-4" />
+            <div className="flex items-center gap-2 text-[var(--text-primary)]">
+              <FileText className="size-3.5 text-[var(--accent-text)] sm:size-4" />
               <span className="text-[10px] font-semibold sm:text-[11px]">Request complete</span>
             </div>
             <div className="mt-3 space-y-2">
@@ -81,9 +81,9 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
                   initial={reduceMotion ? false : { opacity: 0, x: 8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.28 + index * 0.12, duration: 0.35 }}
-                  className="flex items-center gap-2 text-[9px] text-[#67716c] sm:text-[10px]"
+                  className="flex items-center gap-2 text-[9px] text-[var(--text-secondary)] sm:text-[10px]"
                 >
-                  <Check className="size-3 text-[#0ea894]" strokeWidth={2.4} />
+                  <Check className="size-3 text-[var(--accent)]" strokeWidth={2.4} />
                   <span className="truncate">{item}</span>
                 </motion.div>
               ))}
@@ -94,10 +94,10 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
             initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.75, duration: 0.4, ease: EASE }}
-            className="mt-3 flex items-center justify-between rounded-[9px] bg-[#111714] px-3 py-2.5 text-white"
+            className="mt-3 flex items-center justify-between rounded-[9px] bg-[var(--bg-inverse)] px-3 py-2.5 text-[var(--text-on-inverse)]"
           >
             <span className="text-[9px] font-medium sm:text-[10px]">Send to policy</span>
-            <ArrowRight className="size-3.5 text-[#55d5c3]" />
+            <ArrowRight className="size-3.5 opacity-80" />
           </motion.div>
         </div>
       </div>
@@ -120,32 +120,32 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
             {!reduceMotion && (
               <>
                 <motion.span
-                  className="absolute inset-0 rounded-full border border-[#0ea894]/30"
+                  className="absolute inset-0 rounded-full border border-[var(--accent)] opacity-30"
                   animate={{ scale: [0.82, 1.08], opacity: [0.8, 0] }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
                 />
                 <motion.span
-                  className="absolute inset-3 rounded-full border border-dashed border-[#0ea894]/35"
+                  className="absolute inset-3 rounded-full border border-dashed border-[var(--accent)] opacity-40"
                   animate={{ rotate: 360 }}
                   transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                 />
               </>
             )}
-            <span className="relative flex size-14 items-center justify-center rounded-full bg-[#111714] text-[#55d5c3] shadow-[0_16px_30px_-16px_rgba(10,30,24,0.8)] sm:size-16">
+            <span className="relative flex size-14 items-center justify-center rounded-full bg-[var(--bg-inverse)] text-[var(--bg-canvas)] shadow-[0_16px_30px_-16px_rgba(10,30,24,0.3)] sm:size-16">
               <ShieldCheck className="size-6 sm:size-7" strokeWidth={1.7} />
             </span>
           </div>
-          <p className="mt-1 text-center text-[10px] font-semibold text-[#111714] sm:text-[11px]">Policy engine</p>
-          <p className="mt-1 hidden text-center text-[9px] text-[#7b8480] sm:block">Evaluating before spend</p>
+          <p className="mt-1 text-center text-[10px] font-semibold text-[var(--text-primary)] sm:text-[11px]">Policy engine</p>
+          <p className="mt-1 hidden text-center text-[9px] text-[var(--text-secondary)] sm:block">Evaluating before spend</p>
         </div>
 
-        <div className="min-w-0 rounded-[12px] border border-black/[0.07] bg-white p-3.5 shadow-[0_14px_32px_-26px_rgba(10,30,24,0.6)] sm:p-5">
-          <div className="flex items-center justify-between gap-2 border-b border-black/[0.06] pb-3">
+        <div className="min-w-0 rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-3.5 shadow-sm sm:p-5">
+          <div className="flex items-center justify-between gap-2 border-b border-[var(--border-hairline)] pb-3">
             <div className="min-w-0">
-              <p className="truncate text-[11px] font-semibold text-[#111714] sm:text-[13px]">Figma Enterprise · $8,400</p>
-              <p className="mt-0.5 text-[8px] text-[#7b8480] sm:text-[9px]">3 controls evaluated in real time</p>
+              <p className="truncate text-[11px] font-semibold text-[var(--text-primary)] sm:text-[13px]">Figma Enterprise · $8,400</p>
+              <p className="mt-0.5 text-[8px] text-[var(--text-secondary)] sm:text-[9px]">3 controls evaluated in real time</p>
             </div>
-            <Sparkles className="size-4 shrink-0 text-[#0ea894]" />
+            <Sparkles className="size-4 shrink-0 text-[var(--accent)]" />
           </div>
 
           <div className="mt-1">
@@ -155,19 +155,19 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
                 initial={reduceMotion ? false : { opacity: 0, x: 12 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 + index * 0.28, duration: 0.45, ease: EASE }}
-                className="flex items-center gap-2.5 border-b border-black/[0.05] py-2.5 last:border-0 sm:py-3"
+                className="flex items-center gap-2.5 border-b border-[var(--border-hairline)] py-2.5 last:border-0 sm:py-3"
               >
                 <motion.span
-                  initial={reduceMotion ? false : { scale: 0.6, backgroundColor: "#edf1ef" }}
-                  animate={{ scale: 1, backgroundColor: "#e7f6f2" }}
+                  initial={reduceMotion ? false : { scale: 0.6, opacity: 0.5 }}
+                  animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.45 + index * 0.28, duration: 0.3 }}
-                  className="flex size-6 shrink-0 items-center justify-center rounded-full text-[#087f70] sm:size-7"
+                  className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent-text)] sm:size-7"
                 >
                   <Check className="size-3 sm:size-3.5" strokeWidth={2.5} />
                 </motion.span>
                 <div className="min-w-0">
-                  <p className="truncate text-[9px] font-semibold text-[#111714] sm:text-[10px]">{title}</p>
-                  <p className="truncate text-[8px] text-[#7b8480] sm:text-[9px]">{detail}</p>
+                  <p className="truncate text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">{title}</p>
+                  <p className="truncate text-[8px] text-[var(--text-secondary)] sm:text-[9px]">{detail}</p>
                 </div>
               </motion.div>
             ))}
@@ -177,7 +177,7 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.12, duration: 0.45, ease: EASE }}
-            className="mt-2 flex items-center justify-between rounded-[8px] bg-[#e7f6f2] px-3 py-2 text-[#087f70]"
+            className="mt-2 flex items-center justify-between rounded-[8px] bg-[var(--accent-soft)] px-3 py-2 text-[var(--accent-text)]"
           >
             <span className="text-[9px] font-semibold sm:text-[10px]">Cleared automatically</span>
             <CheckCircle2 className="size-3.5" />
@@ -196,26 +196,26 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
           initial={reduceMotion ? false : { opacity: 0, rotateY: -7, y: 12 }}
           animate={{ opacity: 1, rotateY: 0, y: 0 }}
           transition={{ duration: 0.65, ease: EASE }}
-          className="relative aspect-[1.58/1] overflow-hidden rounded-[14px] bg-[#111714] p-4 text-white shadow-[0_22px_44px_-24px_rgba(8,24,19,0.9)] sm:p-5"
+          className="relative aspect-[1.58/1] overflow-hidden rounded-[14px] bg-[var(--bg-inverse)] p-4 text-[var(--text-on-inverse)] shadow-lg sm:p-5"
         >
-          <div className="absolute -right-8 -top-12 size-32 rounded-full border-[24px] border-[#18443c] opacity-80 sm:size-40" />
+          <div className="absolute -right-8 -top-12 size-32 rounded-full border-[24px] border-[var(--bg-canvas)] opacity-20 sm:size-40" />
           <div className="relative flex items-start justify-between">
             <div className="flex items-center gap-2">
               <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain" /></div>
               <span className="text-[10px] font-semibold sm:text-[11px]">Employee card</span>
             </div>
-            <CreditCard className="size-4 text-[#55d5c3]" strokeWidth={1.7} />
+            <CreditCard className="size-4 opacity-80" strokeWidth={1.7} />
           </div>
           <div className="relative mt-5 sm:mt-7">
-            <p className="text-[8px] uppercase text-white/55 sm:text-[9px]">Available this month</p>
+            <p className="text-[8px] uppercase opacity-55 sm:text-[9px]">Available this month</p>
             <p className="mt-1 text-[18px] font-semibold sm:text-[22px]">$2,150.00</p>
           </div>
           <div className="absolute inset-x-4 bottom-3 flex items-end justify-between sm:inset-x-5 sm:bottom-4">
             <div>
-              <p className="text-[8px] text-white/50">CARDHOLDER</p>
+              <p className="text-[8px] opacity-50">CARDHOLDER</p>
               <p className="text-[9px] font-medium sm:text-[10px]">Amara Okafor</p>
             </div>
-            <span className="text-[9px] tracking-widest text-white/70 sm:text-[10px]">•••• 2048</span>
+            <span className="text-[9px] tracking-widest opacity-70 sm:text-[10px]">•••• 2048</span>
           </div>
         </motion.div>
 
@@ -224,19 +224,19 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
             initial={reduceMotion ? false : { opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.25, duration: 0.45, ease: EASE }}
-            className="rounded-[11px] border border-black/[0.07] bg-white p-3 sm:p-4"
+            className="rounded-[11px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-3 shadow-sm sm:p-4"
           >
             <div className="flex items-center gap-2.5">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-[7px] bg-[#f0f3f2] text-[#111714] sm:size-8"><ReceiptText className="size-3.5" /></span>
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-surface)] text-[var(--text-primary)] sm:size-8"><ReceiptText className="size-3.5" /></span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="truncate text-[9px] font-semibold text-[#111714] sm:text-[10px]">Adobe</p>
-                  <p className="text-[9px] font-semibold text-[#111714] sm:text-[10px]">$84.99</p>
+                  <p className="truncate text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">Adobe</p>
+                  <p className="text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">$84.99</p>
                 </div>
-                <p className="mt-0.5 text-[8px] text-[#7b8480] sm:text-[9px]">Software · Today</p>
+                <p className="mt-0.5 text-[8px] text-[var(--text-secondary)] sm:text-[9px]">Software · Today</p>
               </div>
             </div>
-            <div className="mt-2.5 flex items-center gap-1.5 border-t border-black/[0.05] pt-2 text-[8px] font-medium text-[#087f70] sm:text-[9px]">
+            <div className="mt-2.5 flex items-center gap-1.5 border-t border-[var(--border-hairline)] pt-2 text-[8px] font-medium text-[var(--accent-text)] sm:text-[9px]">
               <CheckCircle2 className="size-3" /> Receipt matched · In policy
             </div>
           </motion.div>
@@ -245,7 +245,7 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
             initial={reduceMotion ? false : { opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.45, ease: EASE }}
-            className="flex items-center gap-2.5 rounded-[10px] bg-[#e7f6f2] p-3 text-[#087f70]"
+            className="flex items-center gap-2.5 rounded-[10px] bg-[var(--accent-soft)] p-3 text-[var(--accent-text)]"
           >
             <Users className="size-4 shrink-0" />
             <div className="min-w-0">
@@ -319,7 +319,7 @@ export function GovernanceOrbit() {
           })}
         </div>
 
-        <div className="relative aspect-[1.32/1] overflow-hidden bg-[#f2f5f4] sm:aspect-[1.45/1]">
+        <div className="relative aspect-[1.32/1] overflow-hidden bg-[var(--bg-surface)] sm:aspect-[1.45/1]">
           <AnimatePresence mode="wait" initial={false}>
             {activeScene === 0 && <ProcurementScene key="procurement" reduceMotion={reduceMotion} />}
             {activeScene === 1 && <PolicyScene key="policy" reduceMotion={reduceMotion} />}
