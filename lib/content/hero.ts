@@ -5,7 +5,7 @@ export const hero = {
     "Villeto helps organizations manage procurement, vendors, approvals, invoices, and payments in one connected finance operations platform.",
   primaryCta: { label: "Get Started for free", href: "#get-started" },
   emailPlaceholder: "What is your work email?",
-  secondaryCta: { label: "See Villeto in action", href: "#demo" },
+  secondaryCta: { label: "See Villeto in action", href: "#products" },
 };
 
 export type Stat = {

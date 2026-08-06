@@ -51,17 +51,17 @@ export function ProductExplorer() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="flex size-9 items-center justify-center rounded-[7px] bg-[#e6f5f2] text-[#087f70]"><Icon className="size-4.5" /></span>
-                    <span className="text-[9px] font-semibold text-[#7a8580]">0{index + 1}</span>
+                    <span className="text-[10px] font-semibold text-[#7a8580]">0{index + 1}</span>
                   </div>
                   <div className="mt-auto pt-8">
                     <div className="flex items-center justify-between gap-2">
-                      <h3 className="text-[14px] font-semibold">{product.name}</h3>
+                      <h3 className="text-[15px] font-semibold leading-tight">{product.name}</h3>
                       <ArrowRight className="size-3.5 text-[#087f70] transition-transform group-hover:translate-x-0.5" />
                     </div>
-                    <p className="mt-2 text-[10px] leading-4 text-[#66716c]">{product.scope}</p>
+                    <p className="mt-2 text-[11px] leading-[1.55] text-[#66716c]">{product.scope}</p>
                     <div className="mt-4 flex items-start gap-2 border-t border-black/[0.07] pt-3">
                       <ShieldCheck className="mt-0.5 size-3.5 shrink-0 text-[#087f70]" />
-                      <span className="text-[9px] leading-4 text-[#53605a]">{product.policy}</span>
+                      <span className="text-[10px] leading-4 text-[#53605a]">{product.policy}</span>
                     </div>
                   </div>
                   <span className="absolute bottom-[-17px] left-1/2 z-10 hidden size-8 -translate-x-1/2 items-center justify-center rounded-full border border-black/[0.08] bg-white text-[#087f70] md:flex">
@@ -85,14 +85,14 @@ export function ProductExplorer() {
                 <div className="flex items-center gap-3">
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-[8px] bg-[#17342e] text-[#72dece]"><Layers3 className="size-5" /></span>
                   <div>
-                    <p className="text-[9px] font-semibold uppercase text-[#72dece]">Policy-aware control layer</p>
-                    <p className="mt-1 text-[16px] font-semibold">Context becomes a governed decision.</p>
+                    <p className="text-[10px] font-semibold uppercase text-[#72dece]">Policy-aware control layer</p>
+                    <p className="mt-1 text-[18px] font-semibold leading-tight">Context becomes a governed decision.</p>
                   </div>
                 </div>
-                <p className="mt-4 max-w-[390px] text-[11px] leading-5 text-white/55">The system understands the request, vendor, budget, role, and transaction before applying the right rule.</p>
+                <p className="mt-4 max-w-[410px] text-[12px] leading-5 text-white/55">The system understands the request, vendor, budget, role, and transaction before applying the right rule.</p>
                 <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2">
                   {productExplorer.foundation.map((item) => (
-                    <span key={item} className="flex items-center gap-1.5 text-[9px] text-white/55"><span className="size-1 rounded-full bg-[#55d7c4]" />{item}</span>
+                    <span key={item} className="flex items-center gap-1.5 text-[10px] text-white/55"><span className="size-1 rounded-full bg-[#55d7c4]" />{item}</span>
                   ))}
                 </div>
               </div>
@@ -100,9 +100,9 @@ export function ProductExplorer() {
               <div className="grid grid-cols-3 border-y border-white/10 sm:border-y-0 sm:border-l">
                 {productExplorer.policyFlow.map((item, index) => (
                   <div key={item.title} className="relative min-w-0 border-r border-white/10 px-3 py-5 last:border-r-0 sm:px-4">
-                    <span className="text-[8px] font-semibold text-[#72dece]">0{index + 1}</span>
-                    <p className="mt-3 text-[11px] font-semibold">{item.title}</p>
-                    <p className="mt-2 text-[9px] leading-4 text-white/45">{item.detail}</p>
+                    <span className="text-[9px] font-semibold text-[#72dece]">0{index + 1}</span>
+                    <p className="mt-3 text-[12px] font-semibold">{item.title}</p>
+                    <p className="mt-2 text-[10px] leading-4 text-white/45">{item.detail}</p>
                     {index < productExplorer.policyFlow.length - 1 && (
                       <span className="absolute -right-2.5 top-1/2 z-10 hidden size-5 -translate-y-1/2 items-center justify-center rounded-full bg-[#17342e] text-[#72dece] sm:flex"><ArrowRight className="size-3" /></span>
                     )}
