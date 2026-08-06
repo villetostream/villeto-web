@@ -1,94 +1,105 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import {
+  ArrowDown,
   ArrowRight,
+  BookOpen,
   Building2,
+  CreditCard,
   Landmark,
-  ReceiptText,
-  ShieldCheck,
+  Layers3,
   ShoppingCart,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
-import { productExplorer, productTabs, productTabImages } from "@/lib/content/products";
+import { productArchitecture, productExplorer } from "@/lib/content/products";
 
 const iconMap = {
-  "expense-management": ReceiptText,
-  policies: ShieldCheck,
   procurement: ShoppingCart,
-  "vendor-management": Building2,
+  vendor: Building2,
+  expenses: CreditCard,
   billpay: Landmark,
-};
-
-const productDetails: Record<string, string[]> = {
-  "expense-management": ["Capture receipts at the transaction", "Route exceptions to the right owner", "Keep card and reimbursement spend together"],
-  policies: ["Set limits by team, role, or category", "Evaluate rules before approval", "Record every exception and decision"],
-  procurement: ["Standardize purchase requests", "Connect budgets and approvers", "Track the request through fulfillment"],
-  "vendor-management": ["Collect vendor details once", "Track compliance and ownership", "Keep contracts and payments connected"],
-  billpay: ["Match invoices to commitments", "Schedule approved payments", "See payment status from one record"],
+  ledger: BookOpen,
 };
 
 export function ProductExplorer() {
-  const [active, setActive] = useState(productTabs[0]?.id ?? "expense-management");
-  const activeIndex = productTabs.findIndex((tab) => tab.id === active);
-  const activeTab = productTabs[activeIndex] ?? productTabs[0]!;
-  const activeImage = productTabImages[active] ?? productTabImages["expense-management"]!;
+  const reduceMotion = Boolean(useReducedMotion());
 
   return (
-    <section id="workflow" className="bg-[var(--bg-surface)] py-20 sm:py-28">
+    <section id="workflow" className="bg-[#edf2f0] py-20 text-[#111714] sm:py-28">
       <Container>
         <Reveal className="grid gap-5 md:grid-cols-[0.72fr_1.28fr] md:items-end">
-          <p className="text-[11px] font-semibold uppercase text-[var(--accent-text)]">Product workflow</p>
+          <p className="text-[11px] font-semibold uppercase text-[#087f70]">Product architecture</p>
           <div>
-            <h2 className="max-w-[700px] text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">{productExplorer.heading}</h2>
-            <p className="mt-4 max-w-[680px] text-[16px] leading-7 text-[var(--text-secondary)]">{productExplorer.subhead}</p>
+            <h2 className="max-w-[700px] text-[length:var(--fs-h2)] font-semibold">{productExplorer.heading}</h2>
+            <p className="mt-4 max-w-[640px] text-[15px] leading-6 text-[#53605a]">{productExplorer.subhead}</p>
           </div>
         </Reveal>
 
-        <div className="mt-12 overflow-hidden rounded-[14px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] shadow-[0_30px_70px_-50px_rgba(5,20,15,0.5)]">
-          <div className="overflow-x-auto border-b border-[var(--border-hairline)]" role="tablist" aria-label="Villeto products">
-            <div className="grid min-w-[820px] grid-cols-5">
-              {productTabs.map((tab, index) => {
-                const Icon = iconMap[tab.id as keyof typeof iconMap];
-                const selected = tab.id === active;
-                return (
-                  <button key={tab.id} type="button" role="tab" onClick={() => setActive(tab.id)} aria-selected={selected} className={`relative flex min-h-[72px] items-center gap-2 border-r border-[var(--border-hairline)] px-4 text-left last:border-r-0 ${selected ? "bg-[var(--accent-soft)]/55" : "hover:bg-[var(--bg-surface)]"}`}>
-                    <span className={`flex size-7 shrink-0 items-center justify-center rounded-[7px] ${selected ? "bg-[var(--accent)] text-[var(--accent-contrast)]" : "bg-[var(--bg-surface)] text-[var(--text-secondary)]"}`}>{Icon && <Icon className="size-3.5" />}</span>
-                    <span><span className="block text-[8px] font-semibold text-[var(--text-secondary)]">0{index + 1}</span><span className={`block whitespace-nowrap text-[10px] font-semibold ${selected ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{tab.label}</span></span>
-                    {selected && <motion.span layoutId="product-tab" className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--accent)]" />}
-                  </button>
-                );
-              })}
+        <Reveal className="mt-12 overflow-hidden rounded-[8px] border border-black/[0.1] bg-white shadow-[0_32px_80px_-58px_rgba(5,20,15,0.5)]">
+          <div className="grid grid-cols-2 md:grid-cols-5">
+            {productArchitecture.map((product, index) => {
+              const Icon = iconMap[product.icon];
+              return (
+                <Link
+                  key={product.id}
+                  href={product.href}
+                  className="group relative flex min-h-[174px] flex-col border-b border-r border-black/[0.08] p-4 transition-colors hover:bg-[#f4f7f6] sm:p-5 md:min-h-[190px] md:border-b-0 md:last:border-r-0 [&:nth-child(2n)]:border-r-0 [&:nth-child(2n)]:md:border-r last:col-span-2 last:md:col-span-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-9 items-center justify-center rounded-[7px] bg-[#e6f5f2] text-[#087f70]"><Icon className="size-4.5" /></span>
+                    <span className="text-[9px] font-semibold text-[#7a8580]">0{index + 1}</span>
+                  </div>
+                  <div className="mt-auto pt-7">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-[14px] font-semibold">{product.name}</h3>
+                      <ArrowRight className="size-3.5 text-[#087f70] transition-transform group-hover:translate-x-0.5" />
+                    </div>
+                    <p className="mt-2 text-[10px] leading-4 text-[#66716c]">{product.scope}</p>
+                  </div>
+                  <span className="absolute bottom-[-17px] left-1/2 z-10 hidden size-8 -translate-x-1/2 items-center justify-center rounded-full border border-black/[0.08] bg-white text-[#087f70] md:flex">
+                    <ArrowDown className="size-3.5" />
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="relative border-t border-black/[0.08] bg-[#0d1512] px-5 py-7 text-white sm:px-7 md:px-9 md:py-9">
+            <motion.span
+              initial={reduceMotion ? false : { scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute left-[10%] right-[10%] top-0 hidden h-px origin-left bg-[#55d7c4] md:block"
+            />
+            <div className="grid gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-center">
+              <div className="flex items-center gap-3">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-[8px] bg-[#17342e] text-[#72dece]"><Layers3 className="size-5" /></span>
+                <div>
+                  <p className="text-[9px] font-semibold uppercase text-[#72dece]">Shared control layer</p>
+                  <p className="mt-1 text-[15px] font-semibold">Context every workspace can use.</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 sm:grid-cols-5">
+                {productExplorer.foundation.map((item) => (
+                  <div key={item} className="flex items-center gap-2 border-l border-white/10 pl-3">
+                    <span className="size-1.5 shrink-0 rounded-full bg-[#55d7c4]" />
+                    <span className="text-[10px] text-white/65">{item}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="grid md:min-h-[520px] md:grid-cols-[0.38fr_0.62fr]">
-            <div className="flex flex-col border-b border-[var(--border-hairline)] p-6 sm:p-8 md:border-b-0 md:border-r md:p-10">
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={active} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.28 }}>
-                  <span className="text-[10px] font-semibold uppercase text-[var(--accent-text)]">Module {activeIndex + 1} of {productTabs.length}</span>
-                  <h3 className="mt-4 text-[26px] font-semibold leading-tight text-[var(--text-primary)]">{activeTab.label}</h3>
-                  <p className="mt-4 text-[14px] leading-6 text-[var(--text-secondary)]">{activeTab.description}</p>
-                  <ul className="mt-7 space-y-3">
-                    {(productDetails[active] ?? []).map((detail) => <li key={detail} className="flex items-start gap-2.5 text-[11px] leading-5 text-[var(--text-primary)]"><span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[var(--accent)]" />{detail}</li>)}
-                  </ul>
-                </motion.div>
-              </AnimatePresence>
-              <a href={productExplorer.cta.href} className="mt-8 inline-flex items-center gap-2 text-[12px] font-semibold text-[var(--accent-text)] md:mt-auto">{productExplorer.cta.label}<ArrowRight className="size-4" /></a>
-            </div>
+        </Reveal>
 
-            <div className="relative min-h-[380px] overflow-hidden bg-[#f3f6f5] sm:min-h-[460px] md:min-h-0">
-              <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "linear-gradient(rgba(10,15,13,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(10,15,13,0.06) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div key={active} initial={{ opacity: 0, scale: 0.985 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.99 }} transition={{ duration: 0.35 }} className="absolute inset-4 overflow-hidden rounded-[10px] border border-black/[0.07] bg-white shadow-[0_24px_60px_-35px_rgba(5,20,15,0.55)] sm:inset-7">
-                  <Image src={activeImage} alt={`${activeTab.label} workspace preview`} fill sizes="(max-width: 768px) 100vw, 60vw" className="object-contain object-center" />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
+        <div className="mt-6 flex justify-end">
+          <a href={productExplorer.cta.href} className="inline-flex items-center gap-2 text-[12px] font-semibold text-[#087f70]">
+            {productExplorer.cta.label}<ArrowRight className="size-4" />
+          </a>
         </div>
       </Container>
     </section>
