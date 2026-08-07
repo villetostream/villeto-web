@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowRight, CalendarDays, Loader2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { DemoRequestDialog } from "@/components/ui/DemoRequestDialog";
 import { Reveal } from "@/components/ui/Reveal";
 import { finalCta } from "@/lib/content/trust";
 import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
@@ -10,10 +11,17 @@ import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 export function FinalCta() {
   const { handleSubmit, loading, error } = useEmailOnboarding();
   const [email, setEmail] = useState("");
+  const [demoOpen, setDemoOpen] = useState(false);
+  const demoButtonRef = useRef<HTMLButtonElement>(null);
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     handleSubmit(email);
+  };
+
+  const closeDemo = () => {
+    setDemoOpen(false);
+    window.requestAnimationFrame(() => demoButtonRef.current?.focus());
   };
 
   return (
@@ -46,10 +54,11 @@ export function FinalCta() {
 
           <div className="mt-5 flex items-center gap-3 border-t border-[#0a0f0d]/10 pt-5">
             <span className="flex size-8 items-center justify-center rounded-[7px] bg-white/75 text-[#087f70]"><CalendarDays className="size-4" /></span>
-            <div className="type-ui flex flex-1 items-center justify-between gap-4"><p className="text-[#53605a]">Prefer a guided walkthrough?</p><a href={finalCta.demo.href} className="font-semibold text-[#087f70]">{finalCta.demo.label}</a></div>
+            <div className="type-ui flex flex-1 items-center justify-between gap-4"><p className="text-[#53605a]">Prefer a guided walkthrough?</p><button ref={demoButtonRef} type="button" onClick={() => setDemoOpen(true)} className="font-semibold text-[#087f70]">{finalCta.demo.label}</button></div>
           </div>
         </Reveal>
       </Container>
+      <DemoRequestDialog open={demoOpen} onClose={closeDemo} initialEmail={email} />
     </section>
   );
 }

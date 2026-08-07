@@ -35,5 +35,5 @@ export const finalCta = {
   subhead: "Connect the request, vendor, policy decision, invoice, and financial record without replacing everything at once.",
   emailPlaceholder: "What is your work email?",
   cta: { label: "Get Started for free", href: "#get-started" },
-  demo: { label: "See a Demo", href: "mailto:info@villeto.com?subject=Villeto%20demo%20request" },
+  demo: { label: "See a Demo" },
 };
