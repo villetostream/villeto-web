@@ -42,16 +42,16 @@ export function Hero() {
           <div className="self-start animate-hero-fade">
             <div className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3.5 py-1.5">
               <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
-              <span className="text-[13px] font-medium text-[var(--accent-text)]">{hero.eyebrow}</span>
+              <span className="type-eyebrow font-medium text-[var(--accent-text)]">{hero.eyebrow}</span>
               <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
             </div>
           </div>
 
-          <h1 className="mt-4 text-[clamp(2.25rem,3.75vw,3.5rem)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
+          <h1 className="mt-4 text-[length:var(--fs-hero)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
             {hero.headline}
           </h1>
 
-          <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-[var(--text-secondary)] sm:text-[16px] animate-hero-fade animation-delay-200">
+          <p className="type-section-copy mt-4 max-w-[46ch] text-[var(--text-secondary)] animate-hero-fade animation-delay-200">
             {hero.subhead}
           </p>
 
@@ -70,12 +70,12 @@ export function Hero() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={hero.emailPlaceholder}
                 disabled={loading}
-                className="min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2 text-[14.5px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 min-[480px]:px-0"
+                className="type-card-copy min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 min-[480px]:px-0"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14.5px] font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
+                className="type-card-copy flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : hero.primaryCta.label}
               </button>
@@ -85,7 +85,7 @@ export function Hero() {
             {/* See Villeto in action — with play circle icon */}
             <a
               href={hero.secondaryCta.href}
-              className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-[var(--accent-text)] transition-opacity hover:opacity-80"
+              className="type-card-copy mt-4 inline-flex items-center gap-2 font-medium text-[var(--accent-text)] transition-opacity hover:opacity-80"
             >
               <PlayCircle className="size-5" strokeWidth={1.75} />
               {hero.secondaryCta.label}
