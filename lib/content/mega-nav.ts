@@ -124,7 +124,7 @@ const companyNavItems: MegaNavItem[] = [
     slug: "contact",
     title: "Contact sales",
     description: "Talk through your current procurement and spend process.",
-    href: "mailto:Contact@villeto.com",
+    href: "mailto:info@villeto.com",
     icon: "inbox",
   },
 ];
