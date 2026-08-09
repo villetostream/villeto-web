@@ -7,7 +7,7 @@ import { PlayCircle, Loader2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { hero } from "@/lib/content/hero";
-import { GovernanceOrbit } from "./GovernanceOrbit";
+import { SpendControlScene } from "./SpendControlScene";
 import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
 export function Hero() {
@@ -93,10 +93,10 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Right column: live spend decision */}
+        {/* Right column: three-dimensional spend workflow */}
         <Reveal delay={0.1} className="flex min-w-0 w-full flex-col items-center md:-mt-4 lg:-mt-6 xl:-mt-8">
-          <div className="w-full min-[1200px]:w-[calc(100%+32px)]">
-            <GovernanceOrbit />
+          <div className="w-full min-[1200px]:w-[calc(100%+48px)]">
+            <SpendControlScene />
           </div>
         </Reveal>
       </Container>
