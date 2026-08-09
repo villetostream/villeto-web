@@ -37,8 +37,8 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
       <div className="grid h-full grid-cols-[1.1fr_0.9fr] gap-3 sm:gap-5">
         <div className="flex min-w-0 flex-col rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between gap-2">
-            <span className="type-meta rounded-full bg-[var(--accent-soft)] px-2.5 py-1 font-semibold text-[var(--accent-text)]">PR-0248</span>
-            <span className="type-meta text-[var(--text-secondary)]">Just now</span>
+            <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[9px] font-semibold text-[var(--accent-text)] sm:text-[10px]">PR-0248</span>
+            <span className="text-[9px] text-[var(--text-secondary)] sm:text-[10px]">Just now</span>
           </div>
 
           <div className="mt-4 flex items-start gap-3 sm:mt-5">
@@ -46,19 +46,19 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
               <Building2 className="size-4 sm:size-[18px]" strokeWidth={1.8} />
             </span>
             <div className="min-w-0">
-              <p className="type-card-copy truncate font-semibold text-[var(--text-primary)]">Figma Enterprise</p>
-              <p className="type-meta mt-0.5 text-[var(--text-secondary)]">24 design seats · Annual</p>
+              <p className="truncate text-[13px] font-semibold text-[var(--text-primary)] sm:text-[15px]">Figma Enterprise</p>
+              <p className="mt-0.5 text-[9px] text-[var(--text-secondary)] sm:text-[10px]">24 design seats · Annual</p>
             </div>
           </div>
 
           <div className="mt-auto grid grid-cols-2 gap-2 border-t border-[var(--border-hairline)] pt-3 sm:pt-4">
             <div>
-              <p className="type-meta uppercase text-[var(--text-secondary)]">Requested by</p>
-              <p className="type-meta mt-1 truncate font-medium text-[var(--text-primary)]">Amara · Design</p>
+              <p className="text-[8px] uppercase text-[var(--text-secondary)] sm:text-[9px]">Requested by</p>
+              <p className="mt-1 truncate text-[10px] font-medium text-[var(--text-primary)] sm:text-[11px]">Amara · Design</p>
             </div>
             <div>
-              <p className="type-meta uppercase text-[var(--text-secondary)]">Request total</p>
-              <p className="type-ui mt-1 font-semibold text-[var(--text-primary)]">$8,400</p>
+              <p className="text-[8px] uppercase text-[var(--text-secondary)] sm:text-[9px]">Request total</p>
+              <p className="mt-1 text-[12px] font-semibold text-[var(--text-primary)] sm:text-[13px]">$8,400</p>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
           >
             <div className="flex items-center gap-2 text-[var(--text-primary)]">
               <FileText className="size-3.5 text-[var(--accent-text)] sm:size-4" />
-              <span className="type-ui font-semibold">Request complete</span>
+              <span className="text-[10px] font-semibold sm:text-[11px]">Request complete</span>
             </div>
             <div className="mt-3 space-y-2">
               {["Business need", "Vendor details", "Budget owner"].map((item, index) => (
@@ -81,7 +81,7 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
                   initial={reduceMotion ? false : { opacity: 0, x: 8 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.28 + index * 0.12, duration: 0.35 }}
-                  className="type-meta flex items-center gap-2 text-[var(--text-secondary)]"
+                  className="flex items-center gap-2 text-[9px] text-[var(--text-secondary)] sm:text-[10px]"
                 >
                   <Check className="size-3 text-[var(--accent)]" strokeWidth={2.4} />
                   <span className="truncate">{item}</span>
@@ -96,7 +96,7 @@ function ProcurementScene({ reduceMotion }: { reduceMotion: boolean }) {
             transition={{ delay: 0.75, duration: 0.4, ease: EASE }}
             className="mt-3 flex items-center justify-between rounded-[9px] bg-[var(--bg-inverse)] px-3 py-2.5 text-[var(--text-on-inverse)]"
           >
-            <span className="type-meta font-medium">Send to policy</span>
+            <span className="text-[9px] font-medium sm:text-[10px]">Send to policy</span>
             <ArrowRight className="size-3.5 opacity-80" />
           </motion.div>
         </div>
@@ -135,15 +135,15 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
               <ShieldCheck className="size-6 sm:size-7" strokeWidth={1.7} />
             </span>
           </div>
-          <p className="type-ui mt-1 text-center font-semibold text-[var(--text-primary)]">Policy engine</p>
-          <p className="type-meta mt-1 hidden text-center text-[var(--text-secondary)] sm:block">Evaluating before spend</p>
+          <p className="mt-1 text-center text-[10px] font-semibold text-[var(--text-primary)] sm:text-[11px]">Policy engine</p>
+          <p className="mt-1 hidden text-center text-[9px] text-[var(--text-secondary)] sm:block">Evaluating before spend</p>
         </div>
 
         <div className="min-w-0 rounded-[12px] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-3.5 shadow-sm sm:p-5">
           <div className="flex items-center justify-between gap-2 border-b border-[var(--border-hairline)] pb-3">
             <div className="min-w-0">
-              <p className="type-ui truncate font-semibold text-[var(--text-primary)]">Figma Enterprise · $8,400</p>
-              <p className="type-meta mt-0.5 text-[var(--text-secondary)]">3 controls evaluated in real time</p>
+              <p className="truncate text-[11px] font-semibold text-[var(--text-primary)] sm:text-[13px]">Figma Enterprise · $8,400</p>
+              <p className="mt-0.5 text-[8px] text-[var(--text-secondary)] sm:text-[9px]">3 controls evaluated in real time</p>
             </div>
             <Sparkles className="size-4 shrink-0 text-[var(--accent)]" />
           </div>
@@ -166,8 +166,8 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
                   <Check className="size-3 sm:size-3.5" strokeWidth={2.5} />
                 </motion.span>
                 <div className="min-w-0">
-                  <p className="type-meta truncate font-semibold text-[var(--text-primary)]">{title}</p>
-                  <p className="type-meta truncate text-[var(--text-secondary)]">{detail}</p>
+                  <p className="truncate text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">{title}</p>
+                  <p className="truncate text-[8px] text-[var(--text-secondary)] sm:text-[9px]">{detail}</p>
                 </div>
               </motion.div>
             ))}
@@ -179,7 +179,7 @@ function PolicyScene({ reduceMotion }: { reduceMotion: boolean }) {
             transition={{ delay: 1.12, duration: 0.45, ease: EASE }}
             className="mt-2 flex items-center justify-between rounded-[8px] bg-[var(--accent-soft)] px-3 py-2 text-[var(--accent-text)]"
           >
-            <span className="type-meta font-semibold">Cleared automatically</span>
+            <span className="text-[9px] font-semibold sm:text-[10px]">Cleared automatically</span>
             <CheckCircle2 className="size-3.5" />
           </motion.div>
         </div>
@@ -202,20 +202,20 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
           <div className="relative flex items-start justify-between">
             <div className="flex items-center gap-2">
               <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain" /></div>
-              <span className="type-ui font-semibold">Employee card</span>
+              <span className="text-[10px] font-semibold sm:text-[11px]">Employee card</span>
             </div>
             <CreditCard className="size-4 opacity-80" strokeWidth={1.7} />
           </div>
           <div className="relative mt-5 sm:mt-7">
-            <p className="type-meta uppercase opacity-55">Available this month</p>
+            <p className="text-[8px] uppercase opacity-55 sm:text-[9px]">Available this month</p>
             <p className="mt-1 text-[18px] font-semibold sm:text-[22px]">$2,150.00</p>
           </div>
           <div className="absolute inset-x-4 bottom-3 flex items-end justify-between sm:inset-x-5 sm:bottom-4">
             <div>
-              <p className="type-meta opacity-50">CARDHOLDER</p>
-              <p className="type-meta font-medium">Amara Okafor</p>
+              <p className="text-[8px] opacity-50">CARDHOLDER</p>
+              <p className="text-[9px] font-medium sm:text-[10px]">Amara Okafor</p>
             </div>
-            <span className="type-meta opacity-70">•••• 2048</span>
+            <span className="text-[9px] tracking-widest opacity-70 sm:text-[10px]">•••• 2048</span>
           </div>
         </motion.div>
 
@@ -230,13 +230,13 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
               <span className="flex size-7 shrink-0 items-center justify-center rounded-[7px] bg-[var(--bg-surface)] text-[var(--text-primary)] sm:size-8"><ReceiptText className="size-3.5" /></span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="type-meta truncate font-semibold text-[var(--text-primary)]">Adobe</p>
-                  <p className="type-meta font-semibold text-[var(--text-primary)]">$84.99</p>
+                  <p className="truncate text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">Adobe</p>
+                  <p className="text-[9px] font-semibold text-[var(--text-primary)] sm:text-[10px]">$84.99</p>
                 </div>
-                <p className="type-meta mt-0.5 text-[var(--text-secondary)]">Software · Today</p>
+                <p className="mt-0.5 text-[8px] text-[var(--text-secondary)] sm:text-[9px]">Software · Today</p>
               </div>
             </div>
-            <div className="type-meta mt-2.5 flex items-center gap-1.5 border-t border-[var(--border-hairline)] pt-2 font-medium text-[var(--accent-text)]">
+            <div className="mt-2.5 flex items-center gap-1.5 border-t border-[var(--border-hairline)] pt-2 text-[8px] font-medium text-[var(--accent-text)] sm:text-[9px]">
               <CheckCircle2 className="size-3" /> Receipt matched · In policy
             </div>
           </motion.div>
@@ -249,8 +249,8 @@ function ExpensesScene({ reduceMotion }: { reduceMotion: boolean }) {
           >
             <Users className="size-4 shrink-0" />
             <div className="min-w-0">
-              <p className="type-meta font-semibold">Controls follow the employee</p>
-              <p className="type-meta hidden opacity-75 sm:block">No reimbursement chase. No surprise spend.</p>
+              <p className="text-[9px] font-semibold sm:text-[10px]">Controls follow the employee</p>
+              <p className="hidden text-[8px] opacity-75 sm:block sm:text-[9px]">No reimbursement chase. No surprise spend.</p>
             </div>
           </motion.div>
         </div>
@@ -285,9 +285,9 @@ export function GovernanceOrbit() {
         <div className="flex h-11 items-center justify-between border-b border-[var(--border-hairline)] px-4 sm:px-5">
           <div className="flex items-center gap-2.5">
             <div className="relative size-5"><Image src="/images/villeto-v.png" alt="" fill sizes="20px" className="object-contain" /></div>
-            <span className="type-ui font-semibold text-[var(--text-primary)]">How spend moves through Villeto</span>
+            <span className="text-[11px] font-semibold text-[var(--text-primary)] sm:text-[12px]">How spend moves through Villeto</span>
           </div>
-          <span className="type-meta hidden items-center gap-1.5 font-medium text-[var(--text-secondary)] sm:flex">
+          <span className="hidden items-center gap-1.5 text-[9px] font-medium text-[var(--text-secondary)] sm:flex">
             <span className="size-1.5 rounded-full bg-[var(--accent)]" /> Live control layer
           </span>
         </div>
@@ -303,8 +303,8 @@ export function GovernanceOrbit() {
                 aria-pressed={active}
                 className="relative min-w-0 border-r border-[var(--border-hairline)] px-2 py-2.5 text-left last:border-r-0 sm:px-4 sm:py-3"
               >
-                <span className={`type-meta block font-semibold ${active ? "text-[var(--accent-text)]" : "text-[var(--text-secondary)]"}`}>0{index + 1}</span>
-                <span className={`type-meta mt-0.5 block truncate font-semibold ${active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{scene.label}</span>
+                <span className={`block text-[8px] font-semibold ${active ? "text-[var(--accent-text)]" : "text-[var(--text-secondary)]"}`}>0{index + 1}</span>
+                <span className={`mt-0.5 block truncate text-[9px] font-semibold sm:text-[10px] ${active ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{scene.label}</span>
                 {active && (
                   <motion.span
                     key={`${activeScene}-${paused}`}
@@ -334,7 +334,7 @@ export function GovernanceOrbit() {
               initial={reduceMotion ? false : { opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
-              className="type-meta truncate font-medium text-[var(--text-secondary)]"
+              className="truncate text-[9px] font-medium text-[var(--text-secondary)] sm:text-[10px]"
             >
               {scenes[activeScene]?.kicker}
             </motion.p>

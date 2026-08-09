@@ -7,7 +7,7 @@ import { PlayCircle, Loader2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 import { hero } from "@/lib/content/hero";
-import { SpendControlScene } from "./SpendControlScene";
+import { GovernanceOrbit } from "./GovernanceOrbit";
 import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
 export function Hero() {
@@ -42,16 +42,16 @@ export function Hero() {
           <div className="self-start animate-hero-fade">
             <div className="inline-flex items-center gap-2 rounded-full bg-[var(--accent-soft)] px-3.5 py-1.5">
               <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
-              <span className="type-eyebrow font-medium text-[var(--accent-text)]">{hero.eyebrow}</span>
+              <span className="text-[13px] font-medium text-[var(--accent-text)]">{hero.eyebrow}</span>
               <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-hidden="true" />
             </div>
           </div>
 
-          <h1 className="mt-4 text-[length:var(--fs-hero)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
+          <h1 className="mt-4 text-[clamp(2.25rem,3.75vw,3.5rem)] font-semibold text-[var(--text-primary)] animate-hero-fade animation-delay-100">
             {hero.headline}
           </h1>
 
-          <p className="type-section-copy mt-4 max-w-[46ch] text-[var(--text-secondary)] animate-hero-fade animation-delay-200">
+          <p className="mt-4 max-w-[46ch] text-[16px] leading-relaxed text-[var(--text-secondary)] sm:text-[16px] animate-hero-fade animation-delay-200">
             {hero.subhead}
           </p>
 
@@ -70,12 +70,12 @@ export function Hero() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={hero.emailPlaceholder}
                 disabled={loading}
-                className="type-card-copy min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 min-[480px]:px-0"
+                className="min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2 text-[14.5px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 min-[480px]:px-0"
               />
               <button
                 type="submit"
                 disabled={loading}
-                className="type-card-copy flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
+                className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14.5px] font-semibold text-[var(--accent-contrast)] transition-transform hover:translate-y-[-1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : hero.primaryCta.label}
               </button>
@@ -85,7 +85,7 @@ export function Hero() {
             {/* See Villeto in action — with play circle icon */}
             <a
               href={hero.secondaryCta.href}
-              className="type-card-copy mt-4 inline-flex items-center gap-2 font-medium text-[var(--accent-text)] transition-opacity hover:opacity-80"
+              className="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-[var(--accent-text)] transition-opacity hover:opacity-80"
             >
               <PlayCircle className="size-5" strokeWidth={1.75} />
               {hero.secondaryCta.label}
@@ -93,10 +93,10 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Right column: three-dimensional spend workflow */}
+        {/* Right column: live spend decision */}
         <Reveal delay={0.1} className="flex min-w-0 w-full flex-col items-center md:-mt-4 lg:-mt-6 xl:-mt-8">
-          <div className="w-full min-[1200px]:w-[calc(100%+48px)]">
-            <SpendControlScene />
+          <div className="w-full min-[1200px]:w-[calc(100%+32px)]">
+            <GovernanceOrbit />
           </div>
         </Reveal>
       </Container>
