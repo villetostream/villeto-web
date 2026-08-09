@@ -1,59 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useReducedMotion } from "motion/react";
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 
-const ROTATION_INTERVAL = 4400;
-
-const workflows = [
-  {
-    label: "Procurement",
-    eyebrow: "PURCHASE REQUEST",
-    title: "Aster Cloud",
-    detail: "Annual analytics workspace",
-    amount: "$6,800",
-    status: "Ready for policy",
-    rows: ["Business need captured", "Budget owner linked", "Vendor selected"],
-    accent: "#68ddca",
-  },
-  {
-    label: "Policy engine",
-    eyebrow: "POLICY EVALUATION",
-    title: "3 controls evaluated",
-    detail: "Rules applied before approval",
-    amount: "SW-05",
-    status: "Cleared automatically",
-    rows: ["Budget available", "Vendor risk cleared", "Finance route selected"],
-    accent: "#8de6d8",
-  },
-  {
-    label: "Employee expenses",
-    eyebrow: "EMPLOYEE EXPENSE",
-    title: "Adobe · $84.99",
-    detail: "Software · Today",
-    amount: "IN POLICY",
-    status: "Posted to ledger",
-    rows: ["Receipt matched", "Employee limit checked", "Category coded"],
-    accent: "#d6c980",
-  },
-] as const;
-
-const panelTargets = [
-  { position: new THREE.Vector3(0, 0.08, 0.6), rotationY: 0, scale: 1, opacity: 1 },
-  { position: new THREE.Vector3(3.15, 0.22, -2.15), rotationY: -0.6, scale: 0.78, opacity: 0.52 },
-  { position: new THREE.Vector3(-3.15, -0.12, -2.45), rotationY: 0.62, scale: 0.74, opacity: 0.4 },
-] as const;
-
-type PanelGroup = THREE.Group & {
-  userData: {
-    opacity: number;
-    panelMaterial: THREE.MeshBasicMaterial;
-    shadowMaterial: THREE.MeshBasicMaterial;
-  };
+type FloatingObject = {
+  group: THREE.Group;
+  basePosition: THREE.Vector3;
+  baseRotation: THREE.Euler;
+  amplitude: number;
+  phase: number;
 };
 
-function drawRoundedRect(
+function roundedRect(
   context: CanvasRenderingContext2D,
   x: number,
   y: number,
@@ -74,13 +34,13 @@ function drawRoundedRect(
   }
 }
 
-function drawCheck(context: CanvasRenderingContext2D, x: number, y: number, accent: string) {
+function check(context: CanvasRenderingContext2D, x: number, y: number, color = "#0ea894") {
   context.beginPath();
   context.arc(x, y, 13, 0, Math.PI * 2);
-  context.fillStyle = `${accent}22`;
+  context.fillStyle = `${color}20`;
   context.fill();
-  context.strokeStyle = accent;
-  context.lineWidth = 2.5;
+  context.strokeStyle = color;
+  context.lineWidth = 2.4;
   context.lineCap = "round";
   context.lineJoin = "round";
   context.beginPath();
@@ -90,79 +50,13 @@ function drawCheck(context: CanvasRenderingContext2D, x: number, y: number, acce
   context.stroke();
 }
 
-function createPanelTexture(renderer: THREE.WebGLRenderer, workflow: (typeof workflows)[number]) {
+function canvasTexture(renderer: THREE.WebGLRenderer, width: number, height: number, draw: (context: CanvasRenderingContext2D) => void) {
   const canvas = document.createElement("canvas");
-  canvas.width = 960;
-  canvas.height = 600;
+  canvas.width = width;
+  canvas.height = height;
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Canvas 2D context is unavailable");
-
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  drawRoundedRect(context, 10, 10, 940, 580, 30, "#0d1512", "#2a3933");
-
-  context.save();
-  context.beginPath();
-  context.roundRect(10, 10, 940, 580, 30);
-  context.clip();
-
-  context.fillStyle = "#111d18";
-  context.fillRect(10, 10, 940, 92);
-  context.fillStyle = workflow.accent;
-  context.fillRect(10, 100, 940, 3);
-
-  context.fillStyle = workflow.accent;
-  context.font = "700 30px Inter, Arial, sans-serif";
-  context.fillText("V", 48, 68);
-  context.fillStyle = "#f3f7f5";
-  context.font = "600 22px Inter, Arial, sans-serif";
-  context.fillText("VILLETO", 84, 66);
-  context.fillStyle = "#82938b";
-  context.font = "500 17px Inter, Arial, sans-serif";
-  context.textAlign = "right";
-  context.fillText("LIVE CONTROL LAYER", 910, 64);
-  context.textAlign = "left";
-
-  context.fillStyle = workflow.accent;
-  context.font = "700 18px Inter, Arial, sans-serif";
-  context.fillText(workflow.eyebrow, 52, 154);
-  context.fillStyle = "#f5f7f6";
-  context.font = "600 42px Inter, Arial, sans-serif";
-  context.fillText(workflow.title, 52, 212);
-  context.fillStyle = "#91a099";
-  context.font = "400 21px Inter, Arial, sans-serif";
-  context.fillText(workflow.detail, 52, 250);
-
-  drawRoundedRect(context, 718, 139, 190, 74, 14, `${workflow.accent}18`, `${workflow.accent}55`);
-  context.fillStyle = workflow.accent;
-  context.textAlign = "center";
-  context.font = "700 24px Inter, Arial, sans-serif";
-  context.fillText(workflow.amount, 813, 185);
-  context.textAlign = "left";
-
-  workflow.rows.forEach((row, index) => {
-    const y = 318 + index * 70;
-    if (index > 0) {
-      context.fillStyle = "#25322d";
-      context.fillRect(52, y - 34, 856, 1);
-    }
-    drawCheck(context, 72, y, workflow.accent);
-    context.fillStyle = "#d9e1dd";
-    context.font = "500 21px Inter, Arial, sans-serif";
-    context.fillText(row, 108, y + 7);
-    context.fillStyle = "#6f8179";
-    context.textAlign = "right";
-    context.font = "500 17px Inter, Arial, sans-serif";
-    context.fillText(index === 2 ? "COMPLETE" : "VERIFIED", 905, y + 6);
-    context.textAlign = "left";
-  });
-
-  drawRoundedRect(context, 52, 520, 856, 48, 12, `${workflow.accent}14`);
-  context.fillStyle = workflow.accent;
-  context.font = "600 18px Inter, Arial, sans-serif";
-  context.fillText(workflow.status, 76, 552);
-  context.textAlign = "right";
-  context.fillText("→", 878, 552);
-  context.restore();
+  draw(context);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -171,29 +65,230 @@ function createPanelTexture(renderer: THREE.WebGLRenderer, workflow: (typeof wor
   return texture;
 }
 
-function getPanelTarget(index: number, active: number) {
-  const relative = (index - active + workflows.length) % workflows.length;
-  return panelTargets[relative] ?? panelTargets[0];
+function cardTexture(renderer: THREE.WebGLRenderer) {
+  return canvasTexture(renderer, 900, 560, (context) => {
+    roundedRect(context, 8, 8, 884, 544, 38, "#09110e", "#33443d");
+    context.fillStyle = "#6fe0ce";
+    context.font = "700 30px Inter, Arial, sans-serif";
+    context.fillText("V", 54, 72);
+    context.fillStyle = "#f4f7f5";
+    context.font = "600 22px Inter, Arial, sans-serif";
+    context.fillText("VILLETO", 94, 70);
+    context.fillStyle = "#73857d";
+    context.textAlign = "right";
+    context.font = "600 17px Inter, Arial, sans-serif";
+    context.fillText("CONTROL CARD", 844, 68);
+    context.textAlign = "left";
+
+    roundedRect(context, 58, 132, 94, 70, 12, "#b8a56a");
+    context.strokeStyle = "#74683f";
+    context.lineWidth = 2;
+    context.strokeRect(81, 132, 2, 70);
+    context.strokeRect(126, 132, 2, 70);
+    context.strokeRect(58, 154, 94, 2);
+    context.strokeRect(58, 180, 94, 2);
+
+    context.fillStyle = "#f4f7f5";
+    context.font = "500 34px Inter, Arial, sans-serif";
+    context.fillText("••••  ••••  ••••  2048", 58, 312);
+    context.fillStyle = "#72827b";
+    context.font = "600 16px Inter, Arial, sans-serif";
+    context.fillText("CARDHOLDER", 58, 404);
+    context.fillText("POLICY", 595, 404);
+    context.fillStyle = "#e4ebe7";
+    context.font = "600 21px Inter, Arial, sans-serif";
+    context.fillText("AMARA OKAFOR", 58, 440);
+    context.fillStyle = "#6fe0ce";
+    context.fillText("SW-05 · ACTIVE", 595, 440);
+    context.textAlign = "right";
+    context.fillStyle = "#8b9b94";
+    context.font = "500 17px Inter, Arial, sans-serif";
+    context.fillText("BUSINESS EXPENSE", 844, 510);
+  });
+}
+
+function phoneTexture(renderer: THREE.WebGLRenderer) {
+  return canvasTexture(renderer, 500, 1000, (context) => {
+    roundedRect(context, 5, 5, 490, 990, 50, "#0a0f0d");
+    roundedRect(context, 22, 40, 456, 920, 36, "#f7f9f8");
+    roundedRect(context, 180, 20, 140, 28, 14, "#0a0f0d");
+
+    context.fillStyle = "#0b6e61";
+    context.font = "700 25px Inter, Arial, sans-serif";
+    context.fillText("V", 52, 104);
+    context.fillStyle = "#111714";
+    context.font = "600 19px Inter, Arial, sans-serif";
+    context.fillText("VILLETO", 84, 102);
+    context.fillStyle = "#6d7973";
+    context.textAlign = "right";
+    context.font = "500 16px Inter, Arial, sans-serif";
+    context.fillText("EXPENSE", 444, 100);
+    context.textAlign = "left";
+
+    context.fillStyle = "#64716b";
+    context.font = "600 16px Inter, Arial, sans-serif";
+    context.fillText("TODAY", 52, 174);
+    context.fillStyle = "#111714";
+    context.font = "600 35px Inter, Arial, sans-serif";
+    context.fillText("Adobe", 52, 232);
+    context.fillStyle = "#111714";
+    context.textAlign = "right";
+    context.fillText("$84.99", 444, 232);
+    context.textAlign = "left";
+    context.fillStyle = "#748079";
+    context.font = "400 18px Inter, Arial, sans-serif";
+    context.fillText("Software · Amara Okafor", 52, 270);
+
+    roundedRect(context, 52, 318, 392, 126, 22, "#e3f5f1");
+    check(context, 90, 380);
+    context.fillStyle = "#111714";
+    context.font = "600 20px Inter, Arial, sans-serif";
+    context.fillText("Expense approved", 122, 372);
+    context.fillStyle = "#537068";
+    context.font = "400 16px Inter, Arial, sans-serif";
+    context.fillText("No action needed", 122, 402);
+
+    const rows: Array<[string, string]> = [
+      ["Receipt", "Matched"],
+      ["Policy SW-05", "Passed"],
+      ["Ledger code", "Software"],
+    ];
+    rows.forEach(([label, value], index) => {
+      const y = 530 + index * 92;
+      context.fillStyle = "#dce2df";
+      context.fillRect(52, y - 34, 392, 1);
+      context.fillStyle = "#68756f";
+      context.font = "500 17px Inter, Arial, sans-serif";
+      context.fillText(label, 52, y + 4);
+      context.fillStyle = "#111714";
+      context.textAlign = "right";
+      context.font = "600 17px Inter, Arial, sans-serif";
+      context.fillText(value, 444, y + 4);
+      context.textAlign = "left";
+    });
+
+    roundedRect(context, 52, 836, 392, 64, 18, "#0ea894");
+    context.fillStyle = "#ffffff";
+    context.textAlign = "center";
+    context.font = "600 18px Inter, Arial, sans-serif";
+    context.fillText("View transaction record", 248, 876);
+    context.textAlign = "left";
+  });
+}
+
+function requestTexture(renderer: THREE.WebGLRenderer) {
+  return canvasTexture(renderer, 900, 560, (context) => {
+    roundedRect(context, 8, 8, 884, 544, 28, "#ffffff", "#dce3df");
+    context.fillStyle = "#0b6e61";
+    context.font = "700 18px Inter, Arial, sans-serif";
+    context.fillText("PURCHASE REQUEST · PR-0248", 50, 64);
+    context.fillStyle = "#111714";
+    context.font = "600 38px Inter, Arial, sans-serif";
+    context.fillText("Aster Cloud", 50, 126);
+    context.fillStyle = "#6b7771";
+    context.font = "400 19px Inter, Arial, sans-serif";
+    context.fillText("Annual analytics workspace", 50, 164);
+    roundedRect(context, 682, 66, 166, 70, 14, "#e5f6f2");
+    context.fillStyle = "#0b6e61";
+    context.textAlign = "center";
+    context.font = "700 24px Inter, Arial, sans-serif";
+    context.fillText("$6,800", 765, 110);
+    context.textAlign = "left";
+
+    const rows = ["Business need captured", "Budget owner assigned", "Vendor profile verified"];
+    rows.forEach((row, index) => {
+      const y = 250 + index * 68;
+      check(context, 68, y);
+      context.fillStyle = "#25302b";
+      context.font = "500 19px Inter, Arial, sans-serif";
+      context.fillText(row, 102, y + 6);
+    });
+
+    roundedRect(context, 50, 458, 798, 58, 14, "#111714");
+    context.fillStyle = "#71decd";
+    context.font = "600 18px Inter, Arial, sans-serif";
+    context.fillText("READY FOR POLICY EVALUATION", 78, 495);
+    context.textAlign = "right";
+    context.fillText("→", 816, 495);
+    context.textAlign = "left";
+  });
+}
+
+function invoiceTexture(renderer: THREE.WebGLRenderer) {
+  return canvasTexture(renderer, 560, 360, (context) => {
+    roundedRect(context, 6, 6, 548, 348, 20, "#fbfcfb", "#dbe2de");
+    context.fillStyle = "#77837d";
+    context.font = "700 15px Inter, Arial, sans-serif";
+    context.fillText("INVOICE · INV-2048", 38, 54);
+    context.fillStyle = "#111714";
+    context.font = "600 28px Inter, Arial, sans-serif";
+    context.fillText("Aster Cloud", 38, 108);
+    context.fillStyle = "#637069";
+    context.font = "400 17px Inter, Arial, sans-serif";
+    context.fillText("Due Friday · ACH", 38, 142);
+    context.fillStyle = "#111714";
+    context.textAlign = "right";
+    context.font = "700 28px Inter, Arial, sans-serif";
+    context.fillText("$6,800", 520, 108);
+    context.textAlign = "left";
+    roundedRect(context, 38, 202, 484, 92, 16, "#e3f5f1");
+    check(context, 76, 248);
+    context.fillStyle = "#111714";
+    context.font = "600 19px Inter, Arial, sans-serif";
+    context.fillText("Matched to request and approval", 108, 242);
+    context.fillStyle = "#527068";
+    context.font = "400 15px Inter, Arial, sans-serif";
+    context.fillText("Audit evidence attached", 108, 270);
+  });
+}
+
+function policyTexture(renderer: THREE.WebGLRenderer) {
+  return canvasTexture(renderer, 540, 170, (context) => {
+    roundedRect(context, 4, 4, 532, 162, 26, "#0c1713", "#365047");
+    check(context, 54, 85, "#72dfce");
+    context.fillStyle = "#72dfce";
+    context.font = "700 17px Inter, Arial, sans-serif";
+    context.fillText("POLICY SW-05", 88, 70);
+    context.fillStyle = "#f2f6f4";
+    context.font = "600 21px Inter, Arial, sans-serif";
+    context.fillText("Controls active", 88, 104);
+    context.fillStyle = "#84978e";
+    context.textAlign = "right";
+    context.font = "600 15px Inter, Arial, sans-serif";
+    context.fillText("3 / 3 PASSED", 494, 90);
+    context.textAlign = "left";
+  });
+}
+
+function physicalPanel(
+  texture: THREE.CanvasTexture,
+  width: number,
+  height: number,
+  depth: number,
+  radius: number,
+  backingColor: number,
+) {
+  const group = new THREE.Group();
+  const backing = new THREE.Mesh(
+    new RoundedBoxGeometry(width, height, depth, 5, radius),
+    new THREE.MeshStandardMaterial({ color: backingColor, roughness: 0.62, metalness: 0.05 }),
+  );
+  const face = new THREE.Mesh(
+    new THREE.PlaneGeometry(width - 0.04, height - 0.04),
+    new THREE.MeshBasicMaterial({ map: texture, transparent: true }),
+  );
+  face.position.z = depth / 2 + 0.006;
+  backing.castShadow = true;
+  backing.receiveShadow = true;
+  group.add(backing, face);
+  return group;
 }
 
 export function SpendControlScene() {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const activeRef = useRef(0);
   const pointerRef = useRef({ x: 0, y: 0 });
   const reduceMotion = Boolean(useReducedMotion());
-  const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    activeRef.current = active;
-  }, [active]);
-
-  useEffect(() => {
-    if (reduceMotion || paused) return;
-    const timer = window.setTimeout(() => setActive((current) => (current + 1) % workflows.length), ROTATION_INTERVAL);
-    return () => window.clearTimeout(timer);
-  }, [active, paused, reduceMotion]);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -203,52 +298,71 @@ export function SpendControlScene() {
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.setClearColor(0x000000, 0);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
 
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 50);
-    camera.position.set(0, 0, 8.4);
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 50);
+    camera.position.set(0, 0.15, 9.6);
 
-    const stage = new THREE.Group();
-    stage.rotation.x = -0.035;
-    scene.add(stage);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x65716b, 2.2));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.6);
+    keyLight.position.set(-4, 6, 9);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.set(1024, 1024);
+    scene.add(keyLight);
 
-    const panelGeometry = new THREE.PlaneGeometry(4.35, 2.72);
-    const shadowGeometry = new THREE.PlaneGeometry(4.55, 2.92);
-    const textures: THREE.CanvasTexture[] = [];
+    const tableau = new THREE.Group();
+    tableau.rotation.set(-0.025, 0.04, -0.025);
+    scene.add(tableau);
 
-    const panels = workflows.map((workflow, index) => {
-      const texture = createPanelTexture(renderer, workflow);
-      textures.push(texture);
+    const platform = new THREE.Mesh(
+      new RoundedBoxGeometry(8.8, 5.8, 0.34, 6, 0.22),
+      new THREE.MeshStandardMaterial({ color: 0xf1f4f2, roughness: 0.82, metalness: 0.02 }),
+    );
+    platform.position.z = -0.5;
+    platform.receiveShadow = true;
+    tableau.add(platform);
 
-      const panelMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, depthWrite: true });
-      const shadowMaterial = new THREE.MeshBasicMaterial({ color: 0x020706, transparent: true, opacity: 0.35, depthWrite: false });
-      const group = new THREE.Group() as PanelGroup;
-      const shadow = new THREE.Mesh(shadowGeometry, shadowMaterial);
-      const panel = new THREE.Mesh(panelGeometry, panelMaterial);
-      shadow.position.set(0.08, -0.11, -0.09);
-      panel.position.z = 0.02;
-      group.add(shadow, panel);
+    const cardMap = cardTexture(renderer);
+    const phoneMap = phoneTexture(renderer);
+    const requestMap = requestTexture(renderer);
+    const invoiceMap = invoiceTexture(renderer);
+    const policyMap = policyTexture(renderer);
+    const textures = [cardMap, phoneMap, requestMap, invoiceMap, policyMap];
 
-      const target = getPanelTarget(index, activeRef.current);
-      group.position.copy(target.position);
-      group.rotation.y = target.rotationY;
-      group.scale.setScalar(target.scale);
-      group.userData = { opacity: target.opacity, panelMaterial, shadowMaterial };
-      panelMaterial.opacity = target.opacity;
-      shadowMaterial.opacity = target.opacity * 0.28;
-      stage.add(group);
-      return group;
-    });
+    const request = physicalPanel(requestMap, 4.05, 2.52, 0.1, 0.12, 0xe8ecea);
+    request.position.set(1.65, 1.15, -0.05);
+    request.rotation.set(-0.02, -0.05, 0.055);
+    tableau.add(request);
 
-    const grid = new THREE.GridHelper(14, 14, 0x68ddca, 0x68ddca);
-    grid.position.set(0, -2.12, -2.2);
-    const gridMaterials = Array.isArray(grid.material) ? grid.material : [grid.material];
-    gridMaterials.forEach((material) => {
-      material.transparent = true;
-      material.opacity = 0.07;
-      material.depthWrite = false;
-    });
-    scene.add(grid);
+    const card = physicalPanel(cardMap, 3.55, 2.2, 0.13, 0.16, 0x09110e);
+    card.position.set(-1.75, 0.48, 0.55);
+    card.rotation.set(-0.025, 0.09, -0.14);
+    tableau.add(card);
+
+    const phone = physicalPanel(phoneMap, 1.72, 3.44, 0.16, 0.2, 0x090d0b);
+    phone.position.set(1.62, -0.64, 1.03);
+    phone.rotation.set(-0.03, -0.08, 0.13);
+    tableau.add(phone);
+
+    const invoice = physicalPanel(invoiceMap, 2.68, 1.72, 0.08, 0.1, 0xe7ebe9);
+    invoice.position.set(-2.12, -1.62, 0.24);
+    invoice.rotation.set(-0.02, 0.05, 0.075);
+    tableau.add(invoice);
+
+    const policy = physicalPanel(policyMap, 2.4, 0.76, 0.09, 0.14, 0x0c1713);
+    policy.position.set(-0.05, 1.85, 1.02);
+    policy.rotation.set(-0.02, 0.03, -0.025);
+    tableau.add(policy);
+
+    const floatingObjects: FloatingObject[] = [
+      { group: card, basePosition: card.position.clone(), baseRotation: card.rotation.clone(), amplitude: 0.045, phase: 0 },
+      { group: phone, basePosition: phone.position.clone(), baseRotation: phone.rotation.clone(), amplitude: 0.06, phase: 1.4 },
+      { group: request, basePosition: request.position.clone(), baseRotation: request.rotation.clone(), amplitude: 0.025, phase: 2.2 },
+      { group: invoice, basePosition: invoice.position.clone(), baseRotation: invoice.rotation.clone(), amplitude: 0.035, phase: 3.1 },
+      { group: policy, basePosition: policy.position.clone(), baseRotation: policy.rotation.clone(), amplitude: 0.05, phase: 4.2 },
+    ];
 
     const resize = () => {
       const { width, height } = host.getBoundingClientRect();
@@ -256,7 +370,7 @@ export function SpendControlScene() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
-      camera.position.z = camera.aspect < 0.92 ? 10.4 : camera.aspect < 1.15 ? 9.2 : 8.4;
+      camera.position.z = camera.aspect < 0.92 ? 12.6 : camera.aspect < 1.15 ? 11 : 9.6;
       camera.updateProjectionMatrix();
     };
 
@@ -264,8 +378,7 @@ export function SpendControlScene() {
     resizeObserver.observe(host);
     resize();
 
-    const targetScaleVector = new THREE.Vector3();
-    let animationFrame = 0;
+    let frame = 0;
     let elapsed = 0;
     let previousTime = performance.now();
 
@@ -273,56 +386,46 @@ export function SpendControlScene() {
       const delta = Math.min((time - previousTime) / 1000, 0.05);
       previousTime = time;
       elapsed += delta;
-      const smoothing = reduceMotion ? 1 : 1 - Math.exp(-delta * 5.5);
-
-      panels.forEach((panel, index) => {
-        const target = getPanelTarget(index, activeRef.current);
-        panel.position.lerp(target.position, smoothing);
-        panel.rotation.y = THREE.MathUtils.lerp(panel.rotation.y, target.rotationY, smoothing);
-        const targetScale = target.scale + (reduceMotion || index !== activeRef.current ? 0 : Math.sin(elapsed * 1.1) * 0.006);
-        panel.scale.lerp(targetScaleVector.set(targetScale, targetScale, targetScale), smoothing);
-        panel.userData.opacity = THREE.MathUtils.lerp(panel.userData.opacity, target.opacity, smoothing);
-        panel.userData.panelMaterial.opacity = panel.userData.opacity;
-        panel.userData.shadowMaterial.opacity = panel.userData.opacity * 0.28;
-      });
 
       const pointerX = reduceMotion ? 0 : pointerRef.current.x;
       const pointerY = reduceMotion ? 0 : pointerRef.current.y;
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, pointerX * 0.3, 0.04);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, pointerY * 0.2, 0.04);
-      camera.lookAt(0, 0, -0.4);
-      stage.rotation.z = THREE.MathUtils.lerp(stage.rotation.z, pointerX * -0.012, 0.035);
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, pointerX * 0.38, 0.035);
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, 0.15 + pointerY * 0.25, 0.035);
+      camera.lookAt(0, 0, -0.2);
 
+      tableau.rotation.y = THREE.MathUtils.lerp(tableau.rotation.y, 0.04 + pointerX * 0.045, 0.035);
+      tableau.rotation.x = THREE.MathUtils.lerp(tableau.rotation.x, -0.025 - pointerY * 0.03, 0.035);
+
+      floatingObjects.forEach((object, index) => {
+        const movement = reduceMotion ? 0 : Math.sin(elapsed * (0.7 + index * 0.04) + object.phase);
+        object.group.position.z = object.basePosition.z + movement * object.amplitude;
+        object.group.rotation.z = object.baseRotation.z + movement * 0.006;
+      });
+
+      policy.scale.setScalar(reduceMotion ? 1 : 1 + Math.sin(elapsed * 1.2) * 0.008);
       renderer.render(scene, camera);
-      animationFrame = window.requestAnimationFrame(render);
+      frame = window.requestAnimationFrame(render);
     };
 
-    animationFrame = window.requestAnimationFrame(render);
+    frame = window.requestAnimationFrame(render);
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      window.cancelAnimationFrame(frame);
       resizeObserver.disconnect();
-      panelGeometry.dispose();
-      shadowGeometry.dispose();
-      textures.forEach((texture) => texture.dispose());
-      panels.forEach((panel) => {
-        panel.userData.panelMaterial.dispose();
-        panel.userData.shadowMaterial.dispose();
+      scene.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        object.geometry.dispose();
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach((material) => material.dispose());
       });
-      grid.geometry.dispose();
-      gridMaterials.forEach((material) => material.dispose());
+      textures.forEach((texture) => texture.dispose());
       renderer.dispose();
     };
   }, [reduceMotion]);
 
   return (
     <div
-      className="relative mx-auto w-full max-w-[800px] py-2 sm:py-4"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => {
-        setPaused(false);
-        pointerRef.current = { x: 0, y: 0 };
-      }}
+      className="relative mx-auto w-full max-w-[820px]"
       onPointerMove={(event) => {
         const bounds = event.currentTarget.getBoundingClientRect();
         pointerRef.current = {
@@ -330,40 +433,25 @@ export function SpendControlScene() {
           y: -(((event.clientY - bounds.top) / bounds.height) * 2 - 1),
         };
       }}
+      onPointerLeave={() => {
+        pointerRef.current = { x: 0, y: 0 };
+      }}
     >
-      <div ref={hostRef} className="relative h-[410px] w-full overflow-hidden sm:h-[500px] md:h-[560px]">
+      <div ref={hostRef} className="relative h-[360px] w-full overflow-hidden sm:h-[500px] md:h-[590px]">
         <canvas
           ref={canvasRef}
           data-three-scene="spend-control"
           role="img"
-          aria-label="Three-dimensional Villeto workflow showing procurement, policy evaluation, and employee expenses"
+          aria-label="Three-dimensional Villeto product scene with a control card, mobile expense approval, purchase request, policy check, and matched invoice"
           className="absolute inset-0 size-full"
         />
-        <div className="pointer-events-none absolute inset-x-2 top-4 flex items-center justify-between sm:inset-x-4">
-          <span className="type-meta flex items-center gap-2 font-semibold uppercase text-[var(--accent-text)]"><span className="size-1.5 rounded-full bg-[var(--accent)]" />Live spend control</span>
-          <span className="type-meta hidden font-medium text-[var(--text-secondary)] sm:block">Policy-aware system</span>
-        </div>
       </div>
-
-      <div className="grid grid-cols-3 border-y border-[var(--border-hairline)]" role="group" aria-label="Select workflow view">
-        {workflows.map((workflow, index) => {
-          const selected = active === index;
-          return (
-            <button
-              key={workflow.label}
-              type="button"
-              aria-pressed={selected}
-              onClick={() => setActive(index)}
-              className={`relative min-h-[64px] border-r border-[var(--border-hairline)] px-2 py-3 text-left last:border-r-0 sm:px-4 ${selected ? "bg-[var(--accent-soft)]/45" : "hover:bg-[var(--bg-surface)]"}`}
-            >
-              <span className={`type-meta block font-semibold ${selected ? "text-[var(--accent-text)]" : "text-[var(--text-secondary)]"}`}>0{index + 1}</span>
-              <span className={`type-ui mt-1 block whitespace-normal font-semibold leading-[1.2] ${selected ? "text-[var(--text-primary)]" : "text-[var(--text-secondary)]"}`}>{workflow.label}</span>
-              {selected && <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--accent)]" />}
-            </button>
-          );
-        })}
+      <div className="sr-only">
+        <p>Purchase request PR-0248 for Aster Cloud, valued at $6,800.</p>
+        <p>Policy SW-05 passed all three controls.</p>
+        <p>Adobe employee expense approved with its receipt matched.</p>
+        <p>Invoice INV-2048 matched to its request and approval.</p>
       </div>
-      <p className="type-meta mt-3 min-h-[20px] text-right font-medium text-[var(--text-secondary)]">{workflows[active]?.status}</p>
     </div>
   );
 }
