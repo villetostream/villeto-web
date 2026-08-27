@@ -27,7 +27,7 @@ export const footer = {
   contact: {
     heading: "Contact",
     phone: "+234 706 000 1234",
-    email: "Contact@villeto.com",
+    email: "info@villeto.com",
   },
   copyrightYear: new Date().getFullYear().toString(),
   brand: "Villeto",

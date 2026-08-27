@@ -14,10 +14,10 @@ export function StatsBar() {
                 <p className="font-display text-[30px] font-semibold leading-none text-[var(--text-primary)] sm:text-[34px]">
                   {stat.prefix ?? ""}<Counter value={stat.value} suffix={stat.suffix} />
                 </p>
-                <span className="text-[10px] font-semibold uppercase text-[var(--accent-text)]">{stat.kicker}</span>
+                <span className="type-meta font-semibold uppercase text-[var(--accent-text)]">{stat.kicker}</span>
               </div>
-              <p className="mt-2 text-[12px] font-semibold text-[var(--text-primary)]">{stat.label}</p>
-              <p className="mt-1 text-[11px] leading-5 text-[var(--text-secondary)]">{stat.detail}</p>
+              <p className="type-card-copy mt-2 font-semibold text-[var(--text-primary)]">{stat.label}</p>
+              <p className="type-ui mt-1 text-[var(--text-secondary)]">{stat.detail}</p>
             </Reveal>
           ))}
         </div>

@@ -9,6 +9,13 @@ npm install
 npm run dev
 ```
 
+## Guided walkthrough email
+
+The walkthrough form sends email through the Resend API. Copy `.env.example`
+to `.env.local`, then set `RESEND_API_KEY` and `DEMO_REQUEST_FROM_EMAIL`.
+The sender must use a domain verified in Resend. Production sends requests to
+`info@villeto.com`.
+
 ## What's here
 
 - `app/` — routes: home (`/`), product detail pages (`/products/[slug]`),
@@ -29,5 +36,4 @@ npm run dev
   first paint.
 - `public/images/` — every image from the Figma export, renamed to a
   semantic filename (see the mapping table in the assistant's write-up).
-
 
