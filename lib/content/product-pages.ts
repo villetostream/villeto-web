@@ -12,29 +12,29 @@ const extras: Record<string, Omit<ProductPage, keyof MegaNavItem>> = {
     eyebrow: "Cards & Expenses",
     capabilities: [
       { title: "Live card controls", body: "Freeze, adjust, or retire a card the moment spend patterns change." },
-      { title: "Receipt matching", body: "Card activity reconciles against receipts automatically, no manual upload chasing." },
+      { title: "Receipt matching", body: "Card activity reconciles against receipts automatically with instant mobile OCR." },
       { title: "Policy checks at swipe time", body: "Limits and category rules apply before a charge posts, not after." },
     ],
     steps: [
       { title: "Issue a card", body: "Set a limit, category, and owner in seconds." },
-      { title: "Spend happens", body: "Every transaction is checked against policy in real time." },
-      { title: "Reconcile automatically", body: "Receipts and categories attach themselves to the ledger." },
+      { title: "Spend happens", body: "Every transaction is checked against Expense Policies in real time." },
+      { title: "Reconcile automatically", body: "Receipts and categories attach themselves to the subledger." },
     ],
-    stat: { value: "98%", label: "of transactions reconcile without manual review" },
+    stat: { value: "1-Click", label: "instant OCR receipt pairing with card transactions" },
   },
   "procurement-intake": {
     eyebrow: "Procurement Intake",
     capabilities: [
-      { title: "Structured requests", body: "Smart forms capture the details each approver actually needs." },
+      { title: "Structured requests", body: "Smart intake forms capture the details and justification each approver actually needs." },
       { title: "Owner from day one", body: "Every request keeps a named owner from submission to fulfillment." },
-      { title: "Status without asking", body: "Requesters see progress without pinging finance for an update." },
+      { title: "Status without asking", body: "Requesters see progress in their unified queue without pinging finance." },
     ],
     steps: [
-      { title: "Submit intent", body: "A requester describes what they need to buy." },
-      { title: "Route automatically", body: "Villeto assigns the right approver based on category and amount." },
-      { title: "Convert to a request", body: "Approved intent becomes a tracked, owned purchase request." },
+      { title: "Submit intent", body: "A requester describes what they need to buy with category and budget context." },
+      { title: "Route automatically", body: "Villeto assigns the right approver based on Spend Program amount bands." },
+      { title: "Convert to a PO", body: "Approved intent converts to a tracked, owned purchase order ready for dispatch." },
     ],
-    stat: { value: "170+", label: "requests tracked end-to-end in a typical monthly queue" },
+    stat: { value: "3-Stage", label: "continuous Spend Program validation from requisition to PO dispatch" },
   },
   "vendor-management": {
     eyebrow: "Vendor Management",
@@ -48,7 +48,7 @@ const extras: Record<string, Omit<ProductPage, keyof MegaNavItem>> = {
       { title: "Vendor self-registers", body: "Business identity, banking, and documents are collected in one guided flow." },
       { title: "Approve and activate", body: "Once verified, the vendor is ready to receive purchase requests." },
     ],
-    stat: { value: "3×", label: "faster vendor onboarding than a manual, email-based process" },
+    stat: { value: "CAC & TIN", label: "automated corporate registry checks before vendor activation" },
   },
   billpay: {
     eyebrow: "BillPay",
@@ -58,11 +58,11 @@ const extras: Record<string, Omit<ProductPage, keyof MegaNavItem>> = {
       { title: "Full payment trail", body: "Every payment is timestamped, attributed, and exportable for audit." },
     ],
     steps: [
-      { title: "Invoice arrives", body: "BillPay matches it against the original purchase order." },
-      { title: "Approval routes", body: "Finance reviews and approves based on policy thresholds." },
-      { title: "Payment releases", body: "Funds move only after every check has passed." },
+      { title: "Invoice arrives", body: "BillPay matches it against the original purchase order and delivery receipt." },
+      { title: "Approval routes", body: "Finance reviews and approves based on policy thresholds and separation of duties." },
+      { title: "Payment releases", body: "Funds move only after every verification check has passed." },
     ],
-    stat: { value: "12×", label: "faster approval-to-payment cycles" },
+    stat: { value: "3-Way", label: "automated matching across purchase order, delivery receipt, and invoice" },
   },
   "expense-management": {
     eyebrow: "Expense Management",
@@ -74,9 +74,9 @@ const extras: Record<string, Omit<ProductPage, keyof MegaNavItem>> = {
     steps: [
       { title: "Set your policy once", body: "Define limits, categories, and approvers centrally." },
       { title: "Spend requests check themselves", body: "Every request is validated against policy before it reaches an approver." },
-      { title: "Approvers see only what matters", body: "Exceptions are flagged; everything else moves fast." },
+      { title: "Approvers see only what matters", body: "Exceptions are flagged; compliant requests move fast." },
     ],
-    stat: { value: "0", label: "missing-context approval bounce-backs on a well-configured policy" },
+    stat: { value: "Pre-Spend", label: "policy gate validation before charges occur" },
   },
   ledger: {
     eyebrow: "Ledger",
@@ -86,11 +86,11 @@ const extras: Record<string, Omit<ProductPage, keyof MegaNavItem>> = {
       { title: "Multi-entity ready", body: "Track subsidiaries, currencies, and books from a single source of truth." },
     ],
     steps: [
-      { title: "A transaction posts", body: "Card spend, invoices, and payments write to the ledger automatically." },
+      { title: "A transaction posts", body: "Card spend, invoices, and payments write to the subledger automatically." },
       { title: "Records stay linked", body: "Each entry keeps its original request, approval, and receipt attached." },
-      { title: "Audit anytime", body: "Export a full, immutable trail for any entity or period." },
+      { title: "Audit anytime", body: "Export a full, immutable trail for any entity or fiscal period." },
     ],
-    stat: { value: "100%", label: "of entries kept immutable and exportable for audit" },
+    stat: { value: "100%", label: "immutable double-entry vouchers with permanent audit traces" },
   },
 };
 

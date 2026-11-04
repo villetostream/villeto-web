@@ -1,51 +1,108 @@
 export const productExplorer = {
-  heading: "Seven Products.\u00A0One Workflow.",
-  subhead: "Villeto brings together expense management, budgeting, and reporting in one seamless platform, designed to give your team clarity, control, and confidence with every transaction.",
-  cta: { label: "See Villeto in action", href: "#demo" },
+  eyebrow: "The Unified Spend Architecture",
+  heading: "Two ways companies spend. One control layer and ledger.",
+  subhead:
+    "Whether an employee submits an offsite lodging receipt or procurement issues a multi-million naira vendor PO, Villeto enforces policy before commitments are made and books every record directly to your subledger.",
+  cta: { label: "Get started for free", href: "https://app.villeto.com/signup" },
 };
 
 export type ProductTab = {
-  id: string;
+  id: "expenses" | "procurement" | "policies" | "billpay" | "accounting";
   label: string;
-  description?: string;
+  shortLabel: string;
+  badge: string;
+  route: string;
+  tagline: string;
+  description: string;
+  highlights: string[];
+  ctaLabel: string;
+  ctaHref: string;
 };
 
-// Only the active tab ("Expense Management") carries a description in the
-// Figma source — the rest are plain labels a person can select.
 export const productTabs: ProductTab[] = [
   {
-    id: "expense-management",
+    id: "expenses",
     label: "Expense Management",
+    shortLabel: "Expenses",
+    badge: "Expense Policies",
+    route: "app.villeto.com/expenses",
+    tagline: "Receipt-first employee filing with instant policy clearance",
     description:
-      "Smart forms route the right details to the right approvers - no Slack threads, no missing context.",
-  },
-  {
-    id: "policies",
-    label: "Policies",
-    description: "Define and enforce approval workflows with dynamic routing rules - every request follows the right path automatically.",
+      "Employees snap or upload receipts while our OCR engine extracts merchant, date, currency, and line items in real time. Bound to Expense Policies: daily lodging caps, meal allowances, and mandatory receipt thresholds (> ₦5,000) are enforced before submission — queued directly for line manager review.",
+    highlights: [
+      "OCR receipt scanning with 99.4% field match",
+      "Expense Policy limits (daily caps, grade limits, receipts)",
+      "Automated employee payroll reimbursement queue",
+    ],
+    ctaLabel: "Explore Expense Workflows",
+    ctaHref: "https://app.villeto.com/signup",
   },
   {
     id: "procurement",
-    label: "Procurement",
-    description: "Streamline purchase requests from intake to PO with built-in budget checks and multi-level approvals.",
+    label: "Procurement & POs",
+    shortLabel: "Procurement",
+    badge: "Spend Programs",
+    route: "app.villeto.com/procurement/orders",
+    tagline: "Category-driven requests with 3-stage Spend Programs",
+    description:
+      "Turn department purchase requests into approved purchase orders without losing context. Budgets and quotation rules are checked against Spend Programs across three stages: PR submission, PR-to-PO conversion, and PO submission.",
+    highlights: [
+      "3-stage Spend Programs (PR submission, PR-to-PO, PO dispatch)",
+      "Budget headroom verification and quotation thresholds",
+      "Automatic supplier line splitting and direct PO dispatch",
+    ],
+    ctaLabel: "Explore Procurement Workflows",
+    ctaHref: "https://app.villeto.com/signup",
   },
   {
-    id: "vendor-management",
-    label: "Vendor Management",
-    description: "Centralize vendor onboarding, compliance tracking, and contract renewals in one unified workspace.",
+    id: "policies",
+    label: "Spend Policies & Governance",
+    shortLabel: "Policies",
+    badge: "Dual Governance",
+    route: "app.villeto.com/policies/governance",
+    tagline: "Dual governance engine: Expense Policies vs. Spend Programs",
+    description:
+      "Villeto never lumps all spend into generic rules. Expense Policies govern employee out-of-pocket cards & receipts by category and grade. Spend Programs govern B2B procurement across 3 lifecycle stages with quotation rules and coverage modes (all categories vs. specific categories). Separation of duties is structurally enforced.",
+    highlights: [
+      "Separate engines: Expense Policies vs. Spend Programs",
+      "Coverage modes: all categories, specific categories, or open",
+      "Structural Separation of Duties (no self-approval)",
+    ],
+    ctaLabel: "Explore Governance Controls",
+    ctaHref: "https://app.villeto.com/signup",
   },
   {
     id: "billpay",
-    label: "BillPay",
-    description: "Automate invoice matching, approval routing, and payment scheduling to close the books faster.",
+    label: "Bill Pay & AP",
+    shortLabel: "Bill Pay",
+    badge: "3-Way Matching",
+    route: "app.villeto.com/bill-pay/invoices",
+    tagline: "Automated 3-way matching and scheduled settlements",
+    description:
+      "Supplier invoices uploaded or received by email are automatically matched against purchase orders and warehouse goods receipts. Line-item discrepancies, quantity variances, and bank account mismatches are stopped before payment.",
+    highlights: [
+      "Automated PO + Goods Receipt + Invoice 3-way match",
+      "Bank detail verification against legal business registration",
+      "Scheduled bank settlements with fiscal period gating",
+    ],
+    ctaLabel: "Explore Bill Pay Workflows",
+    ctaHref: "https://app.villeto.com/signup",
+  },
+  {
+    id: "accounting",
+    label: "Accounting & Ledger",
+    shortLabel: "Accounting",
+    badge: "Immutable Subledger",
+    route: "app.villeto.com/accounting/subledger",
+    tagline: "Entity subledgers with irreversible audit journals",
+    description:
+      "Every approved transaction — whether an employee expense reimbursement or a supplier invoice — generates an immutable double-entry journal voucher and updates open AP obligations. Entries can never be edited or backdated; trial balances remain balanced in real time.",
+    highlights: [
+      "Separate subledger and chart of accounts per legal entity",
+      "Immutable double-entry journal vouchers (reversals only)",
+      "Strict fiscal period open/close gating and audit hashing",
+    ],
+    ctaLabel: "Explore Accounting Controls",
+    ctaHref: "https://app.villeto.com/signup",
   },
 ];
-
-// Distinct visual per tab for the desktop side panel.
-export const productTabImages: Record<string, string> = {
-  "expense-management": "/images/Expenses.png",
-  policies: "/images/Policies.png",
-  procurement: "/images/Procurement.png",
-  "vendor-management": "/images/Vendor.png",
-  billpay: "/images/Bill Pay.png",
-};

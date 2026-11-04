@@ -15,8 +15,7 @@ export function AudienceGrid() {
         <Reveal className="mx-auto max-w-[720px] text-center">
           <h2 className="text-[length:var(--fs-h2)] font-semibold">{audienceSection.heading}</h2>
           <p className="mt-4 text-[16px] leading-relaxed text-[var(--text-secondary)] sm:text-[18px]">
-            Villeto brings together expense management, budgeting, and reporting in one seamless
-            platform, designed to give your team clarity, control, and confidence with every transaction.
+            {audienceSection.subhead}
           </p>
         </Reveal>
 

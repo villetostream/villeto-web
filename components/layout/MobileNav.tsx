@@ -118,9 +118,6 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
               </Link>
               <ThemeToggle />
             </div>
-            <Button href={navCtas.demo.href} variant="secondary" size="lg" onClick={onClose} className="w-full">
-              {navCtas.demo.label}
-            </Button>
             <Button href={navCtas.primary.href} variant="primary" size="lg" onClick={onClose} className="w-full">
               {navCtas.primary.label}
             </Button>

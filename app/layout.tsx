@@ -10,12 +10,12 @@ import { FloatingThemeToggle } from "@/components/layout/FloatingThemeToggle";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://villeto.com"),
   title: {
-    default: "Villeto — Control how money leaves your company",
+    default: "Villeto — Spend Management & Procurement-to-AP for Multi-Entity Businesses",
     template: "%s | Villeto",
   },
   description:
-    "Villeto helps organizations manage procurement, vendors, approvals, invoices, and payments in one connected finance operations platform.",
-  keywords: ["spend control", "procurement", "finance operations", "vendor management", "invoice processing", "ERP", "approvals"],
+    "Connect purchase requests, approvals, purchase orders, supplier deliveries, invoices, expenses and AP records in one structured spend-control workflow.",
+  keywords: ["spend management", "procurement to pay", "accounts payable workflow", "multi-entity finance", "vendor management", "spend controls", "purchase order management"],
   authors: [{ name: "Villeto" }],
   creator: "Villeto",
   publisher: "Villeto",
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: "Villeto",
-    title: "Villeto — Control how money leaves your company",
-    description: "Manage procurement, vendors, approvals, invoices, and payments in one connected finance operations platform.",
+    title: "Villeto — Spend Management & Procurement-to-AP",
+    description: "Connect purchase requests, approvals, purchase orders, supplier deliveries, invoices and AP records in one structured spend-control workflow.",
     images: [
       {
         url: "/images/og-image.jpg",
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Villeto — Spend control for modern teams",
-    description: "Control how money leaves your company. The connected finance operations platform.",
+    title: "Villeto — Spend Management for Multi-Entity Businesses",
+    description: "One structured workflow connecting purchase requests, approvals, purchase orders, invoices, expenses and AP records.",
     images: ["/images/og-image.jpg"],
     creator: "@villeto_hq",
   },
@@ -57,6 +57,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  verification: {
+    google: "aSYGFsZqzax_kqFLl3ozDEpUpKsMpOC1TqPJ2wshMN0",
   },
 };
 

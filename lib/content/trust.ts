@@ -1,22 +1,59 @@
 export const trustSection = {
-  heading: "Built for the teams that can't get it wrong",
-  subhead: "From day one, Villeto meets the controls finance, security, and audit teams expect.",
+  heading: "Controls your auditors will recognise.",
+  subhead:
+    "Accountability is built into the workflow — not bolted on after the fact. Every decision has an owner, every record is traceable, and history cannot be quietly overwritten.",
 };
 
 export type TrustItem = {
   id: string;
   title: string;
   body: string;
-  icon: "book" | "key" | "lock" | "badge-check" | "globe" | "database";
+  icon: "book" | "key" | "lock" | "badge-check" | "globe" | "database" | "calendar";
 };
 
 export const trustItems: TrustItem[] = [
-  { id: "audit-logs", title: "Audit logs", body: "Immutable, timestamped, exportable.", icon: "book" },
-  { id: "approval-controls", title: "Approval controls", body: "Policy-as-code across entities.", icon: "key" },
-  { id: "security", title: "Security", body: "Encryption. Data protection. Always on.", icon: "lock" },
-  { id: "permissions", title: "Permissions", body: "Granular, role-based access.", icon: "badge-check" },
-  { id: "compliance", title: "Compliance", body: "GDPR, regional data residency.", icon: "globe" },
-  { id: "multi-entity", title: "Multi-entity", body: "Subsidiaries, currencies, books.", icon: "database" },
+  {
+    id: "separation",
+    title: "Separation of duties",
+    body: "No one approves their own request. Payment approvers must differ from the person who created the record.",
+    icon: "key",
+  },
+  {
+    id: "approval-rules",
+    title: "Approval rules by amount",
+    body: "Set how many approvals a payment requires at each amount band. Rules apply at the moment of action, not after the fact.",
+    icon: "badge-check",
+  },
+  {
+    id: "policy-governance",
+    title: "Policy governance",
+    body: "Decide who can approve new expense policies and Spend Programs, or let them go live automatically. Policy changes themselves have an approval lifecycle.",
+    icon: "lock",
+  },
+  {
+    id: "permissions",
+    title: "Precise permissions",
+    body: "Custom roles with fine-grained access — scoped to a person's own records, their team, their department, or the whole company.",
+    icon: "badge-check",
+  },
+  {
+    id: "immutable-ledger",
+    title: "Immutable ledger",
+    body: "Journal entries cannot be edited. Corrections are recorded as reversals. The trial balance flags imbalances immediately.",
+    icon: "book",
+  },
+  {
+    id: "fiscal-periods",
+    title: "Fiscal period controls",
+    body: "Entries can only post to open periods. Closing a period is irreversible — so nothing gets quietly backdated.",
+    icon: "calendar",
+  },
+  {
+    id: "audit-trail",
+    title: "Audit trail",
+    body: "Every expense report, approval decision, policy exception, and delivery record is timestamped and traceable — ready for your next audit.",
+    icon: "database",
+  },
 ];
 
 export const testimonialBand = {
@@ -27,8 +64,11 @@ export const testimonialBand = {
 };
 
 export const finalCta = {
-  heading: "Stop managing procurement across\u00A010 different tools.",
-  subhead: "Bring requests, approvals, vendors, invoices, and payments into one intelligent workflow.",
+  heading: "One platform for every request, every expense, and every invoice.",
+  subhead:
+    "Give your team one place to manage procurement, expenses, bills, vendors, and accounting — across every entity you run.",
   emailPlaceholder: "What is your work email?",
-  cta: { label: "Get Started for free", href: "#get-started" },
+  primaryCta: { label: "Get Started for free", href: "https://app.villeto.com/signup" },
+  trialNote: "Free trial · No credit card required",
+  demo: { label: "Request a walkthrough" },
 };
