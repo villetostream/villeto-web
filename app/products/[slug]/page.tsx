@@ -39,12 +39,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {page.description}
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button href={navCtas.primary.href} size="lg">
+              <Button href="https://app.villeto.com/signup" size="lg">
                 Get Started for free
                 <ArrowRight className="size-4" />
-              </Button>
-              <Button href={navCtas.demo.href} variant="secondary" size="lg">
-                See a Demo
               </Button>
             </div>
           </Reveal>

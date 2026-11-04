@@ -1,16 +1,26 @@
 import type { NavMenuKey } from "./mega-nav";
 
+export type NavLink = {
+  label: string;
+  href: string;
+};
+
+// "Company" is a single link. "Products" and "Solutions" each have sub-items
+export const navLinks: NavLink[] = [
+  { label: "Vendor Portal", href: "/vendors" },
+  { label: "Support", href: "/support" },
+];
+
 export const navMegaTriggers: Array<{ label: string; key: NavMenuKey }> = [
   { label: "Products", key: "products" as const },
   { label: "Solutions", key: "solutions" as const },
   { label: "Company", key: "company" as const },
 ];
 
-// CTA cluster ordered by commitment level, per Section 5 hard rule.
+// CTA cluster ordered by commitment level.
 export const navCtas = {
   signIn: { label: "Sign In", href: "https://app.villeto.com/login" },
-  demo: { label: "See a Demo", href: "/#get-started" },
-  primary: { label: "Get Started for free", href: "https://app.villeto.com/pre-onboarding" },
+  primary: { label: "Get Started for free", href: "https://app.villeto.com/signup" },
 };
 
 export const brand = {

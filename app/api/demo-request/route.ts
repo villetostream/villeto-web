@@ -41,6 +41,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please complete every field with valid information." }, { status: 400 });
   }
 
+  // Honeypot check: if 'website' field is populated, bot was caught, return fake success
   if (parsed.data.website) {
     return NextResponse.json({ success: true });
   }

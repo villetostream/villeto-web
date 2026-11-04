@@ -1,64 +1,81 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ArrowRight, CalendarDays, Loader2 } from "lucide-react";
+import { useState } from "react";
+import Image from "next/image";
+import { ArrowRight, CalendarDays } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { DemoRequestDialog } from "@/components/ui/DemoRequestDialog";
 import { Reveal } from "@/components/ui/Reveal";
 import { finalCta } from "@/lib/content/trust";
-import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
 export function FinalCta() {
-  const { handleSubmit, loading, error } = useEmailOnboarding();
-  const [email, setEmail] = useState("");
   const [demoOpen, setDemoOpen] = useState(false);
-  const demoButtonRef = useRef<HTMLButtonElement>(null);
-
-  const onSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    handleSubmit(email);
-  };
-
-  const closeDemo = () => {
-    setDemoOpen(false);
-    window.requestAnimationFrame(() => demoButtonRef.current?.focus());
-  };
+  const [email, setEmail] = useState("");
 
   return (
-    <section id="get-started" className="bg-[#dff4ef] py-20 text-[#111714] sm:py-24">
-      <Container className="grid gap-10 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-16">
-        <Reveal>
-          <p className="type-eyebrow font-semibold uppercase text-[#087f70]">{finalCta.eyebrow}</p>
-          <h2 className="mt-5 max-w-[620px] text-[length:var(--fs-h2)] font-semibold leading-[1.08]">{finalCta.heading}</h2>
-          <p className="type-section-copy mt-5 max-w-[540px] text-[#53605a]">{finalCta.subhead}</p>
+    <section id="signup" className="section-tinted section-glow-top relative overflow-hidden py-24 sm:py-32">
+      <Image
+        src="/images/cta-background-texture.png"
+        alt=""
+        fill
+        className="pointer-events-none object-cover opacity-[0.12] mix-blend-overlay"
+      />
+      <Container className="relative flex flex-col items-center gap-10 text-center">
+        <Reveal className="flex flex-col items-center gap-5">
+          <h2 className="max-w-[820px] text-[length:var(--fs-h2)] font-semibold text-[var(--text-primary)]">
+            {finalCta.heading}
+          </h2>
+          <p className="max-w-[560px] text-[17px] leading-relaxed text-[var(--text-secondary)] sm:text-[19px]">
+            {finalCta.subhead}
+          </p>
         </Reveal>
 
-        <Reveal delay={0.08} className="border-l border-[#0a0f0d]/10 md:pl-12">
-          <p className="type-ui font-semibold">Start with your work email</p>
-          <form className="relative mt-4 flex flex-col gap-2 sm:flex-row" onSubmit={onSubmit}>
-            <label htmlFor="cta-email" className="sr-only">{finalCta.emailPlaceholder}</label>
+        {/* Email capture */}
+        <Reveal delay={0.1} className="flex w-full max-w-[540px] flex-col gap-4">
+          <form
+            id="final-signup-form"
+            className="flex w-full flex-col gap-3 sm:flex-row sm:gap-0"
+            onSubmit={(e) => {
+              e.preventDefault();
+              window.location.href = `${finalCta.primaryCta.href}?email=${encodeURIComponent(email)}`;
+            }}
+          >
             <input
-              id="cta-email"
+              id="final-email-input"
+              name="email"
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
+              required
               placeholder={finalCta.emailPlaceholder}
-              disabled={loading}
-              className="type-card-copy min-h-[48px] min-w-0 flex-1 rounded-[8px] border border-black/10 bg-white px-4 text-[#111714] placeholder:text-[#7a8580] focus:border-[#0ea894] focus:outline-none disabled:opacity-50"
+              className="h-[52px] flex-1 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15 sm:rounded-r-none"
             />
-            <button type="submit" disabled={loading} className="type-card-copy flex min-h-[48px] shrink-0 items-center justify-center gap-2 rounded-[8px] bg-[#0ea894] px-5 font-semibold text-white transition-colors hover:bg-[#0b907f] disabled:pointer-events-none disabled:opacity-50">
-              {loading ? <Loader2 className="size-4 animate-spin" /> : finalCta.cta.label}<ArrowRight className="size-4" />
+            <button
+              type="submit"
+              id="final-signup-btn"
+              className="h-[52px] shrink-0 rounded-[var(--radius-sm)] bg-[var(--accent)] px-6 text-[15px] font-semibold text-[var(--accent-contrast)] transition-transform hover:-translate-y-[1px] active:translate-y-0 sm:rounded-l-none"
+            >
+              {finalCta.primaryCta.label}
             </button>
-            {error && <span className="absolute -bottom-6 left-0 text-[12px] text-red-600">{error}</span>}
           </form>
 
-          <div className="mt-5 flex items-center gap-3 border-t border-[#0a0f0d]/10 pt-5">
-            <span className="flex size-8 items-center justify-center rounded-[7px] bg-white/75 text-[#087f70]"><CalendarDays className="size-4" /></span>
-            <div className="type-ui flex flex-1 items-center justify-between gap-4"><p className="text-[#53605a]">Prefer a guided walkthrough?</p><button ref={demoButtonRef} type="button" onClick={() => setDemoOpen(true)} className="font-semibold text-[#087f70]">{finalCta.demo.label}</button></div>
+          <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4 text-[13px] text-[var(--text-secondary)]">
+            <span>{finalCta.trialNote}</span>
+            <span className="hidden sm:inline text-[var(--border-hairline)]">•</span>
+            <button
+              type="button"
+              onClick={() => setDemoOpen(true)}
+              className="inline-flex items-center gap-1.5 font-semibold text-[var(--accent-text)] transition-colors hover:underline cursor-pointer"
+            >
+              <CalendarDays className="size-3.5" />
+              <span>{finalCta.demo?.label ?? "Request a walkthrough"}</span>
+              <ArrowRight className="size-3" />
+            </button>
           </div>
         </Reveal>
       </Container>
-      <DemoRequestDialog open={demoOpen} onClose={closeDemo} initialEmail={email} />
+
+      <DemoRequestDialog open={demoOpen} onClose={() => setDemoOpen(false)} initialEmail={email} />
     </section>
   );
 }

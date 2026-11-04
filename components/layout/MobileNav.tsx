@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, ChevronDown, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -128,7 +128,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                 {navCtas.signIn.label}
               </Link>
             </div>
-            <Button href={navCtas.primary.href} variant="primary" size="lg" onClick={onClose} className="w-full rounded-[8px]">
+            <Button href={navCtas.primary.href} variant="primary" size="lg" onClick={onClose} className="w-full">
               {navCtas.primary.label}
             </Button>
           </div>

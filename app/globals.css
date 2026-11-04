@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /*
   Design register: Editorial (see DESIGN_RULES.md Section 2).
   Villeto is a spend-control / procurement ERP for finance teams — the
@@ -68,9 +70,10 @@
   --radius-lg: 20px;
   --space-unit: 8px;
 
-  /* Fixed dark band — used for sections that are dark regardless of the
-     light/dark toggle (Products, Audience, Trust, Final CTA, Footer).
-     Deviation logged: DESIGN_RULES.md Section 10. */
+  /* Contextual dark band — intentionally darker than the page canvas in BOTH
+     modes. In light mode this is near-black; in dark mode it flips to a
+     slightly elevated surface so the band is visible against the dark canvas.
+     Override in [data-theme="dark"] below. */
   --ink: #0a0f0d;
   --ink-foreground: #f5f7f6;
   --ink-foreground-soft: rgba(245, 247, 246, 0.68);
@@ -94,6 +97,16 @@
   --fs-meta: 0.6875rem;
   --lh-heading: 1.12;
   --lh-body: 1.55;
+
+  /* ---- Hero widget elevation tokens ----
+     The widget card needs to be visually elevated above the section background
+     in BOTH light and dark mode. These tokens provide the right values per theme
+     so every bg-canvas/bg-surface inside the widget context auto-adapts. */
+  --hero-card-bg: #ffffff;
+  --hero-card-surface: #f0f2f1;
+  --hero-card-shadow:
+    0 2px 8px rgba(10, 15, 13, 0.05),
+    0 20px 56px -12px rgba(10, 15, 13, 0.13);
 }
 
 [data-theme="dark"] {
@@ -112,10 +125,36 @@
   --accent-soft: rgba(45, 212, 191, 0.12);
 
   --border-hairline: rgba(245, 245, 244, 0.1);
+
+  /* In dark mode, the "ink" band flips to a slightly elevated surface so
+     it visually stands apart from the near-black canvas. */
+  --ink: #1a1f1d;
+  --ink-foreground: #f5f7f6;
+  --ink-foreground-soft: rgba(245, 247, 246, 0.68);
+  --ink-border: rgba(245, 247, 246, 0.12);
+  --ink-surface: #232928;
+
+  /* Hero widget: elevated card sits above the near-black canvas */
+  --hero-card-bg: #1e2422;
+  --hero-card-surface: #272f2c;
+  --hero-card-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.07),
+    0 24px 64px -12px rgba(0, 0, 0, 0.8),
+    0 0 80px -24px rgba(45, 212, 191, 0.06);
 }
 
 html {
   background: var(--bg-canvas);
+}
+
+/* ── Hero widget scope ───────────────────────────────────────────────────────
+   Overrides --bg-canvas and --bg-surface within the widget so that every
+   bg-[var(--bg-canvas)] / bg-[var(--bg-surface)] child automatically
+   resolves to the elevated card values — no need to touch individual elements.
+   The floating badges and inner row surfaces all adapt automatically. */
+.hero-widget {
+  --bg-canvas: var(--hero-card-bg);
+  --bg-surface: var(--hero-card-surface);
 }
 
 body {
@@ -139,6 +178,37 @@ h4 {
   font-size: var(--fs-eyebrow);
   line-height: 1.25;
   letter-spacing: 0;
+}
+
+.type-section-copy {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.type-card-title {
+  font-size: var(--fs-card-title);
+  line-height: 1.3;
+}
+
+.type-card-copy {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body);
+}
+
+.type-ui {
+  font-size: var(--fs-ui);
+  line-height: 1.4;
+}
+
+.type-meta {
+  font-size: var(--fs-meta);
+  line-height: 1.4;
+}
+
+.type-eyebrow {
+  font-size: var(--fs-eyebrow);
+  line-height: 1.25;
+  letter-spacing: 0.08em;
 }
 
 .type-section-copy {
@@ -276,20 +346,6 @@ textarea:focus-visible {
   background: var(--bg-surface);
 }
 
-/* Soft gradient divider shown as a top-edge fade on each section */
-.section-divide-top::before {
-  content: "";
-  display: block;
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    transparent,
-    var(--border-hairline) 30%,
-    var(--border-hairline) 70%,
-    transparent
-  );
-  margin-bottom: 0;
-}
 
 /* Angled edge divider — gives a subtle skewed boundary between sections.
    Add to the BOTTOM of a section to create an overlap into the next one. */

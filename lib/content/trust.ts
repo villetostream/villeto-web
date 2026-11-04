@@ -1,23 +1,59 @@
 export const trustSection = {
-  eyebrow: "Governance & trust",
-  heading: "Built for the teams that can't get it wrong",
-  subhead: "Controls are part of the operating record, not a checklist finance and security reconstruct after the fact.",
-  status: "Controls active",
+  heading: "Controls your auditors will recognise.",
+  subhead:
+    "Accountability is built into the workflow — not bolted on after the fact. Every decision has an owner, every record is traceable, and history cannot be quietly overwritten.",
 };
 
 export type TrustItem = {
   id: string;
   title: string;
   body: string;
-  status: string;
-  icon: "book" | "key" | "lock" | "badge-check";
+  icon: "book" | "key" | "lock" | "badge-check" | "globe" | "database" | "calendar";
 };
 
 export const trustItems: TrustItem[] = [
-  { id: "access", title: "Identity & access", body: "Roles and permissions limit who can request, review, approve, and export.", status: "Controlled", icon: "key" },
-  { id: "policy", title: "Policy enforcement", body: "Rules, thresholds, and approval routes evaluate with transaction context.", status: "Enforced", icon: "badge-check" },
-  { id: "data", title: "Data protection", body: "Encryption and regional controls protect financial and vendor information.", status: "Protected", icon: "lock" },
-  { id: "audit", title: "Audit evidence", body: "Timestamped decisions and linked records remain ready to inspect or export.", status: "Export-ready", icon: "book" },
+  {
+    id: "separation",
+    title: "Separation of duties",
+    body: "No one approves their own request. Payment approvers must differ from the person who created the record.",
+    icon: "key",
+  },
+  {
+    id: "approval-rules",
+    title: "Approval rules by amount",
+    body: "Set how many approvals a payment requires at each amount band. Rules apply at the moment of action, not after the fact.",
+    icon: "badge-check",
+  },
+  {
+    id: "policy-governance",
+    title: "Policy governance",
+    body: "Decide who can approve new expense policies and Spend Programs, or let them go live automatically. Policy changes themselves have an approval lifecycle.",
+    icon: "lock",
+  },
+  {
+    id: "permissions",
+    title: "Precise permissions",
+    body: "Custom roles with fine-grained access — scoped to a person's own records, their team, their department, or the whole company.",
+    icon: "badge-check",
+  },
+  {
+    id: "immutable-ledger",
+    title: "Immutable ledger",
+    body: "Journal entries cannot be edited. Corrections are recorded as reversals. The trial balance flags imbalances immediately.",
+    icon: "book",
+  },
+  {
+    id: "fiscal-periods",
+    title: "Fiscal period controls",
+    body: "Entries can only post to open periods. Closing a period is irreversible — so nothing gets quietly backdated.",
+    icon: "calendar",
+  },
+  {
+    id: "audit-trail",
+    title: "Audit trail",
+    body: "Every expense report, approval decision, policy exception, and delivery record is timestamped and traceable — ready for your next audit.",
+    icon: "database",
+  },
 ];
 
 export const trustSignals = ["Role-based access", "Multi-entity controls", "Regional residency", "Immutable history"];
@@ -30,10 +66,11 @@ export const testimonialBand = {
 };
 
 export const finalCta = {
-  eyebrow: "Bring one workflow",
-  heading: "Start with the spend process creating the most friction.",
-  subhead: "Connect the request, vendor, policy decision, invoice, and financial record without replacing everything at once.",
+  heading: "One platform for every request, every expense, and every invoice.",
+  subhead:
+    "Give your team one place to manage procurement, expenses, bills, vendors, and accounting — across every entity you run.",
   emailPlaceholder: "What is your work email?",
-  cta: { label: "Get Started for free", href: "#get-started" },
-  demo: { label: "See a Demo" },
+  primaryCta: { label: "Get Started for free", href: "https://app.villeto.com/signup" },
+  trialNote: "Free trial · No credit card required",
+  demo: { label: "Request a walkthrough" },
 };

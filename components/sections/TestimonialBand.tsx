@@ -1,24 +1,36 @@
 "use client";
 
 import { Building2, Check, CheckCircle2, FileClock, FileCheck2, Link2, ReceiptText, ShieldCheck } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const evidence = [
-  { icon: ShieldCheck, title: "Rule applied", body: "Software purchases above $5,000 require finance approval." },
-  { icon: FileClock, title: "Decision recorded", body: "Approver, timestamp, and visible request context remain attached." },
-  { icon: Link2, title: "Record linked", body: "Invoice, payment, and audit evidence resolve to the same decision." },
+  {
+    icon: ShieldCheck,
+    title: "Rule applied",
+    body: "Spend Programs enforce budget headroom and multi-tier signoff on orders above ₦5,000,000.",
+  },
+  {
+    icon: FileClock,
+    title: "Decision recorded",
+    body: "Approver, timestamp, and visible request context remain attached to the audit record.",
+  },
+  {
+    icon: Link2,
+    title: "Record linked",
+    body: "Purchase order, delivery receipt, supplier invoice, and ledger entry resolve to the same decision.",
+  },
 ] as const;
 
 const trace = [
-  { title: "Request received", detail: "Aster Cloud · $6,800", icon: ReceiptText },
-  { title: "Vendor verified", detail: "Tax, banking, security", icon: Building2 },
-  { title: "Policy SW-05 applied", detail: "Finance approval required", icon: ShieldCheck },
-  { title: "Finance approved", detail: "Amara · 10:42", icon: CheckCircle2 },
-  { title: "Invoice matched", detail: "INV-2048", icon: FileCheck2 },
+  { title: "Purchase Request (PR)", detail: "Aster Cloud · ₦6,800,000", icon: ReceiptText },
+  { title: "Vendor verified", detail: "CAC check & bank details confirmed", icon: Building2 },
+  { title: "Spend Program check", detail: "3-stage lifecycle & budget headroom", icon: ShieldCheck },
+  { title: "SoD enforced & signed", detail: "Chidi (Procurement) & Ngozi (Finance)", icon: CheckCircle2 },
+  { title: "3-Way match & posted", detail: "PO-0047 · GR-0091 · INV-8812", icon: FileCheck2 },
 ] as const;
 
 const traceItemVariants = {
@@ -54,31 +66,33 @@ function DecisionTraceVisual({ reduceMotion }: { reduceMotion: boolean }) {
       initial={reduceMotion ? false : "hidden"}
       whileInView="visible"
       viewport={{ once: false, amount: 0.35 }}
-      className="overflow-hidden rounded-[8px] border border-white/10 bg-[#111714] shadow-[0_38px_90px_-48px_rgba(0,0,0,0.9)]"
+      className="overflow-hidden rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)] shadow-sm dark:shadow-[0_28px_70px_-32px_rgba(0,0,0,0.7)]"
     >
-      <div className="relative flex items-center justify-between overflow-hidden border-b border-white/10 px-5 py-4">
-        <div className="flex items-center gap-2">
+      {/* Console Header Bar */}
+      <div className="relative flex items-center justify-between overflow-hidden border-b border-[var(--border-hairline)] bg-[var(--bg-canvas)]/60 px-5 py-4">
+        <div className="flex items-center gap-2.5">
           <motion.span
             animate={reduceMotion ? undefined : { opacity: [0.45, 1, 0.45] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-            className="size-1.5 rounded-full bg-[#72dece]"
+            className="size-2 rounded-full bg-[var(--accent)]"
           />
-          <span className="type-ui font-semibold">Decision trace</span>
+          <span className="type-ui font-semibold text-[var(--text-primary)]">Decision trace console</span>
         </div>
-        <motion.span variants={evidenceItemVariants} custom={4} className="type-meta flex items-center gap-1.5 text-white/50">
-          <CheckCircle2 className="size-3 text-[#72dece]" />Complete
+        <motion.span variants={evidenceItemVariants} custom={4} className="type-meta flex items-center gap-1.5 font-semibold text-[var(--accent-text)]">
+          <CheckCircle2 className="size-3.5" />Audit Complete
         </motion.span>
         {!reduceMotion && (
           <motion.span
             variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { duration: 1.45, ease: EASE } } }}
-            className="absolute inset-x-0 bottom-0 h-px origin-left bg-gradient-to-r from-[#72dece] via-[#72dece]/45 to-transparent"
+            className="absolute inset-x-0 bottom-0 h-px origin-left bg-gradient-to-r from-[var(--accent)] via-[var(--accent)]/45 to-transparent"
           />
         )}
       </div>
 
-      <div className="grid md:grid-cols-[0.9fr_1.1fr]">
-        <div className="border-b border-white/10 p-5 md:border-b-0 md:border-r sm:p-6">
-          <p className="type-meta font-semibold uppercase text-[#72dece]">Transaction timeline</p>
+      <div className="grid md:grid-cols-[0.92fr_1.08fr]">
+        {/* Left Column: Transaction Timeline */}
+        <div className="border-b border-[var(--border-hairline)] p-5 md:border-b-0 md:border-r sm:p-6 bg-[var(--bg-surface)]">
+          <p className="type-meta font-semibold uppercase tracking-wider text-[var(--accent-text)]">Transaction timeline</p>
           <div className="mt-5">
             {trace.map((item, index) => {
               const Icon = item.icon;
@@ -87,35 +101,47 @@ function DecisionTraceVisual({ reduceMotion }: { reduceMotion: boolean }) {
                   {index < trace.length - 1 && (
                     <motion.span
                       variants={{ hidden: { scaleY: 0 }, visible: { scaleY: 1, transition: { delay: 0.28 + index * 0.14, duration: 0.32 } } }}
-                      className="absolute left-[15px] top-8 h-7 w-px origin-top bg-[#72dece]/30"
+                      className="absolute left-[15px] top-8 h-7 w-px origin-top bg-[var(--accent)]/30"
                     />
                   )}
                   <motion.span
                     variants={{ hidden: { scale: 0.78 }, visible: { scale: 1, transition: { delay: 0.14 + index * 0.14, duration: 0.35, ease: EASE } } }}
-                    className="z-10 flex size-8 shrink-0 items-center justify-center rounded-[7px] bg-[#17342e] text-[#72dece]"
+                    className="z-10 flex size-8 shrink-0 items-center justify-center rounded-[8px] bg-[var(--accent-soft)] text-[var(--accent-text)]"
                   >
-                    <Icon className="size-3.5" />
+                    <Icon className="size-4" />
                   </motion.span>
-                  <div className="min-w-0 flex-1 border-b border-white/[0.07] pb-4 last:border-0"><p className="type-ui font-semibold">{item.title}</p><p className="type-meta mt-1 text-white/40">{item.detail}</p></div>
+                  <div className="min-w-0 flex-1 border-b border-[var(--border-hairline)] pb-4 last:border-0">
+                    <p className="type-ui font-semibold text-[var(--text-primary)]">{item.title}</p>
+                    <p className="type-meta mt-0.5 text-[var(--text-secondary)]">{item.detail}</p>
+                  </div>
                 </motion.div>
               );
             })}
           </div>
         </div>
 
-        <div className="p-5 sm:p-6">
+        {/* Right Column: Policy Evaluation & Evidence Attached */}
+        <div className="p-5 sm:p-6 bg-[var(--bg-canvas)]/35">
           <motion.div variants={policyItemVariants} custom={0} className="flex items-start justify-between gap-4">
-            <div><p className="type-meta font-semibold uppercase text-[#72dece]">Policy evaluation</p><h3 className="type-card-title mt-2 font-semibold">Software purchase</h3></div>
-            <span className="type-meta rounded-[6px] bg-[#17342e] px-2 py-1 font-semibold text-[#72dece]">$6,800</span>
+            <div>
+              <p className="type-meta font-semibold uppercase tracking-wider text-[var(--accent-text)]">Spend Program evaluation</p>
+              <h3 className="type-card-title mt-1.5 font-semibold text-[var(--text-primary)]">B2B Procurement: Cloud Ops</h3>
+            </div>
+            <span className="type-meta rounded-[6px] bg-[var(--accent-soft)] px-2.5 py-1 font-semibold text-[var(--accent-text)]">₦6,800,000</span>
           </motion.div>
 
-          <div className="mt-5 divide-y divide-white/[0.07] border-y border-white/[0.07]">
-            {["Budget available", "Vendor risk cleared", "Finance route selected"].map((item, index) => (
-              <motion.div custom={index + 1} variants={policyItemVariants} key={item} className="flex items-center justify-between py-3">
-                <span className="type-meta text-white/55">{item}</span>
+          <div className="mt-5 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
+            {[
+              "CapEx budget headroom available (₦17.5M remaining)",
+              "3-quote procurement rule verified",
+              "Separation of Duties (SoD) enforced",
+              "Supplier bank details match CAC legal entity",
+            ].map((item, index) => (
+              <motion.div custom={index + 1} variants={policyItemVariants} key={item} className="flex items-center justify-between py-2.5 text-[12px]">
+                <span className="type-meta text-[var(--text-secondary)]">{item}</span>
                 <motion.span
                   variants={{ hidden: { scale: 0.65, rotate: -20 }, visible: { scale: 1, rotate: 0, transition: { delay: 0.76 + index * 0.13, duration: 0.34, ease: EASE } } }}
-                  className="flex size-5 items-center justify-center rounded-full bg-[#17342e] text-[#72dece]"
+                  className="flex size-5 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent-text)] shrink-0"
                 >
                   <Check className="size-3" />
                 </motion.span>
@@ -124,17 +150,32 @@ function DecisionTraceVisual({ reduceMotion }: { reduceMotion: boolean }) {
           </div>
 
           <motion.div variants={evidenceItemVariants} custom={0} className="mt-6">
-            <div className="type-meta flex items-center justify-between"><p className="font-semibold uppercase text-white/40">Evidence attached</p><span className="text-[#72dece]">4 records</span></div>
-            <div className="mt-3 grid grid-cols-2 gap-px overflow-hidden rounded-[7px] border border-white/10 bg-white/10">
-              {["Request", "Vendor", "Approval", "Invoice"].map((item, index) => (
-                <motion.div custom={index + 1} variants={evidenceItemVariants} key={item} className="type-meta flex items-center gap-2 bg-[#111714] px-3 py-3 text-white/60">
-                  <FileCheck2 className="size-3.5 text-[#72dece]" />{item}
+            <div className="type-meta flex items-center justify-between">
+              <p className="font-semibold uppercase tracking-wider text-[var(--text-secondary)]">Evidence attached</p>
+              <span className="text-[var(--accent-text)] font-semibold">4 records linked</span>
+            </div>
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {["PR-2026-0047", "PO-2026-0047", "GR-2026-0091", "INV-2026-8812"].map((item, index) => (
+                <motion.div
+                  custom={index + 1}
+                  variants={evidenceItemVariants}
+                  key={item}
+                  className="type-meta flex items-center gap-2 rounded-lg border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-2 text-[var(--text-primary)] shadow-2xs text-[11.5px]"
+                >
+                  <FileCheck2 className="size-3.5 text-[var(--accent-text)] shrink-0" />
+                  <span className="font-mono">{item}</span>
                 </motion.div>
               ))}
             </div>
           </motion.div>
 
-          <motion.div variants={evidenceItemVariants} custom={5} className="type-meta mt-6 flex items-center justify-between border-t border-white/10 pt-4"><div><p className="uppercase text-white/35">Trace ID</p><p className="mt-1 font-medium">VL-2048-AX</p></div><span className="font-semibold text-[#72dece]">Audit-ready</span></motion.div>
+          <motion.div variants={evidenceItemVariants} custom={5} className="type-meta mt-6 flex items-center justify-between border-t border-[var(--border-hairline)] pt-4">
+            <div>
+              <p className="uppercase text-[var(--text-secondary)] text-[10px]">Trace ID & Fiscal Lock</p>
+              <p className="mt-0.5 font-mono text-[11px] text-[var(--text-primary)]">VL-2048-AX · sha256:7f8a9c019</p>
+            </div>
+            <span className="rounded-[6px] bg-[var(--accent-soft)] px-2.5 py-1 font-semibold text-[var(--accent-text)]">Audit-ready</span>
+          </motion.div>
         </div>
       </div>
     </motion.div>
@@ -145,37 +186,53 @@ export function TestimonialBand() {
   const reduceMotion = Boolean(useReducedMotion());
 
   return (
-    <section className="overflow-hidden bg-[#0b100e] py-20 text-white sm:py-28">
-      <Container className="grid items-center gap-12 md:grid-cols-[0.76fr_1.24fr] md:gap-16">
-        <Reveal>
-          <p className="type-eyebrow font-semibold uppercase text-[#72dece]">Operational proof</p>
-          <h2 className="mt-5 max-w-[480px] text-[length:var(--fs-h2)] font-semibold leading-[1.08]">Proof lives in the record.</h2>
-          <p className="type-section-copy mt-5 max-w-[460px] text-white/55">Every rule, reviewer, and financial outcome stays connected, so finance can explain what happened without reconstructing it.</p>
-
-          <motion.div
-            initial={reduceMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={{ once: false, amount: 0.5 }}
-            className="mt-8 hidden divide-y divide-white/10 border-y border-white/10 sm:block"
-          >
-            {evidence.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <motion.div custom={index} variants={traceItemVariants} key={item.title} className="grid grid-cols-[32px_1fr] gap-3 py-4">
-                  <motion.span
-                    variants={{ hidden: { scale: 0.78 }, visible: { scale: 1, transition: { delay: 0.14 + index * 0.14, duration: 0.35, ease: EASE } } }}
-                    className="flex size-8 items-center justify-center rounded-[7px] bg-[#17342e] text-[#72dece]"
-                  >
-                    <Icon className="size-3.5" />
-                  </motion.span>
-                  <div><div className="flex items-center gap-2"><span className="type-meta font-semibold text-[#72dece]">0{index + 1}</span><h3 className="type-ui font-semibold">{item.title}</h3></div><p className="type-meta mt-1.5 text-white/45">{item.body}</p></div>
-                </motion.div>
-              );
-            })}
-          </motion.div>
+    <section id="proof" className="relative overflow-hidden bg-[var(--bg-canvas)] py-20 text-[var(--text-primary)] sm:py-28">
+      <Container>
+        {/* ── Centered Section Heading (Consistent Rhythm) ── */}
+        <Reveal className="mx-auto max-w-[720px] text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-1 shadow-xs">
+            <ShieldCheck className="size-3 text-[var(--accent)]" />
+            <span className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[var(--accent-text)]">
+              Operational Proof
+            </span>
+          </div>
+          <h2 className="mt-4 text-[length:var(--fs-h2)] font-semibold leading-[1.12] tracking-tight text-[var(--text-primary)]">
+            Proof lives in the record.
+          </h2>
+          <p className="mt-4 text-[16px] leading-relaxed text-[var(--text-secondary)] sm:text-[17px]">
+            Every rule, reviewer, and financial outcome stays permanently connected, so finance and auditors can explain what happened without reconstructing it.
+          </p>
         </Reveal>
 
-        <Reveal delay={0.08}>
+        {/* ── 3 Key Assurance Pillars ── */}
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3 max-w-[1040px] mx-auto">
+          {evidence.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <Reveal key={item.title} delay={index * 0.06}>
+                <div className="flex h-full flex-col rounded-2xl border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-5 shadow-xs transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent-text)]">
+                      <Icon className="size-4.5" />
+                    </span>
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--accent-text)]">
+                      0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="type-card-title mt-4 font-semibold text-[var(--text-primary)]">
+                    {item.title}
+                  </h3>
+                  <p className="type-card-copy mt-1.5 text-[var(--text-secondary)]">
+                    {item.body}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* ── Interactive Decision Trace Console ── */}
+        <Reveal delay={0.2} className="mt-6 max-w-[1040px] mx-auto">
           <DecisionTraceVisual reduceMotion={reduceMotion} />
         </Reveal>
       </Container>
