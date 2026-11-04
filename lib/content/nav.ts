@@ -1,3 +1,5 @@
+import type { NavMenuKey } from "./mega-nav";
+
 export type NavLink = {
   label: string;
   href: string;

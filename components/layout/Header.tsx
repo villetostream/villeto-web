@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Menu, ChevronDown } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
