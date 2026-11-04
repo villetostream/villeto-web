@@ -56,6 +56,8 @@ export const trustItems: TrustItem[] = [
   },
 ];
 
+export const trustSignals = ["Role-based access", "Multi-entity controls", "Regional residency", "Immutable history"];
+
 export const testimonialBand = {
   video: {
     src: "/images/testimonial-video-placeholder.png",

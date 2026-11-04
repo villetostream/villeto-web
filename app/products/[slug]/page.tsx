@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { productPages, getProductPage } from "@/lib/content/product-pages";
+import { navCtas } from "@/lib/content/nav";
 
 export function generateStaticParams() {
   return productPages.map((p) => ({ slug: p.slug }));

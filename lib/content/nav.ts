@@ -9,9 +9,10 @@ export const navLinks: NavLink[] = [
   { label: "Support", href: "/support" },
 ];
 
-export const navMegaTriggers = [
+export const navMegaTriggers: Array<{ label: string; key: NavMenuKey }> = [
   { label: "Products", key: "products" as const },
   { label: "Solutions", key: "solutions" as const },
+  { label: "Company", key: "company" as const },
 ];
 
 // CTA cluster ordered by commitment level.

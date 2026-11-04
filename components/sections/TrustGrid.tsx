@@ -108,3 +108,7 @@ export function TrustGrid() {
     </section>
   );
 }
+
+function CheckMark() {
+  return <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-[#dcefeb] text-[9px] font-bold text-[#087f70]">✓</span>;
+}

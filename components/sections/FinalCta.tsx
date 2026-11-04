@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import { Container } from "@/components/ui/Container";
+import { DemoRequestDialog } from "@/components/ui/DemoRequestDialog";
 import { Reveal } from "@/components/ui/Reveal";
 import { DemoRequestDialog } from "@/components/ui/DemoRequestDialog";
 import { finalCta } from "@/lib/content/trust";
@@ -11,6 +12,8 @@ import { finalCta } from "@/lib/content/trust";
 export function FinalCta() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [demoOpen, setDemoOpen] = useState(false);
+  const demoButtonRef = useRef<HTMLButtonElement>(null);
 
   return (
     <section id="signup" className="section-tinted section-glow-top relative overflow-hidden py-24 sm:py-32">
