@@ -82,9 +82,8 @@
   --ink-accent: #2dd4bf;
   --ink-accent-contrast: #0a0f0d;
 
-  --font-inter: "Inter", sans-serif;
   --font-display: var(--font-sans);
-  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: var(--font-inter), "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 
   --fs-hero: clamp(2.25rem, 4.2vw, 3.75rem);
   --fs-h2: clamp(1.625rem, 2.8vw, 2.5rem);

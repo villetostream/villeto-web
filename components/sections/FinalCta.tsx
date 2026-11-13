@@ -2,15 +2,22 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, CalendarDays } from "lucide-react";
+import { ArrowRight, CalendarDays, Loader2 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { DemoRequestDialog } from "@/components/ui/DemoRequestDialog";
 import { Reveal } from "@/components/ui/Reveal";
 import { finalCta } from "@/lib/content/trust";
+import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
 export function FinalCta() {
   const [demoOpen, setDemoOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const { handleSubmit, loading, error } = useEmailOnboarding();
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(email);
+  };
 
   return (
     <section id="signup" className="section-tinted section-glow-top relative overflow-hidden py-24 sm:py-32">
@@ -18,6 +25,7 @@ export function FinalCta() {
         src="/images/cta-background-texture.png"
         alt=""
         fill
+        sizes="100vw"
         className="pointer-events-none object-cover opacity-[0.12] mix-blend-overlay"
       />
       <Container className="relative flex flex-col items-center gap-10 text-center">
@@ -34,11 +42,8 @@ export function FinalCta() {
         <Reveal delay={0.1} className="flex w-full max-w-[540px] flex-col gap-4">
           <form
             id="final-signup-form"
-            className="flex w-full flex-col gap-3 sm:flex-row sm:gap-0"
-            onSubmit={(e) => {
-              e.preventDefault();
-              window.location.href = `${finalCta.primaryCta.href}?email=${encodeURIComponent(email)}`;
-            }}
+            className="flex w-full flex-col items-stretch gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-1.5 shadow-[0_2px_6px_rgba(10,15,13,0.04)] sm:flex-row sm:items-center sm:pl-4"
+            onSubmit={onSubmit}
           >
             <input
               id="final-email-input"
@@ -46,18 +51,20 @@ export function FinalCta() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
               placeholder={finalCta.emailPlaceholder}
-              className="h-[52px] flex-1 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15 sm:rounded-r-none"
+              disabled={loading}
+              className="min-h-[44px] w-full min-w-0 flex-1 border-none bg-transparent px-2.5 text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 sm:px-0"
             />
             <button
               type="submit"
               id="final-signup-btn"
-              className="h-[52px] shrink-0 rounded-[var(--radius-sm)] bg-[var(--accent)] px-6 text-[15px] font-semibold text-[var(--accent-contrast)] transition-transform hover:-translate-y-[1px] active:translate-y-0 sm:rounded-l-none"
+              disabled={loading}
+              className="flex min-h-[46px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-6 text-[15px] font-semibold text-[var(--accent-contrast)] transition-transform hover:-translate-y-[1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
             >
-              {finalCta.primaryCta.label}
+              {loading ? <Loader2 className="size-4 animate-spin" /> : finalCta.primaryCta.label}
             </button>
           </form>
+          {error && <p className="text-[13px] text-red-500">{error}</p>}
 
           <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-4 text-[13px] text-[var(--text-secondary)]">
             <span>{finalCta.trialNote}</span>

@@ -13,8 +13,9 @@ export const footer = {
         { label: "Finance Leaders", href: "/solutions/finance-leaders" },
         { label: "Procurement Teams", href: "/solutions/procurement-teams" },
         { label: "Accounts Payable", href: "/solutions/accounts-payable" },
-        { label: "Managers & Employees", href: "/solutions/managers-employees" },
-        { label: "CFOs & Controllers", href: "/solutions/cfos" },
+        { label: "Spend Management Nigeria", href: "/solutions/spend-management-nigeria" },
+        { label: "3-Way Matching & AP", href: "/solutions/three-way-matching" },
+        { label: "Multi-Entity Control", href: "/solutions/multi-entity-spend-control" },
       ],
     },
     {

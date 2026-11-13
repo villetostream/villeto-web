@@ -14,9 +14,11 @@ import {
   BookOpen,
   ShieldCheck,
   PackageCheck,
+  Loader2,
 } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { hero, heroScenes, procurementScene, expenseScene, billPayScene } from "@/lib/content/hero";
+import { useEmailOnboarding } from "@/lib/hooks/useEmailOnboarding";
 
 const SCENE_DURATION = 4200;
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -376,6 +378,14 @@ function SpendWorkflowWidget() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
 export function Hero() {
+  const { handleSubmit, loading, error } = useEmailOnboarding();
+  const [email, setEmail] = useState("");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSubmit(email);
+  };
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-[var(--bg-canvas)] to-[var(--accent-soft)]/30">
       {/* Teal radial aurora — barely visible on white, creates depth in dark mode */}
@@ -393,7 +403,7 @@ export function Hero() {
         animate={{ x: ["0%", "-3%", "0%"], y: ["0%", "3%", "0%"] }}
         transition={{ duration: 45, ease: "linear", repeat: Infinity }}
       >
-        <Image src="/images/hero-background-texture.png" alt="" fill priority className="object-cover scale-[1.1]" />
+        <Image src="/images/hero-background-texture.png" alt="" fill sizes="100vw" priority className="object-cover scale-[1.1]" />
       </motion.div>
 
       <Container className="relative grid grid-cols-1 items-center gap-14 pt-10 pb-20 sm:pt-14 sm:pb-24 md:grid-cols-[1.05fr_0.95fr] md:gap-16 md:pt-16 md:pb-28">
@@ -418,29 +428,29 @@ export function Hero() {
           {/* Email capture */}
           <form
             id="hero-signup-form"
-            className="mt-8 flex w-full max-w-[460px] flex-col gap-3 animate-hero-fade animation-delay-300 sm:flex-row sm:gap-0"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const email = (e.currentTarget.elements.namedItem("email") as HTMLInputElement).value;
-              window.location.href = `${hero.primaryCta.href}?email=${encodeURIComponent(email)}`;
-            }}
+            className="mt-8 flex w-full max-w-[460px] flex-col items-stretch gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] p-1.5 shadow-[0_2px_6px_rgba(10,15,13,0.04)] animate-hero-fade animation-delay-300 sm:flex-row sm:items-center sm:pl-4"
+            onSubmit={onSubmit}
           >
             <input
               id="hero-email-input"
               name="email"
               type="email"
-              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder={hero.emailPlaceholder}
-              className="h-[50px] flex-1 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-canvas)] px-4 text-[14px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/15 sm:rounded-r-none"
+              disabled={loading}
+              className="min-h-[42px] w-full min-w-0 flex-1 border-none bg-transparent px-2.5 text-[14px] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] outline-none focus:border-transparent focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-50 sm:px-0"
             />
             <button
               type="submit"
               id="hero-signup-btn"
-              className="h-[50px] shrink-0 rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-[var(--accent-contrast)] transition-transform hover:-translate-y-[1px] active:translate-y-0 sm:rounded-l-none"
+              disabled={loading}
+              className="flex min-h-[44px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-sm)] bg-[var(--accent)] px-5 text-[14px] font-semibold text-[var(--accent-contrast)] transition-transform hover:-translate-y-[1px] active:translate-y-0 disabled:pointer-events-none disabled:opacity-50"
             >
-              {hero.primaryCta.label}
+              {loading ? <Loader2 className="size-4 animate-spin" /> : hero.primaryCta.label}
             </button>
           </form>
+          {error && <p className="mt-2 text-[13px] text-red-500">{error}</p>}
 
           <div className="mt-3 animate-hero-fade animation-delay-300">
             <p className="text-[12px] text-[var(--text-secondary)]">{hero.trialNote}</p>

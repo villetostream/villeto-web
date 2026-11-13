@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
+import { faqSection } from "@/lib/content/onboarding";
 
 // Lazy load below-the-fold sections for performance
 const ProblemSection = dynamic(() => import("@/components/sections/ProblemSection").then(mod => mod.ProblemSection));
@@ -16,9 +17,70 @@ const GettingStarted = dynamic(() => import("@/components/sections/GettingStarte
 const FaqSection = dynamic(() => import("@/components/sections/FaqSection").then(mod => mod.FaqSection));
 const FinalCta = dynamic(() => import("@/components/sections/FinalCta").then(mod => mod.FinalCta));
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: "Villeto",
+      url: "https://villeto.com",
+    },
+    {
+      "@type": "Organization",
+      name: "Villeto",
+      url: "https://villeto.com",
+      logo: "https://villeto.com/images/villeto-v.png",
+      sameAs: ["https://x.com/villeto_hq"],
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+234-706-000-1234",
+        email: "info@villeto.com",
+        contactType: "customer support",
+      },
+      areaServed: ["NG", "GH", "KE", "GB", "US"],
+    },
+    {
+      "@type": "SoftwareApplication",
+      name: "Villeto",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      url: "https://villeto.com",
+      description:
+        "Spend management, procurement, employee expenses, bill pay, vendor management, and AP subledger platform for multi-entity businesses.",
+      featureList: [
+        "3-stage Spend Programs and pre-commitment budget checks",
+        "Automated Expense Policies and receipt verification",
+        "Automated 3-way matching (PO, goods receipt, supplier invoice)",
+        "B2B Vendor Portal with CAC and TIN bank verification",
+        "Multi-entity AP subledger supporting NGN, USD, GBP, EUR, KES, and GHS",
+      ],
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faqSection.items.slice(0, 5).map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    },
+  ],
+};
+
 export default function HomePage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 1. Hero — what is this? */}
       <Hero />
 
