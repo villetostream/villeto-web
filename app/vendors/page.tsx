@@ -21,9 +21,12 @@ import { VendorPortalInteractive } from "@/components/sections/VendorPortalInter
 import { VendorFaqAccordion } from "@/components/sections/VendorFaqAccordion";
 
 export const metadata: Metadata = {
-  title: "Villeto Vendor Portal — Manage Purchase Orders, Invoices & Payments in One Place",
+  title: "Vendor Portal — Manage Purchase Orders, Invoices & Payments",
   description:
     "Villeto is the B2B vendor portal that connects suppliers with buyer organizations. Manage purchase orders, track fulfillment, submit invoices, and get paid — all from one verified dashboard.",
+  alternates: {
+    canonical: "/vendors",
+  },
   keywords: [
     "vendor portal",
     "B2B vendor management",
@@ -37,6 +40,7 @@ export const metadata: Metadata = {
     title: "Stop chasing purchase orders. Start running your vendor business.",
     description:
       "One verified portal to manage every buyer relationship — from the first purchase order to the final payment.",
+    url: "/vendors",
   },
 };
 

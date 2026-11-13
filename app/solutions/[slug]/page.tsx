@@ -15,9 +15,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const page = getSolutionPage(slug);
   if (!page) return {};
-  return { 
-    title: `${page.title} — Villeto Solutions`, 
-    description: page.description 
+  return {
+    title: `${page.title} Solutions`,
+    description: page.description,
+    alternates: { canonical: `/solutions/${slug}` },
+    openGraph: {
+      title: `${page.title} Solutions | Villeto`,
+      description: page.description,
+      url: `/solutions/${slug}`,
+    },
   };
 }
 

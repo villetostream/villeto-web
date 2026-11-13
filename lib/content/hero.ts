@@ -1,6 +1,6 @@
 export const hero = {
   eyebrow: "Spend management that connects everything",
-  headline: "One platform for every way your company spends.",
+  headline: "One spend management platform for every way your company spends.",
   subhead:
     "Villeto brings procurement, employee expenses, bill pay, vendor management, and accounting into one connected workflow. Spend Programs verify budgets before purchase orders dispatch, while Expense Policies check employee receipts at submission — not at month end.",
   emailPlaceholder: "What is your work email?",

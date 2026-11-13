@@ -301,6 +301,99 @@ export const allSolutionPages: SolutionPage[] = [
       attribution: "Group Chief Operating Officer, Pan-African Enterprise",
     },
   },
+  {
+    slug: "spend-management-nigeria",
+    title: "Spend Management Software Nigeria",
+    eyebrow: "Built for Nigerian & African Enterprises",
+    description:
+      "Procurement, employee expenses, CAC/TIN vendor verification, 3-way matching, and NGN/USD/GBP/EUR/KES/GHS multi-entity AP subledger in one platform.",
+    heroHeadline: "Spend management and procurement software built for Nigerian and Pan-African businesses.",
+    icon: "building",
+    capabilities: [
+      {
+        title: "CAC & TIN Supplier Verification",
+        body: "Automatically verify supplier bank account names against registered CAC and TIN business records before releasing payouts.",
+      },
+      {
+        title: "Native NGN & Multi-Currency Procurement",
+        body: "Run purchase orders, approvals, and AP subledgers natively in NGN, USD, GBP, EUR, KES, and GHS per legal entity.",
+      },
+      {
+        title: "3-Stage Spend Programs & Expense Policies",
+        body: "Verify departmental budget headroom before POs dispatch and enforce receipt and travel policies at submission.",
+      },
+      {
+        title: "Audit-Ready Double-Entry Subledger",
+        body: "Every approved bill and reimbursement posts an immutable journal entry ready for Nigerian statutory audits and tax reviews.",
+      },
+    ],
+    quote: {
+      body: "Having CAC bank verification, Naira and USD entity tracking, and 3-way matching in one place cut our month-end close in half.",
+      attribution: "Head of Finance, Lagos Multi-Entity Group",
+    },
+  },
+  {
+    slug: "three-way-matching",
+    title: "Automated 3-Way Matching & AP",
+    eyebrow: "Accounts Payable Automation",
+    description:
+      "Automatically reconcile purchase orders, goods receipts, and supplier invoices line-by-line before AP records post or payouts are scheduled.",
+    heroHeadline: "Prevent duplicate and overbilled supplier payments with automated 3-way matching.",
+    icon: "shield-check",
+    capabilities: [
+      {
+        title: "Line-by-Line PO, Receipt & Invoice Reconciliation",
+        body: "Compare ordered quantities, receiving dock confirmations, and billed unit prices automatically before an invoice enters AP.",
+      },
+      {
+        title: "Automatic Variance Holds",
+        body: "Flag price discrepancies, short deliveries, or unapproved overages immediately so finance resolves them before cash leaves.",
+      },
+      {
+        title: "Supplier Self-Service Invoice Submission",
+        body: "Vendors submit invoices directly against issued POs through the free Villeto Vendor Portal, eliminating PDF re-keying.",
+      },
+      {
+        title: "Immutable Journal Posting",
+        body: "Matched invoices generate verified double-entry AP journal vouchers with full approval and delivery audit trails.",
+      },
+    ],
+    quote: {
+      body: "3-way matching caught overbilled line items in our first week — paying for itself before our first month-end close.",
+      attribution: "Accounts Payable Lead, Distribution Group",
+    },
+  },
+  {
+    slug: "multi-entity-spend-control",
+    title: "Multi-Entity Spend Control",
+    eyebrow: "For Subsidiaries & Holding Groups",
+    description:
+      "Standardize procurement, expense policies, vendor pools, and AP subledgers across every subsidiary with entity-level currency and fiscal isolation.",
+    heroHeadline: "Unified spend governance across every subsidiary without six-month ERP rollouts.",
+    icon: "layers",
+    capabilities: [
+      {
+        title: "Entity-Isolated Ledgers & Base Currencies",
+        body: "Each subsidiary maintains its own chart of accounts, fiscal calendar, and base currency while leadership sees group-wide spend.",
+      },
+      {
+        title: "Centralized or Local Approval Chains",
+        body: "Configure entity-specific Spend Programs and escalate cross-subsidiary or high-value requests to group finance automatically.",
+      },
+      {
+        title: "Verified Group Vendor Directory",
+        body: "Onboard suppliers once with verified bank details and share them across approved entities without duplicate vendor records.",
+      },
+      {
+        title: "Live Consolidated Commitments",
+        body: "Track open PO commitments, pending approvals, and scheduled AP payouts across all operating companies in real time.",
+      },
+    ],
+    quote: {
+      body: "We went live across four operating entities in days instead of waiting a year for a legacy ERP rollout.",
+      attribution: "Group Controller, Regional Holding Company",
+    },
+  },
 ];
 
 export function getSolutionPage(slug: string): SolutionPage | undefined {

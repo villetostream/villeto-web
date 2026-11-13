@@ -20,7 +20,7 @@ export const navMegaTriggers: Array<{ label: string; key: NavMenuKey }> = [
 // CTA cluster ordered by commitment level.
 export const navCtas = {
   signIn: { label: "Sign In", href: "https://app.villeto.com/login" },
-  primary: { label: "Get Started for free", href: "https://app.villeto.com/signup" },
+  primary: { label: "Get Started for free", href: "https://app.villeto.com/pre-onboarding" },
 };
 
 export const brand = {
